@@ -1,0 +1,40 @@
+doctype
+html
+  head
+      meta(charset='utf-8')
+      title docker web
+      link(type="text/css" rel="stylesheet" href="./css/bootstrap.css")
+      link(type="text/css" rel="stylesheet" href="./css/ui.jqgrid-bootstrap.css")  
+      link(type="text/css" rel="stylesheet" href="./css/jquery-ui.css")
+      link(type="text/css" rel="stylesheet" href="./css/main.css")
+      
+  body
+      .main-page
+          .container
+            .row
+              .col-lg-2
+                .aside-menu
+                    ul.docker-menu.ui-menu
+                      li.ui-menu-item(data-id="#docker-container") 容器管理
+                      li.ui-menu-item(data-id="#docker-images") 镜像管理
+              .col-lg-10
+                .main-section
+                  section#docker-container.hide
+                    table#cgrid
+                    #cgrid-page  
+                      
+                  section#docker-images.hide
+                    table#mgrid
+                    #mgrid-page
+            .row 
+              .footer
+                #dialog-delform(title='删除')
+                    p 确定删除当前行关联的远程Docker数据？
+                    
+              
+      script(type="text/javascript" src="./js/jquery.js")
+      script(type="text/javascript" src="./js/jquery-ui.js")
+      script(type="text/javascript" src="./js/i18n/grid.locale-en.js")
+      script(type="text/javascript" src="./js/jquery.jqGrid.min.js")
+      script(type="text/javascript" src="./js/main.js")
+ 

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>docker web</title>
+    <link type="text/css" rel="stylesheet" href="./css/bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="./css/ui.jqgrid-bootstrap.css">
+    <link type="text/css" rel="stylesheet" href="./css/jquery-ui.css">
+    <link type="text/css" rel="stylesheet" href="./css/main.css">
+  </head>
+  <body>
+    <div class="main-page">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-2">
+            <div class="aside-menu">
+              <ul class="docker-menu ui-menu">
+                <li data-id="#docker-container" class="ui-menu-item">容器管理</li>
+                <li data-id="#docker-images" class="ui-menu-item">镜像管理</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-10">
+            <div class="main-section">
+              <section id="docker-container" class="hide">
+                <table id="cgrid"></table>
+                <div id="cgrid-page"> </div>
+              </section>
+              <section id="docker-images" class="hide">
+                <table id="mgrid"></table>
+                <div id="mgrid-page"></div>
+              </section>
+            </div>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="footer">
+            <div id="dialog-delform" title="删除">
+              <p>确定删除当前行关联的远程Docker数据？</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="./js/jquery-ui.js"></script>
+    <script type="text/javascript" src="./js/i18n/grid.locale-en.js"></script>
+    <script type="text/javascript" src="./js/jquery.jqGrid.min.js"></script>
+    <script type="text/javascript" src="./js/main.js"></script>
+  </body>
+</html>
