@@ -20,3 +20,7 @@ body {
 .aside-menu .ui-menu .ui-menu-item:hover {
   border: 2px solid #4297d7;
 }
+.ui-jqgrid tr.ui-row-ltr td,
+.ui-jqgrid tr.ui-row-rtl td {
+  word-wrap: break-word;
+}

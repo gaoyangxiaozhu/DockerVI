@@ -1,5 +1,4 @@
 $(function(){
-
   // 获取yyyy-mm-dd格式的时间
    function get_format_date(sec){
      var t = new Date(sec);
@@ -23,32 +22,25 @@ function show_dialog(fn){
     that = $(this);
     that.dialog('close');
   }
-  $('#dialog-delform').dialog({
-    height:150,
-    width:300,
-    resizable:false,
-    modal: true,
-    buttons: {
-      'confirm': confirm,
-      'cancel': cancel
-    }
+  $('#dialog-delform').removeClass('hide').dialog({
+      title: 'Delete Data?',
+      resizable:false,
+      modal: true,
+      buttons: [
+            {
+                html: "<i class='icon-trash bigger-110'></i>&nbsp; Delete",
+                'class': 'btn btn-danger btn-xs',
+                'click': confirm,
+            },
+            {
+                html: "<i class='icon-remove bigger-110'></i>&nbsp; Cancel",
+                'class': 'btn btn-primary btn-xs',
+                'click': cancel
+            }
+        ]
   })
 }
-// nav show
-function nav_selected(){
-   sectionId = that.attr('data-id');
-   if(!that.hasClass('selected')){
-     that.addClass('selected').siblings('li')
-     .removeClass('selected')
-     $(sectionId).addClass('show').removeClass('hide')
-     .siblings().removeClass('show').addClass('hide')
-   }
-}
-$('.docker-menu li').on('click', function(){
-    that = $(this);
-    nav_selected.call(that);
-});
-$('.docker-menu li:first').trigger('click')
+
  // docker相关API
 
  Docker = (function(){
@@ -58,7 +50,7 @@ $('.docker-menu li:first').trigger('click')
        var that = $(this);
        var ids = that.jqGrid('getDataIDs');
        for(var i=0;i<ids.length; i++){
-         delBtn ="<input type='button' value='删除' class='btn btn-warning btn-del-cm' data-id='"+that.jqGrid('getCell', ids[i], 'Id')+
+         delBtn ="<input type='button' value='删除' class='btn btn-danger btn-del-cm' data-id='"+that.jqGrid('getCell', ids[i], 'Id')+
          "'"+"data-row-id='"+ids[i]+"'/>";
          that.jqGrid('setRowData', ids[i], {Delete: delBtn});
        }
@@ -67,22 +59,23 @@ $('.docker-menu li:first').trigger('click')
       function Containers(){
 
         var element = $("#cgrid");
+        var elemntPager = $("#cgrid-page");
         // container grid选项
         var option = {
             datatype: 'local',
-            colNames: ['Image', 'Id', 'Created', 'Status', ''],
+            colNames: [' ', 'Image', 'Id', 'Created', 'Status'],
             colModel: [
-              {name: 'Image', width: 150},
-              {name: 'Id', width: 200},
-              {name: 'Created', width: 200},
-              {name: 'Status', width: 180},
-              {name: 'Delete', width: 100}
+                {name:'Delete', width:70, align:"center"},
+                {name: 'Image', width: 150},
+                {name: 'Id', width: 200},
+                {name: 'Created', width: 200},
+                {name: 'Status', width: 180}
             ],
-            rowNum:10,
-            pager: '#cgrid-page',
-            sortname: 'Id',
-            height: '100%',
-            width: '856',
+            rowNum:30,
+            rowList:[10,20,30],
+            pager: elemntPager,
+            altRows:true,
+            height: 'auto',
             hoverrows: false,
             caption: 'Container List',
             gridComplete: function(){
@@ -90,7 +83,6 @@ $('.docker-menu li:first').trigger('click')
               //添加删除按钮
               bind_del_btn.call(that);
               that.find('.btn-del-cm').addClass('del-container-btn');
-
             }
         }
 
@@ -129,6 +121,8 @@ $('.docker-menu li:first').trigger('click')
                   data[i]['Created'] = get_format_date(data[i]['Created'])
                 }
                 option.data = data;
+                console.log(data);
+                console.log(that);
                 that.jqGrid(option);
             },
             error: function(xhr, textStatus, errorThrown){
@@ -147,24 +141,22 @@ $('.docker-menu li:first').trigger('click')
       function Images(){
 
         var element = $('#mgrid');
+        var elementPager = $('#mgrid-page');
         // images grid选项
         var option = {
             datatype: 'local',
-            colNames: ['Repository', 'Id', 'Created', 'VirtualSize', 'Size', ''],
+            colNames: ['', 'Repository', 'Id', 'Created', 'VirtualSize', 'Size'],
             colModel: [
-              {name: 'RepoTags', width: 200},
-              {name: 'Id', width: 200},
-              {name: 'Created', width: 200},
-              {name: 'VirtualSize', width: 180},
-              {name: 'Size', width: 100},
-              {name: 'Delete', width: 100}
+                {name: 'Delete', width: 70, align:"center"},
+                {name: 'RepoTags', width: 200},
+                {name: 'Id', width: 200},
+                {name: 'Created', width: 200},
+                {name: 'VirtualSize', width: 180},
+                {name: 'Size', width: 100}
             ],
-            rowNum:10,
-            pager: '#mgrid-page',
-            sortname: 'Id',
-            height: '100%',
-            width: '856',
-            hoverrows: false,
+            rowNum:30,
+            pager: elementPager,
+            height: 'auto',
             caption: 'Images List',
             gridComplete: function(){
               var that = element;
@@ -232,12 +224,12 @@ $('.docker-menu li:first').trigger('click')
       var image = Images(); //获得 images实例
       image.init() //images初始化
 
-      // 绑定container删除事件
+      // 绑定container images删除事件
 
       $(document).on( 'click', '.del-container-btn, .del-image-btn', function(){
           var that = $(this);
-          var id = that.attr('data-id');
-          var rowId = that.attr('data-row-id');
+          var id = that.data('id');
+          var rowId = that.data('row-id');
           if(that.hasClass('del-container-btn')){
             container.remove(id, rowId);
           }else{

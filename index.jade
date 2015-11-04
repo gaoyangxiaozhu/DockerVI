@@ -1,40 +1,202 @@
 doctype
-html
-  head
-      meta(charset='utf-8')
-      title docker web
-      link(type="text/css" rel="stylesheet" href="./css/bootstrap.css")
-      link(type="text/css" rel="stylesheet" href="./css/ui.jqgrid-bootstrap.css")  
-      link(type="text/css" rel="stylesheet" href="./css/jquery-ui.css")
-      link(type="text/css" rel="stylesheet" href="./css/main.css")
-      
-  body
-      .main-page
-          .container
-            .row
-              .col-lg-2
-                .aside-menu
-                    ul.docker-menu.ui-menu
-                      li.ui-menu-item(data-id="#docker-container") 容器管理
-                      li.ui-menu-item(data-id="#docker-images") 镜像管理
-              .col-lg-10
-                .main-section
-                  section#docker-container.hide
-                    table#cgrid
-                    #cgrid-page  
-                      
-                  section#docker-images.hide
-                    table#mgrid
-                    #mgrid-page
-            .row 
-              .footer
-                #dialog-delform(title='删除' style='display:none')
-                    p 确定删除当前行关联的远程Docker数据？
+html(lang='en')
+    head
+        meta(charset='utf-8')
+        title docker web可视化管理
+        meta(name="keywords" content="Docker, Docker Remote API, Docker 可视化管理")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        <!--basic styles-->
+        link(rel="stylesheet", href="./assets/css/bootstrap.min.css")
+        link(rel="stylesheet", href="./assets/css/font-awesome.min.css")
+        <!--[if IE 7]>
+        <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+        <![endif]-->
+        <!-- page specific plugin styles -->
+        link(rel="stylesheet" href="./assets/css/jquery-ui-1.10.3.full.min.css")
+        link(rel="stylesheet" href="./assets/css/datepicker.css")
+        link(rel="stylesheet" href="./assets/css/ui.jqgrid.css")
+        style(type="text/css").
+          .ui-jqgrid tr.jqgrow td{overflow: visible;}
+        <!-- fonts-->
+        link(rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400,300")
+        <!-- ace styles -->
+        link(rel="stylesheet" href="./assets/css/ace.min.css")
+        link(rel="stylesheet" href="./assets/css/ace-rtl.min.css")
+        link(rel="stylesheet" href="./assets/css/ace-skins.min.css")
+        <!--[if lte IE 8]>
+        <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+        <![endif]-->
+        <!-- inline styles related to this page -->
+        <!-- ace settings handler -->
+        script(src="./assets/js/ace-extra.min.js")
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="assets/js/html5shiv.js"></script>
+        <script src="assets/js/respond.min.js"></script>
+        <![endif]-->
+        <!-- define css by gyy-->  
+        link(type="text/css" rel="stylesheet" href="./css/main.css")
+    body
+        .main-container#main-container
+            script(type="text/javascript").
+              try{ace.settings.check('main-container', 'fixed')}catch(e){}
+            .main-container-inner
+                a.menu-toggler#menu-toggler(href="#")
+                    span.menu-text
+                .sidebar#sidebar
+                    script(type="text/javascript").
+                      try{ace.settings.check('sidebar', 'fixed')}catch(e){}
+                    .sidebar-shortcuts#sidebar-shortcuts
+                        .sidebar-shortcuts-large#sidebar-shortcuts-large
+                            button.btn.btn-success
+                              i.icon-signal
+                            button.btn.btn-info
+                              i.icon-pencil
+                            button.btn.btn-warning
+                              i.icon-group
+                            button.btn.btn-danger
+                              i.icon-cogs
+                        .sidebar-shortcuts-mini#sidebar-shortcuts-mini
+                            span.btn.btn-success
+                            span.btn.btn-info
+                            span.btn.btn-warning
+                            span.btn.btn-danger
+                    <!-- #sidebar-shortcuts -->
+                    ul.nav.nav-list
+                        li
+                            a.dropdown-toggle(href="#")
+                                i.icon-list
+                                span.menu-text 镜像管理
+                                b.arrow.icon-angle-down
+                            ul.submenu(data-info="镜像管理")
+                                li.image-list-item(data-id="#docker-images")
+                                    a(href="#")
+                                        i.icon-double-angle-right
+                                        | 镜像列表
+                                li.add-image-item
+                                    a(href="#")
+                                        i.icon-double-angle-right
+                                        | 添加镜像
+                        li
+                            a.dropdown-toggle(href="#")
+                                i.icon-list
+                                span.menu-text 容器管理
+                                b.arrow.icon-angle-down
+                            ul.submenu(data-info="容器管理")
+                                li.container-list-item(data-id="#docker-container")
+                                    a(href="#")
+                                        i.icon-double-angle-right
+                                        | 容器列表
+                                li.add-container-item
+                                    a(href="#")
+                                        i.icon-double-angle-right
+                                        | 添加容器
+                    <!-- /.nav-list-->
+                    .sidebar-collapse#sidebar-collapse
+                        i.icon-double-angle-left(data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right")
+                    script(type="text/javascript").
+                      try{ace.settings.check('slidebar', 'collapsed')}catch(e){}
+                .main-content
+                    .breadcrumbs#breadcrumbs
+                        script(type="text/javascript").
+                          try{ace.settings.check('breadcrumbs', 'fixed')}catch(e){}
+                        ul.breadcrumb
+                            li
+                                i.icon-home.home-icon
+                                a(href="#") Home   
+                            li
+                                a(href="#") 镜像管理 
+                            li.active 镜像列表
+                        <!-- .breadcrumb -->
+                    .page-content
+                        .page-header
+                            h1 镜像管理
+                                small
+                                    i.icon-double-angle-right
+                                    |远程访问并以列表形式显示镜像信息
+                        .row
+                            .col-xs-12
+                                <!-- page contnt begins-->
+                                section#docker-images.hide
+                                    table#mgrid
+                                    #mgrid-page
+                                section#docker-container.hide
+                                    table#cgrid
+                                    #cgrid-page
+                                <!-- page content end -->
+                            <!-- ./col-->
+                    <!-- /.page-content-->
+                <!-- /.main-content -->
+                .ace-settings-container#ace-settings-container
+                    .btn.btn-app.btn-xs.btn-warning.ace-settings-btn.open#ace-settings-btn
+                        i.icon-cog.bigger-150
+                    .ace-settings-box#ace-settings-box
+                        div
+                            .pull-left
+                                select#skin-colorpicker.hide(style="display: none;")
+                                    option(data-skin="default" value="#438EB9") #438EB9
+                                    option(data-skin="skin-1" value="#222A2D") #222A2D
+                                    option(data-skin="skin-2" value="#C6487E") #C6487E
+                                    option(data-skin="skin-3" value="#D0D0D0") #D0D0D0
+                            span Choose Skin
+                        div
+                            input.ace.ace-checkbox-2#ace-settings-navbar(type="checkbox")
+                            label.lbl(for="ace-settings-navbar") Fixed NavBar
+                        div
+                            input.ace.ace-checkbox-2#ace-settings-sidebar(type="checkbox")
+                            label.lbl(for="ace-settings-sidebar") Fixed Sidebar
+                        div
+                            input.ace.ace-checkbox-2#ace-settings-breadcrumbs(type="checkbox")
+                            label.lbl(bor="ace-settings-breadcrumbs")  Fixed Breadcrumbs
+                        div
+                            input.ace.ace-checkbox-2#ace-settings-rtl(type="checkbox")
+                            label.lbl(for="ace-settings-rtl")  Right To Left (rtl)
+                        div
+                            input.ace.ace-checkbox-2#ace-settings-add-container(type="checkbox")
+                            label.lbl(for="ace-settings-add-container") Inside
+                                b container
+                    <!-- /#ace-settings-container -->
+                <!-- /.main-container-inner -->
+        <!-- /.main-container -->          
+        .footer
+            #dialog-delform.hide
+                .alert.alert-info.bigger-110 确定删除当前行关联的Docker远程数据？
+                .space-6
+                p.bigger-110.bolder.center.grey
+                    i.icon-hand-right.blue.bigger-120
+                    | Are you sure?
+                  
+        <!--base script-->
+        <!-- [if !IE]> -->
+        script(type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js")
+        <!-- <![endif]-->
+        <!--[if IE]>
+        script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js")
+        <![endif]-->
+        <!--[if !IE]> -->
+        script(type="text/javascript").
+          window.jQuery || document.write("<script src='./assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>")
+        <!-- <![endif]-->
+        <!--[if IE]>
+        <script type="text/javascript">
+        window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+        </script>
+        <![endif]-->
+        script(type="text/javascript").
+          if('ontouchend' in document) document.write("<script src='./assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+        script(type="text/javascript" src="./assets/js/bootstrap.min.js")
+        script(type="text/javascript" src="./assets/js/typeahead-bs2.min.js")
+        <!-- page specific plugin scripts -->
+        script(type="text/javascript" src="./assets/js/jquery-ui-1.10.3.full.min.js")
+        script(type="text/javascript" src="./assets/js/jquery.ui.touch-punch.min.js")
+        script(type="text/javascript" src="./assets/js/date-time/bootstrap-datepicker.min.js")
+        script(type="text/javascript" src="./assets/js/jqGrid/jquery.jqGrid.min.js")
+        script(type="text/javascript" src="./assets/js/jqGrid/i18n/grid.locale-en.js")
+        <!-- ace scripts -->
+        script(type="text/javascript" src="./assets/js/ace-elements.min.js")
+        script(type="text/javascript" src="./assets/js/ace.min.js")
+        <!-- inline scripts related to this page -->
+        script(type="text/javascript" src="./js/common.js")
+        script(type="text/javascript" src="./js/main.js")
                     
-              
-      script(type="text/javascript" src="./js/jquery.js")
-      script(type="text/javascript" src="./js/jquery-ui.js")
-      script(type="text/javascript" src="./js/i18n/grid.locale-en.js")
-      script(type="text/javascript" src="./js/jquery.jqGrid.min.js")
-      script(type="text/javascript" src="./js/main.js")
- 
+            
