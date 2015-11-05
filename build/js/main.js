@@ -56,13 +56,33 @@ function show_dialog(fn, option){
        }
      }
      //ajax err 回调函数
+
      function err(xhr, textStatus, errorThrown){
          console.log(textStatus+' '+errorThrown);
      }
+     //replace icons with FontAwesome icons like above
+
+     function update_pager_icons(table) {
+         var replacement =
+         {
+             'ui-icon-seek-first' : 'icon-double-angle-left bigger-140',
+             'ui-icon-seek-prev' : 'icon-angle-left bigger-140',
+             'ui-icon-seek-next' : 'icon-angle-right bigger-140',
+             'ui-icon-seek-end' : 'icon-double-angle-right bigger-140'
+         };
+         $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function(){
+             var icon = $(this);
+             var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+
+             if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
+         })
+     }
+     //Container对象定义
+
       function Containers(){
 
         var element = $("#cgrid");
-        var elemntPager = $("#cgrid-page");
+        var elementPager = $("#cgrid-page");
         var urlPrefix = 'http://127.0.0.1:8080/containers/';
         // container grid选项
         var option = {
@@ -76,15 +96,21 @@ function show_dialog(fn, option){
                 {name: 'Status', width: 100, fixed:true, sortable:false, resize:true, align: 'center', formatter: initial_state_label},
                 {name: 'Action', width:230, fixed:true, sortable:false, resize:true, align:'center', formatter:initial_dropbutton_action}
             ],
-            rowNum:30,
+            rowNum:20,
             rowList:[10,20,30],
-            pager: elemntPager,
+            pager: elementPager,
             altRows:true,
             height: 'auto',
-            autowidth:true,
+            width:1001,
             viewrecords: true,
             hoverrows: false,
             caption: 'Container List',
+            loadComplete : function() {
+                var table = this;
+                setTimeout(function(){
+                    update_pager_icons(table);
+                }, 0);
+            },
             gridComplete: function(){
               that = element;
               //添加删除按钮
@@ -218,6 +244,7 @@ function show_dialog(fn, option){
                 }
                 option.data = data;
                 that.jqGrid(option);
+                that.jqGrid('navGrid', elementPager);
             },
             error: err
           }
@@ -235,6 +262,8 @@ function show_dialog(fn, option){
         }
 
       }
+      //Images对象定义
+
       function Images(){
 
         var element = $('#mgrid');
@@ -252,11 +281,19 @@ function show_dialog(fn, option){
                 {name: 'VirtualSize', width: 180},
                 {name: 'Size', width: 100}
             ],
-            rowNum:30,
-            pager: elementPager,
+            rowNum:20,
+            rowList:[10,20,30],
             height: 'auto',
+            width: 1004,
+            pager: elementPager,
             caption: 'Images List',
             viewrecords: true,
+            loadComplete : function() {
+                var table = this;
+                setTimeout(function(){
+                    update_pager_icons(table);
+                }, 0);
+            },
             gridComplete: function(){
               var that = element;
               // 添加删除按钮
@@ -316,6 +353,7 @@ function show_dialog(fn, option){
                 option.data = data;
                 var that = element;
                 that.jqGrid(option);
+                that.jqGrid('navGrid', elementPager);
             },
             error: function(xhr, textStatus, errorThrown){
               console.log(errorThrown);
@@ -395,4 +433,4 @@ function show_dialog(fn, option){
 
     })
    })();
-})
+});
