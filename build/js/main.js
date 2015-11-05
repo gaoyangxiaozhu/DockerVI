@@ -11,7 +11,7 @@ $(function(){
    }
 
 //显示dialog
-function show_dialog(fn){
+function show_dialog(fn, option){
 
   function confirm(){
     fn();
@@ -22,8 +22,8 @@ function show_dialog(fn){
     that = $(this);
     that.dialog('close');
   }
-  $('#dialog-delform').removeClass('hide').dialog({
-      title: 'Delete Data?',
+  dialog = option=='force'? $('#dialog-delform2'): $('#dialog-delform')
+  dialog.removeClass('hide').dialog({
       resizable:false,
       modal: true,
       buttons: [
@@ -239,12 +239,13 @@ function show_dialog(fn){
 
         var element = $('#mgrid');
         var elementPager = $('#mgrid-page');
+        var urlPrefix = "http://127.0.0.1:8080/images/";
         // images grid选项
         var option = {
             datatype: 'local',
             colNames: ['', 'Repository', 'Id', 'Created', 'VirtualSize', 'Size'],
             colModel: [
-                {name: 'Delete', width: 70, align:"center"},
+                {name: 'Delete', width: 70, align:"center", fixed:true, sortable:false, resize:false},
                 {name: 'RepoTags', width: 200},
                 {name: 'Id', width: 200},
                 {name: 'Created', width: 200},
@@ -255,6 +256,7 @@ function show_dialog(fn){
             pager: elementPager,
             height: 'auto',
             caption: 'Images List',
+            viewrecords: true,
             gridComplete: function(){
               var that = element;
               // 添加删除按钮
@@ -269,23 +271,35 @@ function show_dialog(fn){
 
         }
         var remove = function(id, rowId){
-          do_remove = function(){
-            that = element;
-            if(!that.jqGrid('delRowData', rowId)){
-              console.log('del failed');
-            }
-            var ajaxOption = {
-              url: 'http://127.0.0.1:8080/images/'+id,
-              type: 'DELETE',
-              success: function(data){
-                console.log('success');
-              },
-              error: function(xhr, textStatus, errorThrown){
-                  console.log(errorThrown);
+            //force为true  强制删除镜像 默认不强制删除
+
+          function get_do_remove(force){
+              var that = element;
+              return function(){
+
+                  url= force? urlPrefix+id+'?force=True':urlPrefix+id;
+                  var ajaxOption = {
+                    url: url,
+                    type: 'DELETE',
+                    success: function(data){
+                        if(!that.jqGrid('delRowData', rowId)){
+                          window.reload();
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown){
+                        if(xhr.status=='409'){
+                            do_remove= get_do_remove(true)
+                            show_dialog(do_remove, 'force');
+                        }
+                    }
+                  }
+                  $.ajax(ajaxOption);
               }
-            }
-            $.ajax(ajaxOption);
+
           }
+        //   默认如果有依赖于镜像的实例，则不强制删除 即默认不加force=true参数
+
+          do_remove=get_do_remove(false);
           show_dialog(do_remove);
         }
         var init = function(){
