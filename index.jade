@@ -69,28 +69,20 @@ html(lang='en')
                                 span.menu-text 镜像管理
                                 b.arrow.icon-angle-down
                             ul.submenu(data-info="镜像管理")
-                                li.image-list-item(data-id="#docker-images")
+                                li.image-list-item(data-id="#docker-images", data-info-detail="远程访问并以列表形式显示镜像信息")
                                     a(href="#")
                                         i.icon-double-angle-right
                                         | 镜像列表
-                                li.add-image-item
-                                    a(href="#")
-                                        i.icon-double-angle-right
-                                        | 添加镜像
                         li
                             a.dropdown-toggle(href="#")
                                 i.icon-list
                                 span.menu-text 容器管理
                                 b.arrow.icon-angle-down
                             ul.submenu(data-info="容器管理")
-                                li.container-list-item(data-id="#docker-container")
+                                li.container-list-item(data-id="#docker-container", data-info-detail="远程访问并以列表形式显示容器信息")
                                     a(href="#")
                                         i.icon-double-angle-right
                                         | 容器列表
-                                li.add-container-item
-                                    a(href="#")
-                                        i.icon-double-angle-right
-                                        | 添加容器
                     <!-- /.nav-list-->
                     .sidebar-collapse#sidebar-collapse
                         i.icon-double-angle-left(data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right")
@@ -110,7 +102,8 @@ html(lang='en')
                         <!-- .breadcrumb -->
                     .page-content
                         .page-header
-                            h1 镜像管理
+                            h1 
+                                span 镜像管理
                                 small
                                     i.icon-double-angle-right
                                     |远程访问并以列表形式显示镜像信息
