@@ -15,6 +15,8 @@ $(function(){
         }
         sectionId = that.data('id');
         if(!that.hasClass('active')){
+            //关闭detail 面板
+            $('.detail-panel .widget-toolbar').trigger('click');
             // 更新active
 
             that.addClass('active')
@@ -28,7 +30,7 @@ $(function(){
             //更新显示模块
 
             $(sectionId).addClass('show').removeClass('hide')
-            .siblings().removeClass('show').addClass('hide')
+            .siblings('section').removeClass('show').addClass('hide')
 
             //更新breadcrumb
             finalLiText = that.find('a').text()
@@ -47,4 +49,10 @@ $(function(){
         nav_selected.call(that);
     });
     $('.image-list-item').trigger('click');
+
+    // 点击隐藏详细信息面板
+
+    $('.detail-panel .widget-toolbar').click(function(){
+        $('.detail-panel').removeClass('show');
+    })
 });

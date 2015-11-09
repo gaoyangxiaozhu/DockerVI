@@ -110,12 +110,24 @@ html(lang='en')
                         .row
                             .col-xs-12
                                 <!-- page contnt begins-->
-                                section#docker-images.hide
-                                    table#mgrid
-                                    #mgrid-page
-                                section#docker-container.hide
-                                    table#cgrid
-                                    #cgrid-page
+                                .content-body
+                                    section#docker-images.hide
+                                        table#mgrid
+                                        #mgrid-page
+                                    section#docker-container.hide
+                                        table#cgrid
+                                        #cgrid-page
+                                    .detail-panel
+                                        .widget-header.header-color-purple.widget-header-fixed
+                                            h5.bigger.lighter
+                                                | Details
+                                            .widget-toolbar
+                                                span(data-action='close')
+                                                    i.icon-remove
+                                            
+                                        .profile-user-info.profile-user-info-striped
+                                            
+                                        
                                 <!-- page content end -->
                             <!-- ./col-->
                     <!-- /.page-content-->

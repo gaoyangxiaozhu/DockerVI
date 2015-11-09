@@ -1,7 +1,7 @@
 $(function(){
   // 获取yyyy-mm-dd格式的时间
    function get_format_date(sec){
-     var t = new Date(sec);
+     var t = new Date(sec*1000);
      return [[t.getFullYear(), t.getMonth()+1, t.getDate()].join('-'), [t.getHours()+1, t.getMinutes(), t.getSeconds()].join(':')].join(' ');
    }
 
@@ -40,19 +40,94 @@ function show_dialog(fn, option){
         ]
   })
 }
+// 单例模式
+var DetailPanel = (function(){
+    // 关联的html元素
+    var element = $('.detail-panel');
+    var itemList = [];
+    get_item_html = function(name, value){
+
+        if(!value){
+            return '';
+        }
+        if(typeof value != 'object'){
+            str = '<div class="profile-info-row">'+
+                        '<div class="profile-info-name">'+name+'</div>'+
+                        '<div class="profile-info-value"><span>'+value+'</span></div>'+
+                  '</div>';
+          if(!value){
+              str='';
+          }
+
+      }else if(value instanceof Array && value.length){
+            str='<div class="profile-info-row">'+
+                        '<div class="profile-info-name">'+name+'</div>'+
+                        '<div class="profile-info-value"><span>'+value.join(', ')+'</span></div>'+
+                  '</div>';
+        }else{
+            child="";
+            for(item in value){
+                child += get_item_html(item, value[item])
+            }
+            if(child){
+                str = '<div class="profile-info-row">'+
+                            '<div class="profile-info-name">'+name+'</div>'+
+                            '<div class="profile-info-value"><span>'+child+'</span></div>'+
+                      '</div>';
+            }else{
+                str='';
+            }
+
+        }
+        return str;
+    }
+    get_itemlist = function(data){
+        var str = null;
+        for(item in data){
+            if(!data[item]) continue;
+            itemList.push(get_item_html(item, data[item]));
+        }
+    }
+    init = function(data){
+        //移除旧的信息
+        itemList.length=0;
+        element.find('.profile-user-info div').remove();
+
+        get_itemlist(data);
+
+        element.find('.profile-user-info').append(itemList.join(''));
+    }
+    show =function(){
+        element.addClass('show');
+    }
+    set_header =function(title){
+        element.find('h5').text(title);
+    }
+    return {
+        init: init,
+        show:show,
+        setHeader:set_header
+    }
+})();
 
  // docker相关API
+ var imageSection = $('#docker-images');
+ var containerSection = $('#docker-container');
 
  Docker = (function(){
 
     //  bind del btn for containers or images 点击触发remove function
-     function bind_del_btn(){
+     function bind_del_detail_btn(){
        var that = $(this);
        var ids = that.jqGrid('getDataIDs');
        for(var i=0;i<ids.length; i++){
-         delBtn ="<input type='button' value='删除' class='btn btn-danger btn-del-cm' data-id='"+that.jqGrid('getCell', ids[i], 'Id')+
-         "'"+"data-row-id='"+ids[i]+"'/>";
-         that.jqGrid('setRowData', ids[i], {Delete: delBtn});
+         delBtn ='<button class="btn btn-danger btn-del-cm btn-xs" data-id="'+that.jqGrid('getCell', ids[i], 'Id')+
+         '"'+'data-row-id="'+ids[i]+'"'+'><i class="icon-trash bigger-120"></i></button>';
+         detailBtn='<button class="btn btn-detail-cm btn-xs" data-id="'+that.jqGrid('getCell', ids[i], 'Id')+
+         '"'+'data-row-id="'+ids[i]+'"'+'><i class="icon-zoom-in bigger-120"></i></button>';
+
+         btnList =[delBtn, detailBtn].join('');
+         that.jqGrid('setRowData', ids[i], {'BtnList': btnList});
        }
      }
      //ajax err 回调函数
@@ -89,7 +164,7 @@ function show_dialog(fn, option){
             datatype: 'local',
             colNames: [' ', 'Image', 'Id', 'Created', 'Status', 'Action'],
             colModel: [
-                {name:'Delete', width:70, align:"center", fixed:true, sortable:false, resize:false},
+                {name:'BtnList', width:110, align:"center", fixed:true, sortable:false, resize:false},
                 {name: 'Image', width: 200},
                 {name: 'Id', width: 200},
                 {name: 'Created', width: 200},
@@ -113,9 +188,10 @@ function show_dialog(fn, option){
             },
             gridComplete: function(){
               that = element;
-              //添加删除按钮
-              bind_del_btn.call(that);
+              //添加删除和查看详细信息按钮
+              bind_del_detail_btn.call(that);
               that.find('.btn-del-cm').addClass('del-container-btn');
+              that.find('.btn-detail-cm').addClass('details-container-btn');
             }
         }
         //获得container的运行状态
@@ -183,9 +259,6 @@ function show_dialog(fn, option){
         function initial_dropbutton_action(cellvalue, options, rowObject){
             return update_dropbutton_menu(rowObject['Id'], rowObject['Status']);
         }
-        var inspect =function(id){
-
-        }
         var remove = function(id, rowId){
           function do_remove(){
             var that  = element;
@@ -231,6 +304,28 @@ function show_dialog(fn, option){
             }
             $.ajax(ajaxOption);
         }
+        var show_details = function(id, fn){
+            url= urlPrefix+id+'/json';
+            var ajaxOption = {
+              url: url,
+              type: 'GET',
+              success: function(data){
+                  if(typeof fn == 'function'){
+                      fn();
+                  }else{
+                    //  用获得的data数据初始化面板
+
+                      DetailPanel.init(data);
+                      DetailPanel.setHeader('Container Detials');
+                      DetailPanel.show();
+                  }
+              },
+              error: function(xhr, textStatus, errorThrown){
+                  console.log(errorThrown);
+              }
+            }
+            $.ajax(ajaxOption);
+        }
         var init = function(){
           var that =element;
           var ajaxOption = {
@@ -252,11 +347,12 @@ function show_dialog(fn, option){
         }
         return {
           init: init,
-          inspect: inspect,
+          inspect: show_details,
           remove : remove,
           start: start,
           restart: restart,
           stop: stop,
+          showDetails: show_details,
           updateContainerState:update_container_state,
           updateDropButtonMenu: update_dropbutton_menu
         }
@@ -274,7 +370,7 @@ function show_dialog(fn, option){
             datatype: 'local',
             colNames: ['', 'Repository', 'Id', 'Created', 'VirtualSize', 'Size'],
             colModel: [
-                {name: 'Delete', width: 70, align:"center", fixed:true, sortable:false, resize:false},
+                {name: 'BtnList', width: 110, align:"center", fixed:true, sortable:false, resize:false},
                 {name: 'RepoTags', width: 200},
                 {name: 'Id', width: 200},
                 {name: 'Created', width: 200},
@@ -296,17 +392,16 @@ function show_dialog(fn, option){
             },
             gridComplete: function(){
               var that = element;
-              // 添加删除按钮
-              bind_del_btn.call(that);
-              that.find('.btn-del-cm').addClass('del-image-btn')
+              // 添加删除和查看详细信息按钮
+              bind_del_detail_btn.call(that);
+              that.find('.btn-del-cm').addClass('del-image-btn');
+              that.find('.btn-detail-cm').addClass('details-image-btn');
             }
         }
         var serialize_repotags= function(repoTags){
           return repoTags.join(',');
         }
-        var inspect = function(id){
 
-        }
         var remove = function(id, rowId){
             //force为true  强制删除镜像 默认不强制删除
 
@@ -339,6 +434,29 @@ function show_dialog(fn, option){
           do_remove=get_do_remove(false);
           show_dialog(do_remove);
         }
+        var show_details=function(id, fn){
+
+            url= urlPrefix+id+'/json';
+            var ajaxOption = {
+              url: url,
+              type: 'GET',
+              success: function(data){
+                  if(typeof fn == 'function'){
+                      fn();
+                  }else{
+                    //  用获得的data数据初始化面板
+                      DetailPanel.init(data);
+                      DetailPanel.setHeader('Images Detials');
+                      DetailPanel.show();
+                  }
+
+              },
+              error: function(xhr, textStatus, errorThrown){
+                  console.log(errorThrown);
+              }
+            }
+            $.ajax(ajaxOption);
+        }
         var init = function(){
           var ajaxOption = {
             url: 'http://127.0.0.1:8080/images/json',
@@ -364,8 +482,8 @@ function show_dialog(fn, option){
 
         return {
           init: init,
-          inspect: inspect,
-          remove : remove
+          remove : remove,
+          inspect: show_details
         }
       }
       var container = Containers();//获取containers 实例
@@ -386,6 +504,17 @@ function show_dialog(fn, option){
           }
 
       });
+
+      //绑定image container查看详情按钮
+      $(document).on('click', '.details-image-btn, .details-container-btn', function(){
+          var  that = $(this);
+          var id= that.data('id');
+          if(that.hasClass('details-container-btn')){
+              container.inspect(id);
+          }else{
+              image.inspect(id);
+          }
+      })
 
       function common_action_for_container_button(newState){
           that = $(this);

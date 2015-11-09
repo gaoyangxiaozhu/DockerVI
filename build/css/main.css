@@ -24,3 +24,27 @@ body {
 .ui-jqgrid tr.ui-row-rtl td {
   word-wrap: break-word;
 }
+.content-body {
+  position: relative;
+}
+.content-body .detail-panel {
+  position: absolute;
+  width: 0;
+  height: 500px;
+  max-height: 500px;
+  overflow: auto;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+  transition: width ease 0.5s;
+  -webkit-transition: width ease 0.5s;
+  background: #fff;
+  border: 1px solid #fff;
+}
+.content-body .detail-panel.show {
+  width: 1000px;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+.content-body .detail-panel .widget-toolbar {
+  cursor: pointer;
+}
