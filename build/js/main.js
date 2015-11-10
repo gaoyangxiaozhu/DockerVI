@@ -88,7 +88,7 @@ var DetailPanel = (function(){
             itemList.push(get_item_html(item, data[item]));
         }
     }
-    init = function(data){
+    init = function(data, top){
         //移除旧的信息
         itemList.length=0;
         element.find('.profile-user-info div').remove();
@@ -96,6 +96,9 @@ var DetailPanel = (function(){
         get_itemlist(data);
 
         element.find('.profile-user-info').append(itemList.join(''));
+        //设置panel的高度
+
+        element.css({'top':top+'px'});
     }
     show =function(){
         element.addClass('show');
@@ -304,7 +307,7 @@ var DetailPanel = (function(){
             }
             $.ajax(ajaxOption);
         }
-        var show_details = function(id, fn){
+        var show_details = function(id, fns, trigger){
             url= urlPrefix+id+'/json';
             var ajaxOption = {
               url: url,
@@ -313,9 +316,12 @@ var DetailPanel = (function(){
                   if(typeof fn == 'function'){
                       fn();
                   }else{
-                    //  用获得的data数据初始化面板
+                     //  用获得的data数据初始化面板
+                    //  设置面板顶部和当前tr行对齐
 
-                      DetailPanel.init(data);
+                      _top = trigger.parents('tr').position().top+83;
+                      DetailPanel.init(data, _top);
+
                       DetailPanel.setHeader('Container Detials');
                       DetailPanel.show();
                   }
@@ -434,7 +440,7 @@ var DetailPanel = (function(){
           do_remove=get_do_remove(false);
           show_dialog(do_remove);
         }
-        var show_details=function(id, fn){
+        var show_details=function(id, fn, trigger){
 
             url= urlPrefix+id+'/json';
             var ajaxOption = {
@@ -445,7 +451,10 @@ var DetailPanel = (function(){
                       fn();
                   }else{
                     //  用获得的data数据初始化面板
-                      DetailPanel.init(data);
+                    //  设置面板顶部和当前tr行对齐
+
+                      _top = trigger.parents('tr').position().top+83;
+                      DetailPanel.init(data, _top);
                       DetailPanel.setHeader('Images Detials');
                       DetailPanel.show();
                   }
@@ -510,9 +519,9 @@ var DetailPanel = (function(){
           var  that = $(this);
           var id= that.data('id');
           if(that.hasClass('details-container-btn')){
-              container.inspect(id);
+              container.inspect(id,'', that);
           }else{
-              image.inspect(id);
+              image.inspect(id, '', that);
           }
       })
 

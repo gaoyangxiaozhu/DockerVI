@@ -26,18 +26,25 @@
         width 0
         height 500px
         max-height 500px
-        overflow auto
+        overflow hidden
         top 0
-        right 0
+        right -100px
         z-index 9999
-        transition width ease .5s
-        -webkit-transition width ease .5s
+        transition width ease .5s, top ease .5s
+        -webkit-transition width ease .5s, top ease .5s
         background #fff
         border 1px solid #fff
         box-shadow 0 0 5px #000
         -webkit-box-shadow 0 0 5px  #000
         &.show
             width 1000px
+            right 0
+            overflow auto
             border 1px solid rgba(0,0,0,0.2)
         .widget-toolbar
             cursor pointer
+        .profile-info-value
+            span
+                word-break break-all
+.footer
+    margin-top 200px
