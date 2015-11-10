@@ -40,6 +40,8 @@ body {
   -webkit-transition: width ease 0.5s;
   background: #fff;
   border: 1px solid #fff;
+  box-shadow: 0 0 5px #000;
+  -webkit-box-shadow: 0 0 5px #000;
 }
 .content-body .detail-panel.show {
   width: 1000px;
