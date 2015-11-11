@@ -136,7 +136,7 @@ var DetailPanel = (function(){
      //ajax err 回调函数
 
      function err(xhr, textStatus, errorThrown){
-         console.log(textStatus+' '+errorThrown);
+         alert('status:'+xhr.status+'  '+errorThrown);
      }
      //replace icons with FontAwesome icons like above
 
@@ -326,9 +326,7 @@ var DetailPanel = (function(){
                       DetailPanel.show(_top);
                   }
               },
-              error: function(xhr, textStatus, errorThrown){
-                  console.log(errorThrown);
-              }
+              error: err
             }
             $.ajax(ajaxOption);
         }
