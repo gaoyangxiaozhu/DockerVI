@@ -88,20 +88,20 @@ var DetailPanel = (function(){
             itemList.push(get_item_html(item, data[item]));
         }
     }
-    init = function(data, top){
+    init = function(data){
         //移除旧的信息
         itemList.length=0;
         element.find('.profile-user-info div').remove();
-
         get_itemlist(data);
 
         element.find('.profile-user-info').append(itemList.join(''));
-        //设置panel的高度
-
-        element.css({'top':top+'px'});
     }
-    show =function(){
-        element.addClass('show');
+    show =function(top){
+        // 设置panel的top并显示
+
+        element.animate({top: top+'px'},'fast','linear', function() {
+                element.addClass('show');
+        });
     }
     set_header =function(title){
         element.find('h5').text(title);
@@ -320,10 +320,10 @@ var DetailPanel = (function(){
                     //  设置面板顶部和当前tr行对齐
 
                       _top = trigger.parents('tr').position().top+83;
-                      DetailPanel.init(data, _top);
+                      DetailPanel.init(data);
 
                       DetailPanel.setHeader('Container Detials');
-                      DetailPanel.show();
+                      DetailPanel.show(_top);
                   }
               },
               error: function(xhr, textStatus, errorThrown){
@@ -454,9 +454,9 @@ var DetailPanel = (function(){
                     //  设置面板顶部和当前tr行对齐
 
                       _top = trigger.parents('tr').position().top+83;
-                      DetailPanel.init(data, _top);
+                      DetailPanel.init(data);
                       DetailPanel.setHeader('Images Detials');
-                      DetailPanel.show();
+                      DetailPanel.show(_top);
                   }
 
               },

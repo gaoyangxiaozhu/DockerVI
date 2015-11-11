@@ -30,13 +30,15 @@
         top 0
         right -100px
         z-index 9999
-        transition width ease .5s, top ease .5s
-        -webkit-transition width ease .5s, top ease .5s
+        transition width ease .5s
+        -webkit-transition width ease .5s
         background #fff
         border 1px solid #fff
         box-shadow 0 0 5px #000
         -webkit-box-shadow 0 0 5px  #000
+        visibility hidden
         &.show
+            visibility visible
             width 1000px
             right 0
             overflow auto
