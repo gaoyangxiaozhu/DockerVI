@@ -10,8 +10,13 @@ $(function(){
       return str.slice(0, 20);
    }
 
-//显示dialog
-function show_dialog(fn, option){
+//显示dialog fn为点击confirm后执行的函数， dialog为指定显示哪一个dialog
+
+function show_dialog(fn, dialog){
+
+ //防止dialog为空
+
+  dialog = dialog.length?dialog: $('#dialog-delform');
 
   function confirm(){
     fn();
@@ -22,7 +27,6 @@ function show_dialog(fn, option){
     that = $(this);
     that.dialog('close');
   }
-  dialog = option=='force'? $('#dialog-delform2'): $('#dialog-delform')
   dialog.removeClass('hide').dialog({
       resizable:false,
       modal: true,
@@ -48,17 +52,13 @@ var DetailPanel = (function(){
     get_item_html = function(name, value){
 
         if(!value){
-            return '';
+            return str='';
         }
         if(typeof value != 'object'){
             str = '<div class="profile-info-row">'+
                         '<div class="profile-info-name">'+name+'</div>'+
                         '<div class="profile-info-value"><span>'+value+'</span></div>'+
                   '</div>';
-          if(!value){
-              str='';
-          }
-
       }else if(value instanceof Array && value.length){
             str='<div class="profile-info-row">'+
                         '<div class="profile-info-name">'+name+'</div>'+
@@ -90,9 +90,11 @@ var DetailPanel = (function(){
     }
     init = function(data){
         //移除旧的信息
+
         itemList.length=0;
         element.find('.profile-user-info div').remove();
         get_itemlist(data);
+        // 更新data
 
         element.find('.profile-user-info').append(itemList.join(''));
     }
@@ -276,7 +278,7 @@ var DetailPanel = (function(){
             }
             $.ajax(ajaxOption);
           }
-          show_dialog(do_remove);
+          show_dialog(do_remove, $('#dialog-delform'));
         }
         var stop = function(id,fn){
             var option ={};
@@ -424,8 +426,8 @@ var DetailPanel = (function(){
                     },
                     error: function(xhr, textStatus, errorThrown){
                         if(xhr.status=='409'){
-                            do_remove= get_do_remove(true)
-                            show_dialog(do_remove, 'force');
+                            do_remove= get_do_remove(true);
+                            show_dialog(do_remove, $('#dialog-delform2'));
                         }
                     }
                   }
@@ -436,7 +438,7 @@ var DetailPanel = (function(){
         //   默认如果有依赖于镜像的实例，则不强制删除 即默认不加force=true参数
 
           do_remove=get_do_remove(false);
-          show_dialog(do_remove);
+          show_dialog(do_remove, $('#dialog-delform'));
         }
         var show_details=function(id, fn, trigger){
 
