@@ -1,3 +1,4 @@
+const ENDPOINT="http://192.168.122.217:2376";
 $(function(){
   // 获取yyyy-mm-dd格式的时间
    function get_format_date(sec){
@@ -83,7 +84,7 @@ function show_dialog(fn, option){
 
         var element = $("#cgrid");
         var elementPager = $("#cgrid-page");
-        var urlPrefix = 'http://127.0.0.1:8080/containers/';
+        var urlPrefix = ENDPOINT+ '/containers/';
         // container grid选项
         var option = {
             datatype: 'local',
@@ -234,7 +235,7 @@ function show_dialog(fn, option){
         var init = function(){
           var that =element;
           var ajaxOption = {
-            url: 'http://127.0.0.1:8080/containers/json?all=1',
+            url: ENDPOINT + '/containers/json?all=1',
             type: 'GET',
             dataType: 'json',
             success: function(data){
@@ -268,7 +269,7 @@ function show_dialog(fn, option){
 
         var element = $('#mgrid');
         var elementPager = $('#mgrid-page');
-        var urlPrefix = "http://127.0.0.1:8080/images/";
+        var urlPrefix = ENDPOINT + "/images/";
         // images grid选项
         var option = {
             datatype: 'local',
@@ -341,7 +342,7 @@ function show_dialog(fn, option){
         }
         var init = function(){
           var ajaxOption = {
-            url: 'http://127.0.0.1:8080/images/json',
+            url: ENDPOINT + '/images/json',
             type: 'GET',
             dataType: 'json',
             success: function(data){
