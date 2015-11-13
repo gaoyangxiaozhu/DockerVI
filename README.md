@@ -43,4 +43,6 @@ Name: d880c68eae01
 ```
 - [ ] 增加容器细节页面，可以查看某个容器的信息，包括`端口、日志、命令、状态`等，可以参考道客云或者灵雀云的界面;
 - [ ] 增加新建实例大小模版，比如`small(16MB RAM 1CPU),medium(256MB RAM 1CPU),large(512MB RAM 2CPU)`,这个模块docker没有支持我们可以自己创建定义，参考openstack `flavor`
+- [ ] network
+- [ ] volume
 
