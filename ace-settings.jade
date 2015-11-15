@@ -1,0 +1,29 @@
+.ace-settings-container#ace-settings-container
+    .btn.btn-app.btn-xs.btn-warning.ace-settings-btn.open#ace-settings-btn
+        i.icon-cog.bigger-150
+    .ace-settings-box#ace-settings-box
+        div
+            .pull-left
+                select#skin-colorpicker.hide(style="display: none;")
+                    option(data-skin="default" value="#438EB9") #438EB9
+                    option(data-skin="skin-1" value="#222A2D") #222A2D
+                    option(data-skin="skin-2" value="#C6487E") #C6487E
+                    option(data-skin="skin-3" value="#D0D0D0") #D0D0D0
+            span Choose Skin
+        div
+            input.ace.ace-checkbox-2#ace-settings-navbar(type="checkbox")
+            label.lbl(for="ace-settings-navbar") Fixed NavBar
+        div
+            input.ace.ace-checkbox-2#ace-settings-sidebar(type="checkbox")
+            label.lbl(for="ace-settings-sidebar") Fixed Sidebar
+        div
+            input.ace.ace-checkbox-2#ace-settings-breadcrumbs(type="checkbox")
+            label.lbl(bor="ace-settings-breadcrumbs")  Fixed Breadcrumbs
+        div
+            input.ace.ace-checkbox-2#ace-settings-rtl(type="checkbox")
+            label.lbl(for="ace-settings-rtl")  Right To Left (rtl)
+        div
+            input.ace.ace-checkbox-2#ace-settings-add-container(type="checkbox")
+            label.lbl(for="ace-settings-add-container") Inside
+                b container
+    <!-- /#ace-settings-container -->

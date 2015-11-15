@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8">
     <title>docker web可视化管理</title>
@@ -28,8 +28,8 @@
     <script src="assets/js/respond.min.js"></script>
     <![endif]-->
     <!-- define css by gyy-->  
-    <link type="text/css" rel="stylesheet" href="./css/main.css">
   </head>
+  <link type="text/css" rel="stylesheet" href="./css/main.css">
   <body>
     <div id="main-container" class="main-container">
       <script type="text/javascript">try{ace.settings.check('main-container', 'fixed')}catch(e){}</script>
@@ -130,10 +130,10 @@
               <label for="ace-settings-add-container" class="lbl">Inside<b>container</b></label>
             </div>
           </div><!-- /#ace-settings-container -->
-        </div><!-- /.main-container-inner -->
-      </div>
-    </div><!-- /.main-container -->          
-    <div class="footer">
+        </div>
+      </div><!-- /.main-container-inner -->
+    </div><!-- /.main-container -->
+    <footer>
       <div id="dialog-delform" title="Remove Docker Data" class="hide">
         <div class="alert alert-info bigger-110">确定删除当前行关联的Docker远程数据？</div>
         <div class="space-6"></div>
@@ -143,29 +143,29 @@
         <div class="alert alert-info bigger-110">存在依赖于当前镜像的容器实例，是否仍旧删除当前镜像？？</div>
         <div class="space-6"></div>
         <p class="bigger-110 bolder center grey"><i class="icon-hand-right blue bigger-120"></i>Are you sure?</p>
-      </div>
-    </div><!--base script-->
-    <!-- [if !IE]> -->
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- <![endif]-->
-    <!--[if IE]>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><![endif]-->
-    <!--[if !IE]> -->
-    <script type="text/javascript">window.jQuery || document.write("<script src='./assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>")</script><!-- <![endif]-->
-    <!--[if IE]>
-    <script type="text/javascript">
-    <window class="jQuery">|| document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");</window></script>
-    <![endif]-->
-    <script type="text/javascript">if('ontouchend' in document) document.write("<script src='./assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");</script>
-    <script type="text/javascript" src="./assets/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="./assets/js/typeahead-bs2.min.js"></script><!-- page specific plugin scripts -->
-    <script type="text/javascript" src="./assets/js/jquery-ui-1.10.3.full.min.js"></script>
-    <script type="text/javascript" src="./assets/js/jquery.ui.touch-punch.min.js"></script>
-    <script type="text/javascript" src="./assets/js/date-time/bootstrap-datepicker.min.js"></script>
-    <script type="text/javascript" src="./assets/js/jqGrid/jquery.jqGrid.min.js"></script>
-    <script type="text/javascript" src="./assets/js/jqGrid/i18n/grid.locale-en.js"></script><!-- ace scripts -->
-    <script type="text/javascript" src="./assets/js/ace-elements.min.js"></script>
-    <script type="text/javascript" src="./assets/js/ace.min.js"></script><!-- inline scripts related to this page -->
-    <script type="text/javascript" src="./js/common.js"></script>
-    <script type="text/javascript" src="./js/main.js"></script>
+      </div><!--base script-->
+      <!-- [if !IE]> -->
+      <script type="text/javascript" src="./js/jquery-2.0.3.min.js"></script><!-- <![endif]-->
+      <!--[if IE]>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><![endif]-->
+      <!--[if !IE]> -->
+      <script type="text/javascript">window.jQuery || document.write("<script src='./assets/js/jquery-2.0.3.min.js'>"+"<"+"/script>")</script><!-- <![endif]-->
+      <!--[if IE]>
+      <script type="text/javascript">
+      <window class="jQuery">|| document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");</window></script>
+      <![endif]-->
+      <script type="text/javascript">if('ontouchend' in document) document.write("<script src='./assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");</script>
+      <script type="text/javascript" src="./assets/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="./assets/js/typeahead-bs2.min.js"></script><!-- page specific plugin scripts -->
+      <script type="text/javascript" src="./assets/js/jquery-ui-1.10.3.full.min.js"></script>
+      <script type="text/javascript" src="./assets/js/jquery.ui.touch-punch.min.js"></script>
+      <script type="text/javascript" src="./assets/js/date-time/bootstrap-datepicker.min.js"></script>
+      <script type="text/javascript" src="./assets/js/jqGrid/jquery.jqGrid.min.js"></script>
+      <script type="text/javascript" src="./assets/js/jqGrid/i18n/grid.locale-en.js"></script><!-- ace scripts -->
+      <script type="text/javascript" src="./assets/js/ace-elements.min.js"></script>
+      <script type="text/javascript" src="./assets/js/ace.min.js"></script><!-- inline scripts related to this page -->
+      <script type="text/javascript" src="./js/common.js"></script>
+      <script type="text/javascript" src="./js/main.js"></script>
+    </footer>
   </body>
 </html>
