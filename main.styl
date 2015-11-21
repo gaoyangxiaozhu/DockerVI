@@ -1,3 +1,4 @@
+/* common */
 *
   margin 0
   padding 0
@@ -48,5 +49,63 @@
         .profile-info-value
             span
                 word-break break-all
+/* end */
+pre
+    &.log
+        background #000
+        color #fff
+// span for play and pause
+span.state-label
+    margin 0 4px
+    padding 2px 5px
+    min-height 24px
+    display inline-block
+    line-height 20px
+    vertical-align middle
+    background-color #b4c2cc!important
+    border-radius 4px
+    &.play
+        background-color #6c9842!important
+    &.error
+        background-color #b52c26!important
+        padding-left 7px
+        padding-right 8px
+/* detail.jade*/
+h1
+    span.state-label
+        font-size 16px
+        padding 5px 10px
+        line-height 36px
+.details-head
+    .btn-group
+        margin 20px 0 10px 0
+        button
+            line-height 24px
+.details-body
+    margin-top 15px
+
+/* end detail jade*/
+/* create jade */
+.label-size
+    padding-right 25px
+form
+    .form-group
+        .state-error
+            input
+            select
+                &:not(:focus)
+                    background #fff0f0
+                    border-color #A90329
+    span.error
+        display  block
+        margin-top 6px
+        padding: 0 1px
+        font-size 11px
+        line-height 15px
+        color #d56161
+
+
+
+/* end*/
 .footer
     margin-top 200px

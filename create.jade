@@ -1,0 +1,142 @@
+.breadcrumbs#breadcrumbs
+    script(type="text/javascript").
+      try{ace.settings.check('breadcrumbs', 'fixed')}catch(e){}
+    ul.breadcrumb
+        li
+            i.icon-home.home-icon
+            a(href="#") home
+        li
+            a(href="#") 镜像管理
+        li.active 创建容器实例
+    <!-- .breadcrumb -->
+.page-content
+    .page-header
+        h1 
+            span 创建容器
+            small
+                i.icon-double-angle-right
+                | 通过当前镜像创建容器实例
+    .row
+        .col-xs-12
+            <!-- page contnt begins-->
+            .content-body
+                section#docker
+                    .col-lg-9
+                        form.form-horizontal(roel='containerForm' name='containerForm' novalidate)
+                            .form-group
+                                label.col-sm-3.control-label.no-padding-right(for="image-name")   镜像名称
+                                    span.txt-color-red *
+                                label.col-sm-3.no-padding-right {{ imageName }}
+                            .form-group
+                                label.col-sm-3.control-label.no-padding-right(for="image-name")   标签
+                                    span.txt-color-red *
+                                label.col-sm-3.no-padding-right {{ imageTag }}
+                            .form-group
+                                label.col-sm-3.control-label.no-padding-right(for="container-name")  服务名称   
+                                    span.txt-color-red *
+                                div.col-sm-9(ng-class="{'state-error': getStatusError(containerForm, 'container_name')}")
+                                    input#container-name(type="text" name="container_name" ng-model="container.name" required)
+                            .form-group
+                                label.col-sm-3.control-label.no-padding-right  容器实例大小
+                                    span.txt-color-red *
+                                .col-sm-9 
+                                    label.label-size
+                                        input.ace(type='radio' name="container_size" ng-model="container.size" value="{{ containerSize[0].num }}{{ containerSize[0].unit }}")
+                                        span.lbl {{ containerSize[0].num }}{{ containerSize[0].unit }}
+                                    label.label-size
+                                        input.ace(type='radio' name="container_size" ng-model="container.size" value="{{ containerSize[1].num }}{{ containerSize[1].unit }}")
+                                        span.lbl {{ containerSize[1].num }}{{ containerSize[1].unit }}
+                                    label.label-size
+                                        input.ace(type='radio' name="container_size" ng-model="container.size" value="{{ containerSize[2].num }}{{ containerSize[2].unit }}")
+                                        span.lbl {{ containerSize[2].num }}{{ containerSize[2].unit }}
+                        div(ng-controller="portFieldController")
+                            form.form-horizontal(roel="addPortForm" name="addPortForm")
+                                .form-group
+                                    label.col-sm-3.control-label.no-padding-right(for="containerPort") 端口
+                                    .col-sm-2(ng-class="{'state-error': getStatusError(addPortForm, 'container_port')}")
+                                        input#containerPort(type="text" name="container_port" ng-model="portSt.newPort" required)
+                                        span.error(ng-show="portSt.newPortRegex") 请输入正确的端口号
+                                    label.col-sm-1.col-sm-offset-1.control-label.no-padding-right 映射为
+                                    .col-sm-3
+                                        input(type="text" name="host_port" ng-model="portSt.hostPort")
+                                        span.error(ng-show="portSt.hostPortRegex") 请输入正确的端口号
+                                    .col-sm-1 
+                                        span.btn.btn-sm(ng-click="addPort()") 增加
+                                .form-group(ng-if="portSt.portInstanceList.length")
+                                    .col-sm-7.col-sm-offset-3
+                                        table.table.table-bordered
+                                            thead
+                                                tr.text-center
+                                                    th.text-center 端口
+                                                    th.text-center 绑定端口
+                                                    th 
+                                            tbody 
+                                                tr(ng-repeat="portInstance in portSt.portInstanceList")
+                                                    td.text-center {{ portInstance.containerPort }}
+                                                    td.text-center {{ portInstance.hostPort }}
+                                                    td.text-center
+                                                        span.btn.btn-sm.btn-danger(ng-click="delePort(portInstance)") 删除
+                        div(ng-controller="envFieldController")
+                            form.form-horizontal(roel="addEnvForm" name="addEnvForm" novalidate)                    
+                                .form-group
+                                    label.col-sm-3.control-label.no-padding-right(for="env") 环境变量
+                                    .col-sm-2(ng-class="{'state-error': getStatusError(addEnvForm, 'container_env_name')}")
+                                        input#env(type="text" name="container_env_name", ng-model="envKey" required)
+                                    label.col-sm-2.control-label.no-padding-right(for="envVal")
+                                    .col-sm-3(ng-class="{'state-error': getStatusError(addEnvForm, 'container_env_val')}")
+                                        input#envVal(type="text" name="container_env_val" ng-model="envValue" required)
+                                    .col-sm-1
+                                        span.btn.btn-sm(ng-click="addEnv()") 增加
+                                .form-group(ng-if="env.envInstanceList.length")
+                                    .col-sm-7.col-sm-offset-3
+                                        table.table.table-bordered
+                                            thead
+                                                tr 
+                                                    th.text-center 名称
+                                                    th.text-center 值
+                                                    th 
+                                            tbody 
+                                                tr(ng-repeat="env in env.envInstanceList")
+                                                    td.text-center {{ env.envKey }}
+                                                    td.text-center {{ env.envValue }}
+                                                    td.text-center
+                                                        span.btn.btn-sm.btn-danger(ng-click="deleEnv(env)") 删除
+                        div(ng-controller="containerLinkController")
+                            form.form-horizontal(roel="addLinkForm" name="addLinkForm" novalidate)                 
+                                .form-group
+                                    label.col-sm-3.control-label.no-padding-right() 链接服务
+                                    .col-sm-2
+                                        select#selectLinkService(ng-model="linkName" ng-options="v for v in containerNameList")
+                                        span.error(ng-show="notChoosedLink && clickedAddBtn") 请选择一个服务
+                                    
+                                    label.col-sm-2.control-label.no-padding-right(for="linkAlias") 别名
+                                    .col-sm-3
+                                        input#linkAlias(type="text" name="link_alias" ng-model="linkAlias")
+                                    .col-sm-1
+                                        span.btn.btn-sm(ng-click="addLink()") 增加
+                                .form-group(ng-if="link.linkInstanceList.length")
+                                    .col-sm-7.col-sm-offset-3
+                                        table.table.table-bordered
+                                            thead
+                                                tr 
+                                                    th.text-center 名称
+                                                    th.text-center 别名
+                                                    th 
+                                            tbody 
+                                                tr(ng-repeat="link in link.linkInstanceList")
+                                                    td.text-center {{ link.name }}
+                                                    td.text-center {{ link.alias }}
+                                                    td.text-center
+                                                        span.btn.btn-sm.btn-danger(ng-click="deleLink(link)") 删除
+                        .form-group
+                            .col-sm-3.col-sm-offset-3
+                                button.btn.btn-info(ng-disabled="waitForCreated" ng-click="createConteiner()") 创建
+                                        
+                                                
+                                        
+                    .col-lg-3
+                        
+                    
+            <!-- page content end -->
+        <!-- ./col-->
+<!-- /.page-content-->

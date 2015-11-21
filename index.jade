@@ -2,72 +2,38 @@ extends layout.jade
 block head_extra
     link(type="text/css" rel="stylesheet" href="./css/main.css")
 block content
-    .main-container#main-container
+    .main-container#main-container(ng-app='dockerApp')
         script(type="text/javascript").
           try{ace.settings.check('main-container', 'fixed')}catch(e){}
         .main-container-inner
             include sidebar.jade
-            .main-content
-                .breadcrumbs#breadcrumbs
-                    script(type="text/javascript").
-                      try{ace.settings.check('breadcrumbs', 'fixed')}catch(e){}
-                    ul.breadcrumb
-                        li
-                            i.icon-home.home-icon
-                            a(href="#") Home   
-                        li
-                            a(href="#") 镜像管理 
-                        li.active 镜像列表
-                    <!-- .breadcrumb -->
-                .page-content
-                    .page-header
-                        h1 
-                            span 镜像管理
-                            small
-                                i.icon-double-angle-right
-                                |远程访问并以列表形式显示镜像信息
-                    .row
-                        .col-xs-12
-                            <!-- page contnt begins-->
-                            .content-body
-                                section#docker-images.hide
-                                    table#mgrid
-                                    #mgrid-page
-                                section#docker-container.hide
-                                    table#cgrid
-                                    #cgrid-page
-                                .detail-panel
-                                    .widget-header.header-color-purple.widget-header-fixed
-                                        h5.bigger.lighter
-                                            | Details
-                                        .widget-toolbar
-                                            span(data-action='close')
-                                                i.icon-remove
-                                        
-                                    .profile-user-info.profile-user-info-striped
-                                        
-                                    
-                            <!-- page content end -->
-                        <!-- ./col-->
-                <!-- /.page-content-->
+            .main-content(ng-view)
             <!-- /.main-content -->
             include ace-settings.jade
         <!-- /.main-container-inner -->
     <!-- /.main-container -->
 block footer
-    #dialog-delform.hide(title="Remove Docker Data")
+    #dialog-delform.hide
         .alert.alert-info.bigger-110 确定删除当前行关联的Docker远程数据？
         .space-6
         p.bigger-110.bolder.center.grey
             i.icon-hand-right.blue.bigger-120
             | Are you sure?
-    #dialog-delform2.hide(title="Remove Docker Data By Force")
+    #dialog-renameConflictform.conflict-form.hide
+        .alert.alert-info.bigger-110 已经存在相同名字的容器实例，请出重新命名.
+        .space-6
+    #dialog-delform2.hide
+        h2.danger.text-center 警告!
         .alert.alert-info.bigger-110 存在依赖于当前镜像的容器实例，是否仍旧删除当前镜像？？
         .space-6
         p.bigger-110.bolder.center.grey
             i.icon-hand-right.blue.bigger-120
             | Are you sure?
 block footer_extra
-    script(type="text/javascript" src="./js/main.js")
-                    
+    script(type='text/javascript' src="./js/angular.js")
+    script(type='text/javascript' src="./js/angular-route.js")
+    script(type='text/javascript' src="./js/dockerApp.js")
+    script(type='text/javascript' src='./js/imageController.js')
+    script(type='text/javascript' src='./js/containerController.js')
+    script(type='text/javascript' src="./js/containerCreateController.js")
             
