@@ -8,8 +8,12 @@ app.controller('imageListController', ['$scope', '$location', 'image', function(
     $scope.headerDetail = '以列表形式显示镜像列表内容'
 
     var image_list_init = function(data){
-        // 获得列表数据
-        $scope.images = data;
+        $scope.currentPage=1;
+        $scope.pageSize =10;
+        $scope.total = data.length;
+
+        // 获得列表数据 当前显示第一页
+        $scope.images = image.getSubList(0, $scope.pageSize);
     }
     image.data(null, image_list_init);
     $scope.createContainerInstance = function(imageName, imageTag){

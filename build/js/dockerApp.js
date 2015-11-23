@@ -1,4 +1,10 @@
-var app = angular.module('dockerApp', ['ngRoute']);
+/**
+@ngDoc dockerApp
+@author gaoyangyang
+@description
+* angualr app for customer can operate docker remote api using visual interface
+*/
+var app = angular.module('dockerApp', ['ngRoute', 'pager']);
 app.directive('myTipDirective', function(){
     return {
         restrict: 'A',
@@ -61,9 +67,10 @@ app.factory('dialog', function(){
 
 app.factory('image', function($http, $location, dialog){
     var endpoint = 'http://0.0.0.0:8080/images/';
+    var _images = []; //存储获得的镜像信息
+
     //service  main for  image
     // format_data 自定义image 属性 列表显示 镜像名称 tag time 以及virtualsize
-
     var format_data =function(data){
         var images= [];
         var imageName, imageTag, repo;
@@ -86,7 +93,7 @@ app.factory('image', function($http, $location, dialog){
         console.log(images);
         return images;
     }
-    return {
+    return self={
         data: function(option, fn){
                 var url = option ? endpoint+option.name+':'+option.tag+'/json': endpoint+'json';
                 var option={
@@ -95,48 +102,53 @@ app.factory('image', function($http, $location, dialog){
                 };
                 $http(option)
                 .success(function(data, status, headers){
-                    console.log(data);
                     data = format_data(data);
+                    _images = data; //将data赋值为images
                     if(typeof(fn) == 'function'){
                         fn(data);
                     }
                 });
         },
-    remove: function(name, fn){
-        function get_do_remove(force){
-            return function(){
+        remove: function(name, fn){
+            function get_do_remove(force){
+                return function(){
 
-                url= force? endpoint+name+'?force=True':endpoint+name;
-                var ajaxOption = {
-                  url: url,
-                  method: 'DELETE'
+                    url= force? endpoint+name+'?force=True':endpoint+name;
+                    var ajaxOption = {
+                      url: url,
+                      method: 'DELETE'
+                    }
+
+                    $http(ajaxOption)
+                    .success(function(data, status, header){
+                        if(typeof(fn=='function')){
+                             fn();
+                        }
+                    })
+                    .error(function(data, status, header){
+                        if(status=='409'){
+                            do_remove= get_do_remove(true);
+                            dialog.show(do_remove, $('#dialog-delform2'));
+                        }
+                    })
                 }
-
-                $http(ajaxOption)
-                .success(function(data, status, header){
-                    if(typeof(fn=='function')){
-                         fn();
-                    }
-                })
-                .error(function(data, status, header){
-                    if(status=='409'){
-                        do_remove= get_do_remove(true);
-                        dialog.show(do_remove, $('#dialog-delform2'));
-                    }
-                })
             }
-        }
-      //   默认如果有依赖于镜像的实例，则不强制删除 即默认不加force=true参数
+          //   默认如果有依赖于镜像的实例，则不强制删除 即默认不加force=true参数
 
-        do_remove=get_do_remove(false);
-        dialog.show(do_remove, $('#dialog-delform'));
-        }
+            do_remove=get_do_remove(false);
+            dialog.show(do_remove, $('#dialog-delform'));
+        },
+        getSubList: function(start, end){
+            var data= [];
+            data = _images.slice(start, end);
+            return data;
+        },
     }
 
 });
 app.factory('container', function($http, $location, dialog){
     var endpoint = 'http://0.0.0.0:8080/containers/';
-    var containers= {};
+    var _containers= {}; //存储container列表
 
     // data 函数实体动态构建函数 如果isＬist为true 则返回一个函数用来获取整个container列表 否则返回一个data内部函数获取当前id的container信息
     // 在新一版的js中函数可以设置默认参数 现在还不行(本来想设置isList默认为true) 等以后有机会
@@ -155,6 +167,7 @@ app.factory('container', function($http, $location, dialog){
                         data[item]['Status'] = format_state_container(data[item]['Status']);
                         data[item]['node_name'] = format_name_node(data[item]['Names'][data[item]['Names'].length-1]);
                     }
+                    _containers = data;
                     if(typeof(fn)=='function'){
                         fn(data);
                     }
@@ -283,23 +296,21 @@ app.factory('container', function($http, $location, dialog){
     // format APT function
     function format_data(data){
         // get state
-
         data.Status= format_state_container(data['State']);
-        // get portList
 
+        // get portList
         data.portList = format_bind_ports(data['HostConfig']['PortBindings']);
 
         // gett volumeList
-
         data.volumesList = format_volumes(data['Volumes']);
+
         // get envList
-
         data.envList = format_env(data['Config']['Env']);
+
         // get linkList
-
         data.linkList = format_links(data['HostConfig']['Links']);
-        // get name  && node
 
+        // get name  && node
         data.node_name = format_name_node(data['Name']);
 
         return data;
@@ -405,9 +416,7 @@ app.factory('container', function($http, $location, dialog){
             }
             return $http(option);
         },
-        getNameList: function(isRun,fn){
-
-            // isRun 为 true的话， 只获得正在运行的docker实例的名字
+        getNameList: function(isRun,fn){// isRun 为 true的话， 只获得正在运行的docker实例的名字
 
             var url = endpoint+'json?all=1';
             var option = {
@@ -421,18 +430,17 @@ app.factory('container', function($http, $location, dialog){
 
                 for(item in data){
                     var id = data[item]['Id'];
-                    // inner_data_process函数主要用于获得当前对应的container的详细信息
 
+                    // inner_data_process函数主要用于获得当前对应的container的详细信息
                     var inner_data_process = data_fun_control(false);
                     length--; // length减为0 说明data已经遍历完了 此时nameList的值即为我们需要的结果 此时调用fn回调函数给$scope对应 的属性赋值
 
                     //callBack回调函数 用于在成功获取一个container实例信息后的执行的回调函数
-
                     callBack= function(){
+
                         // 因为callBack是回调函数 如果直接定义callBack的话， 在callBack函数内部使用item会出错 因此此时for循环已经遍历结束
                         // item为恒定 且其对应的data[item]为undefind(同理 length恒为0)
                         // 只能通过闭包设置currentＩtem
-
                         var currentItem = item;
                         var currentLength = length;
                         return function(containerDetail, status){
@@ -452,13 +460,18 @@ app.factory('container', function($http, $location, dialog){
 
                     // Ｓtatus作为参数主要为了获取当前container的运行状态 就将作为参数传递给callBack函数作为参数
                     // 保证在callBack函数中其status参数为running时只添加运行的container name 或者全部container name
-
                     inner_data_process(id, callBack, 'Status');
                 }
             })
             .error(function(data, status){
                 console.log(status);
             });
+        },
+        // 用于实现翻页操作后获得对应的子数据项 并更新列表数据
+        getSubList: function(start, end){
+            var data= [];
+            data = _containers.slice(start, end);
+            return data;
         }
     }
 

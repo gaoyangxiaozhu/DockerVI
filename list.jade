@@ -71,6 +71,8 @@
                                 button.btn.btn-xs.btn-grey(ng-if="container.Status=='running'", ng-click="stopContainer(container)" data-rel="tooltip" data-placement="top" title="停止" my-tip-directive)
                                     i.icon-pause
                                 button.btn.btn-xs(ng-if="container.Status=='error'") 无动作
+                    .pager-content
+                        paging.pull-right(page="currentPage" page-size="pageSize" total="total" scroll-top="false" show-prev-next="true" paging-action="getSubList(page)")
                 .detail-panel
                     .widget-header.header-color-purple.widget-header-fixed
                         h5.bigger.lighter

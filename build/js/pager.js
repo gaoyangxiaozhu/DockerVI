@@ -10,7 +10,7 @@
  * @element EA
  *
  */
-angular.module('bw.paging', []).directive('paging', function () {
+angular.module('pager', []).directive('paging', function () {
 
     /**
      * The angular return value required for the directive
@@ -152,7 +152,7 @@ angular.module('bw.paging', []).directive('paging', function () {
 
         // If allowed scroll up to the top of the page
         if (scope.scrollTop) {
-            scrollTo(0, 0);
+            scrollTo(0, 0); 
         }
     }
 
