@@ -5,6 +5,7 @@ app.controller('containerController', ['$scope', '$location', 'container', funct
     // 设置crumb 和 page-header
     $scope.type='containers';
     $scope.crumbOne = '容器管理'
+    $scope.curmbOneLink="#/container/list"
     $scope.crumbTwo = '容器列表'
     $scope.headerSpan = '容器列表'
     $scope.headerDetail = '以列表形式显示容器列表内容'

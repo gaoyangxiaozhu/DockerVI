@@ -3,6 +3,7 @@ app.controller('imageListController', ['$scope', '$location', 'image', function(
     // 设置crumb 和 page-header
     $scope.type='images'
     $scope.crumbOne = '镜像管理'
+    $scope.curmbOneLink= '#/image/list'
     $scope.crumbTwo = '镜像列表'
     $scope.headerSpan = '镜像列表'
     $scope.headerDetail = '以列表形式显示镜像列表内容'
