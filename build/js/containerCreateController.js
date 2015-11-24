@@ -25,7 +25,11 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
     $scope.container={};
     $scope.container.name="";
     $scope.container.size="215M";
-
+    // cup相关
+    $scope.container.cpuMin = 0;
+    $scope.container.cpuMax =1024;
+    $scope.container.cpuFrom = $scope.container.cpuMin;
+    $scope.container.cpuTo = $scope.container.cpuMax;
     // 端口相关
 
     $scope.portSt={};
@@ -52,9 +56,6 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
     // 用于判断是否正在通过表单数据创建数据
 
     $scope.waitForCreated= false;
-    $scope.$watch('waitForCreated', function(newV, oldV){
-        console.log(newV+" "+oldV);
-    })
 
     $scope.getStatusError = function(form, inputFileName){
 
@@ -112,6 +113,13 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                 option.Env = get_env_format(envList);
 
                 option.HostConfig={};
+                // TODO 这里我设置了cpushares这个变量 数值越大cpu获得的相对资源比越大
+                // 本来设置的cpuQuota 但是cpuＱuota表示的是在一个cpuPeriod内container获得的时间
+                // 在某些情况下会出错，比如如果设置其值为200 不太明白这个cpuQuota和cpuPeriod的作用
+                // cpuPeriod参数是设置当前容器的cup周期吗？那 为什么还有cpuＱuota参数
+                
+                option.HostConfig.Cpushares = parseInt($scope.container.cpuTo);
+
                 option.HostConfig.Links = get_links_format(linkList);
 
                 option.HostConfig.PortBindings = get_port_format(portList);

@@ -4,7 +4,7 @@
 @description
 * angualr app for customer can operate docker remote api using visual interface
 */
-var app = angular.module('dockerApp', ['ngRoute', 'pager']);
+var app = angular.module('dockerApp', ['ngRoute', 'pager', 'slider']);
 app.directive('myTipDirective', function(){
     return {
         restrict: 'A',

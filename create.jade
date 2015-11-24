@@ -49,6 +49,14 @@
                                     label.label-size
                                         input.ace(type='radio' name="container_size" ng-model="container.size" value="{{ containerSize[2].num }}{{ containerSize[2].unit }}")
                                         span.lbl {{ containerSize[2].num }}{{ containerSize[2].unit }}
+                            .form-group
+                                label.col-sm-3.control-label.no-padding-right(for="cpu-quota")  CPU配额
+                                div.col-sm-9
+                                    //- input#cpu-quota(type="text" name="cpu-quota" ng-model="container.cpuquota")
+                                    slider(min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" from-hide="true")
+                                    p.range-cpu
+                                        span.range-pre {{ container.cpuFrom }} 
+                                        span.range-next {{ container.cpuTo }}
                         div(ng-controller="portFieldController")
                             form.form-horizontal(roel="addPortForm" name="addPortForm")
                                 .form-group

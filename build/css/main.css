@@ -119,6 +119,13 @@ form span.error {
   line-height: 15px;
   color: #d56161;
 }
+form .range-cpu {
+  margin-left: 10px;
+  width: 200px;
+}
+form .range-cpu span.range-next {
+  float: right;
+}
 /* end*/
 .footer {
   margin-top: 200px;
