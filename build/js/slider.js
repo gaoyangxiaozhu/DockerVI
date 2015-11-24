@@ -53,32 +53,8 @@
         // Hook in our watched items
          build(scope, el, attrs);
      }
-
-
-     /**
-      * Assign default scope values from settings
-      * Feel free to tweak / fork these for your application
-      *
-      * @param {Object} scope - The local directive scope object
-      * @param {Object} attrs - The local directive attribute object
-      */
-     function setScopeValues(scope, attrs) {
-
-         scope.List = [];
-         scope.Hide = false;
-         scope.dots = scope.dots || '...';
-         scope.page = parseInt(scope.page) || 1;
-         scope.total = parseInt(scope.total) || 0;
-         scope.ulClass = scope.ulClass || 'pagination';
-         scope.adjacent = parseInt(scope.adjacent) || 2;
-         scope.activeClass = scope.activeClass || 'active';
-         scope.disabledClass = scope.disabledClass || 'disabled';
-
-         scope.scrollTop = scope.$eval(attrs.scrollTop);
-         scope.hideIfEmpty = scope.$eval(attrs.hideIfEmpty);
-         scope.showPrevNext = scope.$eval(attrs.showPrevNext);
-     }
-
+    //  return change function
+    // TODO 还有bug
      function doStartMove(scope){
          return function startMove(e){
              var that = angular.element(this);
@@ -130,7 +106,6 @@
                      }
                      line.e.css(barOption);
                      scope.to = parseInt(pWidth*(scope.max-scope.min)/100)+parseInt(scope.min);
-                     console.log(scope.to);
                      scope.to = Math.min(scope.to, scope.max);
                      scope.$apply();
 
@@ -139,7 +114,7 @@
 
          }
      }
-
+    // TODO 需要优化
      function doChange(scope){
          return function change(e){
              var that = angular.element(this);
