@@ -120,12 +120,11 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
 
                 // 调用创建container的服务
                 function callBack(statusCode){
-                    console.log(statusCode);
                     if(statusCode=='409'){
-                        // TODO 有 bug 虽然waitForceCreated boolen值改变了 但是好像angular watch并没有检测到waitForCreated的改变 导致
-                        // 如果不能将submit按钮从禁止状态更改过来
-
+                        // callBack函数最终是在dialog的confirm按钮点击以后调用的
+                        // 导致没有被angular的apply包裹 需要手动调用$apply方法，$apply会自动调用$digest()方法检查model的变化
                         $scope.waitForCreated = false;
+                        $scope.$apply();
                     }
                 }
                 container.new(option, callBack);
