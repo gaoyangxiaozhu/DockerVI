@@ -12,10 +12,11 @@ app.controller('containerController', ['$scope', '$location', 'container', funct
 
 
     // container list获取成功后在回调函数中执行containre_list_init函数初始化scope.containers
+    // 默认containers只获得前15个数据
     var container_list_init=function(data){
         // 获取容器列表
         $scope.currentPage=1;
-        $scope.pageSize =10;
+        $scope.pageSize =15;
         $scope.total = data.length;
         $scope.containers = container.getSubList(0, $scope.pageSize);
     }
@@ -25,7 +26,6 @@ app.controller('containerController', ['$scope', '$location', 'container', funct
     $scope.getSubList= function(page){
         var start= (page-1)*$scope.pageSize;
         var end = start+$scope.pageSize;
-        console.log(start+" "+end);
         $scope.containers = container.getSubList(start, end);
 
         //scroll to top
@@ -58,13 +58,16 @@ app.controller('containerController', ['$scope', '$location', 'container', funct
     }
 
     // 删除容器
-    $scope.delContainer= function(id){
-        // TODO 目前做法是删除一个container以后 在remove function纸箱成功的回调函数中更新containers 从而更新前端container列表
-
-        function get_new_containers(){
-            container.data('', container_list_init);
+    $scope.delContainer= function(currentContainer){
+        // 如果删除成功， 从容器列表数组删除当前container
+        // TODO 这个数组可以通过Array.prorototype.removeitem 定义实现重用
+        function removeItemFromArray(){
+            var index = $scope.containers.indexOf(currentContainer);
+            if(index>-1){
+                $scope.containers.splice(index, 1);
+            }
         }
-        container.remove(id, get_new_containers);
+        container.remove(currentContainer.Id, removeItemFromArray);
     }
 }]);
 
@@ -105,11 +108,6 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
             // 关闭容器后刷新所有数据 重新渲染表格
             container.data(ID, current_detail_init);
         }
-
         container.stop(currentContainer.Id, after_stop_container);
-
-
     }
-
-
 }]);

@@ -117,7 +117,6 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                 // 本来设置的cpuQuota 但是cpuＱuota表示的是在一个cpuPeriod内container获得的时间
                 // 在某些情况下会出错，比如如果设置其值为200 不太明白这个cpuQuota和cpuPeriod的作用
                 // cpuPeriod参数是设置当前容器的cup周期吗？那 为什么还有cpuＱuota参数
-                
                 option.HostConfig.Cpushares = parseInt($scope.container.cpuTo);
 
                 option.HostConfig.Links = get_links_format(linkList);

@@ -93,7 +93,7 @@
                  }
              }
              function moveRightBar(){
-                 if(rX > lX && line.x <= rX && rX <= line.y){
+                 if(rX >= lX && line.x <= rX && rX <= line.y){
                      var pLeft=((rX-line.x)/line.w).toFixed(3)*100;
                      var option={
                          'left': pLeft+'%'
@@ -126,10 +126,15 @@
                   dX: e.clientX //当前bar的初始位置 距离窗口左侧的距离
 
              }
+             console.log(init);
+             angular.element(document).off('mousemove.slider');
+             angular.element(document).off('mouseup.slider');
+             
              angular.element(document).on('mousemove.slider', doStartMove(scope));
              angular.element(document).on('mouseup.slider', function(){
                  angular.element(document).off('mousemove.slider');
-             })
+                 console.log('up');
+             });
          }
      }
 
@@ -180,6 +185,5 @@
         toHander.on('mousedown', doChange(scope));
 
      }
-
 
  });

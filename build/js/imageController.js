@@ -16,19 +16,37 @@ app.controller('imageListController', ['$scope', '$location', 'image', function(
         // 获得列表数据 当前显示第一页
         $scope.images = image.getSubList(0, $scope.pageSize);
     }
-    image.data(null, image_list_init);
+    image.data(null, image_list_init);//初始化images列表 默认只取得pageSize大小的image元素用于显示第一页
+
+    //getSubList
+    // TODO 应该可以和container控制器中的函数通过$rootScope进行统一？
+    $scope.getSubList= function(page){
+        var start= (page-1)*$scope.pageSize;
+        var end = start+$scope.pageSize;
+        $scope.images = image.getSubList(start, end);
+
+        //scroll to top
+        function scrollTop(){
+            $("html, body").animate({scrollTop: $("html, body").offset().top}, "fast")
+        }
+        t=setTimeout(scrollTop, 0);
+    }
+
     $scope.createContainerInstance = function(imageName, imageTag){
         url = "/#/container/create/?imageName="+imageName+"&imageTag="+imageTag;
         window.location= url;
     };
     // 删除容器
-    $scope.delImage= function(name){
-        // TODO 目前做法是删除一个image以后 在remove function纸箱成功的回调函数中更新iamge列表
-
-        function get_new_images(){
-            image.data('', image_list_init);
+    $scope.delImage= function(currentImage){
+        // 如果删除成功， 从镜像列表数组删除当前image
+        // TODO 这个数组可以通过Array.prorototype.removeitem 定义实现重用
+        function removeItemFromArray(){
+            var index = $scope.images.indexOf(currentImage);
+            if(index>-1){
+                $scope.images.splice(index, 1);
+            }
         }
-        image.remove(name, get_new_images);
+        image.remove(currentImage.name, removeItemFromArray);
     }
 
 }])

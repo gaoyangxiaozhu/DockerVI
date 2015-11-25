@@ -29,7 +29,7 @@
               <td class="text-center">{{ image.time | date:'yyyy-mm-dd HH:mm' }}</td>
               <td class="text-center">{{ image.size }}</td>
               <td class="text-center"> 
-                <button ng-click="delImage(image.name)" class="btn btn-danger btn-del-cm btn-xs"><i class="icon-trash bigger-120"></i></button>
+                <button ng-click="delImage(image)" class="btn btn-danger btn-del-cm btn-xs"><i class="icon-trash bigger-120"></i></button>
                 <button ng-click="createContainerInstance(image.name, image.tag)" class="btn btn-xs btn-primary">创建容器</button>
               </td>
             </tr>
@@ -51,7 +51,7 @@
               <td class="text-center">{{ container.Image }}</td>
               <td class="text-center">{{ container.Created*1000 | date:'yyyy-mm-dd HH:mm' }}</td>
               <td class="text-center">
-                <button data-rel="tooltip" data-placement="top" title="删除" my-tip-directive="my-tip-directive" ng-click="delContainer(container.Id)" class="btn btn-danger btn-del-cm btn-xs tooltip-error"><i class="icon-trash bigger-120"></i></button>
+                <button data-rel="tooltip" data-placement="top" title="删除" my-tip-directive="my-tip-directive" ng-click="delContainer(container)" class="btn btn-danger btn-del-cm btn-xs tooltip-error"><i class="icon-trash bigger-120"></i></button>
                 <button ng-if="container.Status=='stop'" ng-click="startContainer(container)" data-rel="tooltip" data-placement="top" title="运行" my-tip-directive="my-tip-directive" class="btn btn-xs btn-primary"> <i class="icon-play"></i></button>
                 <button ng-if="container.Status=='running'" ng-click="stopContainer(container)" data-rel="tooltip" data-placement="top" title="停止" my-tip-directive="my-tip-directive" class="btn btn-xs btn-grey"><i class="icon-pause"></i></button>
                 <button ng-if="container.Status=='error'" class="btn btn-xs">无动作</button>

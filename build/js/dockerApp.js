@@ -90,7 +90,6 @@ app.factory('image', function($http, $location, dialog){
                  images.push(image);
              }
         }
-        console.log(images);
         return images;
     }
     return self={
@@ -121,6 +120,7 @@ app.factory('image', function($http, $location, dialog){
 
                     $http(ajaxOption)
                     .success(function(data, status, header){
+                        self.data(null, null); //更新_images
                         if(typeof(fn=='function')){
                              fn();
                         }
@@ -344,7 +344,6 @@ app.factory('container', function($http, $location, dialog){
         },
         data: function(id, fn){
             // 如果id为空 获得container列表 否则获得当前id的container信息
-
             inner_data_process = id? data_fun_control(false): data_fun_control(true);
             inner_data_process(id, fn);
 
@@ -398,6 +397,7 @@ app.factory('container', function($http, $location, dialog){
 
               $http(ajaxOption)
               .success(function(data, status, header){
+                  self.data(null, null); //删除成功后，更新_containers 变量
                   if(typeof(fn=='function')){
                        fn();
                   }

@@ -34,7 +34,7 @@
                             td.text-center {{ image.time | date:'yyyy-mm-dd HH:mm' }}
                             td.text-center {{ image.size }}
                             td.text-center 
-                                button.btn.btn-danger.btn-del-cm.btn-xs(ng-click="delImage(image.name)")
+                                button.btn.btn-danger.btn-del-cm.btn-xs(ng-click="delImage(image)")
                                     i.icon-trash.bigger-120
                                 button.btn.btn-xs.btn-primary(ng-click='createContainerInstance(image.name, image.tag)') 创建容器
                     table.table.table-bordered(ng-if="type=='containers'")
@@ -64,7 +64,7 @@
                             td.text-center {{ container.Image }}
                             td.text-center {{ container.Created*1000 | date:'yyyy-mm-dd HH:mm' }}
                             td.text-center
-                                button.btn.btn-danger.btn-del-cm.btn-xs.tooltip-error(data-rel="tooltip" data-placement="top" title="删除" my-tip-directive ng-click="delContainer(container.Id)")
+                                button.btn.btn-danger.btn-del-cm.btn-xs.tooltip-error(data-rel="tooltip" data-placement="top" title="删除" my-tip-directive ng-click="delContainer(container)")
                                     i.icon-trash.bigger-120
                                 button.btn.btn-xs.btn-primary(ng-if="container.Status=='stop'", ng-click="startContainer(container)" data-rel="tooltip" data-placement="top" title="运行" my-tip-directive) 
                                     i.icon-play
