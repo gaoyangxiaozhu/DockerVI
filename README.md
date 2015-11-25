@@ -12,14 +12,13 @@
 ##仓库目录说明
 1. 主目录下的 ```*.jade```和```*.styl```都是源文件，编译生成的```html```和```css```文件都在**build**目录下，**build**目录也是程序的**运行目录**
 2. **build**目录下的**assets**目录是原有的第三方文件，
-**css**目录存放的是styl编译生成的css文件，
-**js**目录放的是用于实现控制器、服务和指令的js文件,这些js文件也是整个app的主要核心部分
-
+   **css**目录存放的是styl编译生成的css文件，
+   **js**目录放的是用于实现控制器、服务和指令的js文件,这些js文件也是整个app的主要核心部分
 ##功能说明
 目前**docker api**可视化只实现了<br>
-1. container列表的显示
-2. 单个container的删除、运行、停止
-3. 单个container内部的 IP、端口、数据卷、日志以及自定义环境变量的查看
-4. image列表的显示
-5. 单个image的删除
-6. 通过image创建container实例
+1. container列表的显示<br>
+2. 单个container的删除、运行、停止<br>
+3. 单个container内部的 IP、端口、数据卷、日志以及自定义环境变量的查看<br>
+4. image列表的显示<br>
+5. 单个image的删除<br>
+6. 通过image创建container实例<br>
