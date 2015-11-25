@@ -82,7 +82,7 @@
          }
 
 
-         // Block divide by 0 and empty page size
+         // avoid  negative number or none
          if (!scope.min || scope.min <= 0) {
              scope.min = 0;
          }
