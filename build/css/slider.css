@@ -9,14 +9,28 @@
   display: block;
   height: 9px;
 }
-.slider-line {
+.slider-line,
+.slider-line-after,
+.slider-line-before {
   background-color: #ccc;
-  width: 100%;
   height: 9px;
   position: absolute;
   top: 0;
   right: 0;
   display: inline-block;
+}
+.slider-line {
+  width: 100%;
+}
+.slider-line-before {
+  left: -1px;
+  width: 20px;
+}
+.slider-line-after {
+  right: -20px;
+  width: 20px;
+  border-top-right-radius: 4.5px;
+  border-bottom-right-radius: 4.5px;
 }
 .slider-bar {
   position: absolute;

@@ -48,7 +48,7 @@
               <div class="form-group">
                 <label for="cpu-quota" class="col-sm-3 control-label no-padding-right"> CPU配额</label>
                 <div class="col-sm-9">
-                  <slider min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" from-hide="true"></slider>
+                  <slider min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" single="true"></slider>
                   <p class="range-cpu"><span class="range-pre">{{ container.cpuFrom }} </span><span class="range-next">{{ container.cpuTo }}</span></p>
                 </div>
               </div>

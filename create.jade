@@ -53,7 +53,7 @@
                                 label.col-sm-3.control-label.no-padding-right(for="cpu-quota")  CPU配额
                                 div.col-sm-9
                                     //- input#cpu-quota(type="text" name="cpu-quota" ng-model="container.cpuquota")
-                                    slider(min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" from-hide="true")
+                                    slider(min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" single="true")
                                     p.range-cpu
                                         span.range-pre {{ container.cpuFrom }} 
                                         span.range-next {{ container.cpuTo }}

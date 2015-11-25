@@ -28,13 +28,15 @@
              max: '@',
              from: '=',
              to: '=',
-             fromHide: '@',
+             single: '=',
          },
 
          // Assign the angular directive template HTML
          template:
              '<span class="slider slider-body"> ' +
+                '<span class="slider-line-before"></span>'+
                 '<span class="slider-line" tabindex="-1"></span>'+
+                '<span class="slider-line-after"></span>'+
                 '<span class="slider-bar"></span>'+
                 '<span class="slider-bar-from slider-hander"></span>'+
                 '<span class="slider-bar-to slider-hander"></span>'+
@@ -53,97 +55,6 @@
         // Hook in our watched items
          build(scope, el, attrs);
      }
-    //  return change function
-    // TODO 还有bug
-     function doStartMove(scope){
-         return function startMove(e){
-             var that = angular.element(this);
-
-             var dist = e.clientX - init.dX;
-             var lX = init.lX;
-             var rX = init.rX;
-             var type=null;
-
-             if(init.targer.hasClass('slider-bar-from')){
-                 type="left";
-             }else{
-                 type="right";
-             }
-             switch(type){
-                 case 'left':
-                    lX = init.lX + dist; //leftBar 理论上的新位置横坐标
-                    moveLeftBar();
-                    break;
-                 case 'right':
-                    rX = init.rX + dist;
-                    moveRightBar();
-                    break;
-             }
-             function moveLeftBar(){
-                 if(rX > lX+5 && line.x < lX && lX < line.y){
-                     option={
-                         'left': ((lX-line.x)/line.w).toFixed(3)*100+'%'
-                     }
-                     init.targer.css(option);
-                     barOption={
-                         'left':((lX-line.x)/line.w).toFixed(3)*100+'%',
-                         'width': ((rX-lX)/line.w).toFixed(3)*100+'%'
-                     }
-                     line.e.css(barOption);
-                 }
-             }
-             function moveRightBar(){
-                 if(rX >= lX && line.x <= rX && rX <= line.y){
-                     var pLeft=((rX-line.x)/line.w).toFixed(3)*100;
-                     var option={
-                         'left': pLeft+'%'
-                     }
-                     init.targer.css(option);
-                     var pWidth=((rX- lX)/line.w).toFixed(3)*100;
-
-                     var barOption={
-                         'width': pWidth+'%'
-                     }
-                     line.e.css(barOption);
-                     scope.to = parseInt(pWidth*(scope.max-scope.min)/100)+parseInt(scope.min);
-                     scope.to = Math.min(scope.to, scope.max);
-                     scope.$apply();
-
-                 }
-             }
-
-         }
-     }
-    // TODO 需要优化
-     function doChange(scope){
-         return function change(e){
-             var that = angular.element(this);
-             init={
-                  targer: that,
-                  mX: that.offset().left,
-                  lX: angular.element('.slider-bar-from.slider-hander').length? angular.element('.slider-bar-from.slider-hander').offset().left: line.x,
-                  rX: angular.element('.slider-bar-to.slider-hander').offset().left,
-                  dX: e.clientX //当前bar的初始位置 距离窗口左侧的距离
-
-             }
-             console.log(init);
-             angular.element(document).off('mousemove.slider');
-             angular.element(document).off('mouseup.slider');
-             
-             angular.element(document).on('mousemove.slider', doStartMove(scope));
-             angular.element(document).on('mouseup.slider', function(){
-                 angular.element(document).off('mousemove.slider');
-                 console.log('up');
-             });
-         }
-     }
-
-
-     function removeFromHander(el, flag){
-         if(flag){
-             el.find('.slider-bar-from').remove();
-         }
-     }
 
      /**
       * The main build function used to determine the paging logic
@@ -155,16 +66,21 @@
      function build(scope, el, attrs) {
 
 
-         var fromHander = el.find('.slider-bar-from.slider-hander');
-         var toHander = el.find('.slider-bar-to.slider-hander');
+         var leftBtn = el.find('.slider-bar-from.slider-hander');
+         var rightBtn = el.find('.slider-bar-to.slider-hander');
          var sliderBar = el.find('.slider-bar');
          var slideLine = el.find('.slider-line');
-         line ={
+
+         rightBtn.data('type', 'right');
+         leftBtn.data('type', 'left');
+
+         var line ={
              x: slideLine.offset().left,
              y: slideLine.offset().left+slideLine.width(),
              w: slideLine.width(),
-             e: sliderBar
+             bar: sliderBar
          }
+
 
          // Block divide by 0 and empty page size
          if (!scope.min || scope.min <= 0) {
@@ -179,10 +95,129 @@
          if(!scope.to || scope.to <=0){
              scope.to= scope.max;
          }
+         var option={
+             min: scope.min,
+             max: scope.max,
+             from: scope.from,
+             to: scope.to,
+             single: scope.single? scope.single: false
+         }
 
-        removeFromHander(el, scope.fromHide);
-        fromHander.on('mousedown', doChange(scope));
-        toHander.on('mousedown', doChange(scope));
+         var init={};//用于每次mousedown事件中hander的位置的初始化工作
+         var target=null;
+
+        function startMove(e){
+
+            e = e || window.event;
+            if(!init.drag) return;
+
+            var newPoint = e.clientX;
+            var type= target.data('type');
+
+            switch(type){
+                case 'left':
+                     moveLeftBar();
+                     break;
+                case 'right':
+                     moveRightBar();
+                     break;
+             }
+            function updateTargetLeft(){
+                var len = Math.abs(newPoint-init.oX); //移动的距离
+                var percentLeft = (newPoint-line.x)/line.w
+                percentLeft*=100;
+
+                var css={
+                    'left': percentLeft+'%'
+                    }
+                target.css(css);
+              }
+            function moveLeftBar(){
+              newPoint = newPoint >= init.rX ? init.rX : newPoint
+              newPoint = newPoint <= line.x ? line.x : newPoint
+              updateTargetLeft();
+
+              var percentWidth=(init.rX - newPoint)/line.w;
+              percentWidth*=100;
+              var percentLeft=(newPoint - line.x)/line.w;
+              percentLeft*=100;
+              var css={
+                  'width': percentWidth+'%',
+                  'left': percentLeft+'%'
+              }
+              line.bar.css(css);
+              //更新scope.from
+              scope.from = parseInt((newPoint-line.x)/line.w*100*(scope.max-scope.min)/100)+parseInt(scope.min);
+              scope.from = Math.max(scope.min, scope.from);
+              scope.$apply();
+
+            }
+          function moveRightBar(){
+              newPoint = newPoint <= init.lX ? init.lX : newPoint
+              newPoint = newPoint >= line.y ? line.y : newPoint
+              updateTargetLeft();
+              var percentWidth=((newPoint-init.lX)/line.w);
+              percentWidth*=100;
+
+              var css={
+                    'width': percentWidth+'%'
+                  }
+             line.bar.css(css);
+             //更新scope.to
+             scope.to = parseInt((newPoint-line.x)/line.w*100*(scope.max-scope.min)/100)+parseInt(scope.min);
+             scope.to = Math.min(scope.to, scope.max);
+             scope.$apply();
+             }
+             //防止丢失mouseup事件
+             target.setCapture && this.setCapture();
+             return false;
+        }
+
+         function stopMove(e){
+              init.drag= false;
+              //解除capture
+              target.releaseCapture && target.releaseCapture();
+         }
+
+         function change(e){
+            e = e || window.event;
+            var that = angular.element(this);
+            target = that;
+
+            init={
+               oX: e.clientX, //当前bar的初始位置 距离窗口左侧的距离
+               lX: option.single? line.x: leftBtn.offset().left,
+               rX: rightBtn.offset().left,
+               drag: true
+            }
+
+          }
+        function removeLeftBtn(hide){
+          if(hide){
+              el.find('.slider-bar-from').remove();
+              el.find('.slider-line-before').remove();
+          }
+        }
+
+        function initPositionForLeftRightBtn(){
+            var css={
+                'left':'0%'
+            }
+            leftBtn.css(css);
+            css={
+                'left':'100%'
+            }
+            rightBtn.css(css);
+        }
+        removeLeftBtn(option.single);
+        initPositionForLeftRightBtn();
+
+        if(!option.single){
+            leftBtn.on('mousedown', change);
+        }
+        rightBtn.on('mousedown', change);
+        angular.element(document).on('mousemove.slider', startMove);
+        angular.element(document).on('mouseup.slider', stopMove);
 
      }
 
