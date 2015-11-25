@@ -26,7 +26,7 @@
             <tr ng-repeat="image in images">
               <td class="text-center">{{ image.name  }}</td>
               <td class="text-center">{{ image.tag }}</td>
-              <td class="text-center">{{ image.time | date:'yyyy-mm-dd HH:mm' }}</td>
+              <td class="text-center">{{ image.time | date:'yyyy-MM-dd HH:mm' }}</td>
               <td class="text-center">{{ image.size }}</td>
               <td class="text-center"> 
                 <button ng-click="delImage(image)" class="btn btn-danger btn-del-cm btn-xs"><i class="icon-trash bigger-120"></i></button>
@@ -43,13 +43,13 @@
               <th class="text-center">创建时间</th>
               <th class="text-center">动作</th>
             </tr>
-            <tr ng-repeat="container in containers">
+            <tr ng-repeat="container in containers | orderBy: 'Created'">
               <td class="text-center"> <a href="#/container/details/{{ container.Id }}"><span>{{ container['node_name'][0] }}</span></a></td>
               <td class="text-center"> <span>{{ container['node_name'][0] }} </span>
               </td>
               <td class="text-center"><span ng-if="container.Status == 'running'" class="state-label play"><i class="icon-play"></i>运行中</span><span ng-if="container.Status =='stop'" class="state-label"> <i class="icon-pause"></i>停止</span><span ng-if="container.Status== 'error'" class="state-label error">Error</span></td>
               <td class="text-center">{{ container.Image }}</td>
-              <td class="text-center">{{ container.Created*1000 | date:'yyyy-mm-dd HH:mm' }}</td>
+              <td class="text-center">{{ container.Created*1000 | date:'yyyy-MM-dd HH:mm' }}</td>
               <td class="text-center">
                 <button data-rel="tooltip" data-placement="top" title="删除" my-tip-directive="my-tip-directive" ng-click="delContainer(container)" class="btn btn-danger btn-del-cm btn-xs tooltip-error"><i class="icon-trash bigger-120"></i></button>
                 <button ng-if="container.Status=='stop'" ng-click="startContainer(container)" data-rel="tooltip" data-placement="top" title="运行" my-tip-directive="my-tip-directive" class="btn btn-xs btn-primary"> <i class="icon-play"></i></button>

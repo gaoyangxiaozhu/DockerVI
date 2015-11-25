@@ -120,10 +120,7 @@ app.factory('image', function($http, $location, dialog){
 
                     $http(ajaxOption)
                     .success(function(data, status, header){
-                        self.data(null, null); //更新_images
-                        if(typeof(fn=='function')){
-                             fn();
-                        }
+                        self.data(null, fn); //更新_images
                     })
                     .error(function(data, status, header){
                         if(status=='409'){
@@ -143,6 +140,9 @@ app.factory('image', function($http, $location, dialog){
             data = _images.slice(start, end);
             return data;
         },
+        getLength: function(){
+            return _images.length;
+        }
     }
 
 });
@@ -397,10 +397,7 @@ app.factory('container', function($http, $location, dialog){
 
               $http(ajaxOption)
               .success(function(data, status, header){
-                  self.data(null, null); //删除成功后，更新_containers 变量
-                  if(typeof(fn=='function')){
-                       fn();
-                  }
+                  self.data(null, fn); //删除成功后，更新_containers 变量
               })
               .error(function(data, status, header){
                   console.log(status);
@@ -472,6 +469,9 @@ app.factory('container', function($http, $location, dialog){
             var data= [];
             data = _containers.slice(start, end);
             return data;
+        },
+        getLength: function(){
+            return _containers.length;
         }
     }
 

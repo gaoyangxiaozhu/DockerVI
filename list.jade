@@ -31,7 +31,7 @@
                         tr(ng-repeat='image in images')
                             td.text-center {{ image.name  }}
                             td.text-center {{ image.tag }}
-                            td.text-center {{ image.time | date:'yyyy-mm-dd HH:mm' }}
+                            td.text-center {{ image.time | date:'yyyy-MM-dd HH:mm' }}
                             td.text-center {{ image.size }}
                             td.text-center 
                                 button.btn.btn-danger.btn-del-cm.btn-xs(ng-click="delImage(image)")
@@ -45,7 +45,7 @@
                             th.text-center 镜像
                             th.text-center 创建时间
                             th.text-center 动作
-                        tr(ng-repeat='container in containers')
+                        tr(ng-repeat="container in containers | orderBy: 'Created'")
                             td.text-center 
                                 a(href='#/container/details/{{ container.Id }}')
                                     //- TODO node_name[0]应该是node名称 这里应该改为node_name[1] 然后进行测试
@@ -62,7 +62,7 @@
                                     | 停止
                                 span.state-label.error(ng-if="container.Status== 'error'") Error
                             td.text-center {{ container.Image }}
-                            td.text-center {{ container.Created*1000 | date:'yyyy-mm-dd HH:mm' }}
+                            td.text-center {{ container.Created*1000 | date:'yyyy-MM-dd HH:mm' }}
                             td.text-center
                                 button.btn.btn-danger.btn-del-cm.btn-xs.tooltip-error(data-rel="tooltip" data-placement="top" title="删除" my-tip-directive ng-click="delContainer(container)")
                                     i.icon-trash.bigger-120

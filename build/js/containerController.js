@@ -10,23 +10,19 @@ app.controller('containerController', ['$scope', '$location', 'container', funct
     $scope.headerSpan = '容器列表'
     $scope.headerDetail = '以列表形式显示容器列表内容'
 
-
-    // container list获取成功后在回调函数中执行containre_list_init函数初始化scope.containers
-    // 默认containers只获得前15个数据
-    var container_list_init=function(data){
-        // 获取容器列表
-        $scope.currentPage=1;
-        $scope.pageSize =15;
-        $scope.total = data.length;
-        $scope.containers = container.getSubList(0, $scope.pageSize);
-    }
-    container.data('', container_list_init);
-
     //getSubList
     $scope.getSubList= function(page){
         var start= (page-1)*$scope.pageSize;
         var end = start+$scope.pageSize;
         $scope.containers = container.getSubList(start, end);
+
+        // 如果当前为空页 就返回到上一页显示
+        if($scope.containers.length==0){
+
+            $scope.currentPage=page-1;
+            $scope.total = container.getLength();
+            $scope.getSubList($scope.currentPage);
+        }
 
         //scroll to top
         function scrollTop(){
@@ -34,6 +30,18 @@ app.controller('containerController', ['$scope', '$location', 'container', funct
         }
         t=setTimeout(scrollTop, 0);
     }
+
+    // container list获取成功后在回调函数中执行containre_list_init函数初始化scope.containers
+    // 默认containers只获得前10个数据
+    var container_list_init=function(data){
+        // 获取容器列表
+        $scope.currentPage=1;
+        $scope.pageSize =15;
+        $scope.total = data.length;
+        $scope.getSubList(1);
+    }
+    container.data(null, container_list_init);
+
 
     // 运行容器
     $scope.startContainer= function(currentContainer){
@@ -56,18 +64,13 @@ app.controller('containerController', ['$scope', '$location', 'container', funct
 
         container.stop(currentContainer.Id, after_stop_container);
     }
-
     // 删除容器
     $scope.delContainer= function(currentContainer){
-        // 如果删除成功， 从容器列表数组删除当前container
-        // TODO 这个数组可以通过Array.prorototype.removeitem 定义实现重用
-        function removeItemFromArray(){
-            var index = $scope.containers.indexOf(currentContainer);
-            if(index>-1){
-                $scope.containers.splice(index, 1);
-            }
+        // 删除成功则更新当前的containers
+        function updateContainers(){
+            $scope.getSubList($scope.currentPage);
         }
-        container.remove(currentContainer.Id, removeItemFromArray);
+        container.remove(currentContainer.Id, updateContainers);
     }
 }]);
 
