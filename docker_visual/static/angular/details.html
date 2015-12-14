@@ -1,0 +1,143 @@
+
+<div id="breadcrumbs" class="breadcrumbs">
+  <script type="text/javascript">try{ace.settings.check('breadcrumbs', 'fixed')}catch(e){}</script>
+  <ul class="breadcrumb">
+    <li><i class="icon-home home-icon"></i><a href="#">home</a></li>
+    <li><a href="#">容器管理</a></li>
+    <li class="active">容器详细信息</li>
+  </ul><!-- .breadcrumb -->
+</div>
+<div class="page-content">
+  <div class="page-header">
+    <h1> <span>容器管理</span><small><i class="icon-double-angle-right"></i>当前容器 {{ container['node_name'][0] }} 信息</small></h1>
+  </div>
+  <div class="row">
+    <div class="col-xs-12"><!-- page contnt begins-->
+      <div class="content-body">
+        <section id="docker">
+          <div class="details">
+            <div class="details-head">
+              <div class="row">
+                <div class="col-lg-6"> 
+                  <h1>名称: {{ container['node_name'][1] }}<span ng-if="container.Status == 'running'" class="state-label play"><i class="icon-play"></i>运行中</span><span ng-if="container.Status =='stop'" class="state-label state-label"> <i class="icon-pause"></i>停止</span><span ng-if="container.Status== 'error'" class="state-label error">Error</span></h1>
+                </div>
+                <div class="col-lg-6">
+                  <div class="btn-group">
+                    <button ng-if="container.Status=='stop'" ng-click="startContainer(container)" class="btn btn-primary">开始</button>
+                    <button ng-if="container.Status == 'running'" ng-click="stopContainer(container)" class="btn"> 停止</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="details-body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="tabbable">
+                    <ul id="detailsTab" class="nav nav-tabs">
+                      <li class="active"><a data-toggle="tab" data-href="#network">服务地址</a></li>
+                      <li><a data-toggle="tab" data-href="#volume">数据卷</a></li>
+                      <li> <a data-toggle="tab" data-href="#env">环境变量</a></li>
+                      <li><a data-toggle="tab" data-href="#link">链接</a></li>
+                      <li><a data-toggle="tab" data-href="#log" ng-click="getLog()">日志</a></li>
+                      <li> <a data-toggle="tab" data-href="#resource" ng-click="getResourceStats()">资源监控</a></li>
+                    </ul>
+                    <div class="tab-content">
+                      <div id="network" class="tab-pane active"> 
+                        <p>服务IP:<span ng-if="!container.NetworkSettings.IPAddress">当前容器处于停止状态 无IP</span>{{ container.NetworkSettings.IPAddress }}</p>
+                        <div class="portList">
+                          <table class="table table-bordered">
+                            <thead>
+                              <tr> 
+                                <th>暴露端口</th>
+                                <th>绑定ip</th>
+                                <th>映射端口</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr ng-if="!container.portList.length">
+                                <td colspan="3">该实例没有服务端口</td>
+                              </tr>
+                              <tr ng-repeat="item in container.portList">
+                                <td>{{ item.exposePort }}</td>
+                                <td><span ng-if="!item.bindHostIp">无</span>{{ item.bindHostIp }}</td>
+                                <td><span ng-if="!item.bindHostPort">无</span>{{ item.bindHostPort }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div id="volume" class="tab-pane">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>挂载目录</th>
+                              <th>宿主机目录</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-if="!container.volumesList.length">
+                              <td colspan="2"> 没有挂载数据卷</td>
+                            </tr>
+                            <tr ng-repeat="item in container.volumesList">
+                              <td>{{ item.volumeInContainer }}</td>
+                              <td>{{ item.volumeInHost }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div id="env" class="tab-pane">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>名称</th>
+                              <th>值</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-if="!container.envList.length">
+                              <td colspan="2">没有自定义环境变量        </td>
+                            </tr>
+                            <tr ng-repeat="item in container.envList">
+                              <td>{{ item.name }}</td>
+                              <td>{{ item.value }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div id="link" class="tab-pane">
+                        <h6>链接到</h6>
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th>服务</th>
+                              <th>别称</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr ng-if="!container.linkList.length">
+                              <td colspan="2">没有依赖任何服务</td>
+                            </tr>
+                            <tr ng-repeat="item in container.linkList">
+                              <td>{{ item.server  }}</td>
+                              <td>{{ item.alias }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div id="log" class="tab-pane">
+                        <div class="log-termial">
+                          <pre ng-bind="container.log" class="log"></pre>
+                        </div>
+                      </div>
+                      <div id="resource" class="tab-pane">资源监控</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div><!-- page content end -->
+    </div><!-- ./col-->
+  </div>
+</div><!-- /.page-content-->
