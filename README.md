@@ -14,7 +14,7 @@
 2. **docker-visual**目录是整个**app**的项目根目录,其各个子目录或者和其他```Django```官网介绍一致,不再过多介绍.
 
 ##功能说明
-目前**docker api**可视化只实现了
+目前**docker api**可视化只实现了<br>
 1. container列表的显示
 2. 单个container的删除、运行、停止
 3. 单个container内部的 IP、端口、数据卷、日志以及自定义环境变量的查看
