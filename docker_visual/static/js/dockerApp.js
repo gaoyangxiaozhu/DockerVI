@@ -4,7 +4,7 @@
 @description
 * angualr app for customer can operate docker remote api using visual interface
 */
-var app = angular.module('dockerApp', ['ngRoute', 'pager', 'slider']);
+var app = angular.module('dockerApp', ['ngRoute', 'pager', 'slider', 'angular.filter']);
 app.directive('myTipDirective', function(){
     return {
         restrict: 'A',
@@ -96,7 +96,7 @@ app.factory('dialog', function(){
 })
 
 app.factory('image', function($http, $location, dialog){
-    var endpoint = 'http://10.103.241.154:2377/images/';
+    var endpoint = 'http://10.103.241.154:2375/images/';
     var _images = []; //存储获得的镜像信息
 
     //service  main for  image
