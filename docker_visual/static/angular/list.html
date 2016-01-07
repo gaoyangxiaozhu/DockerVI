@@ -23,7 +23,7 @@
               <th class="text-center">镜像大小</th>
               <th class="text-center">动作</th>
             </tr>
-            <tr ng-repeat="image in images | unique:'name' | orderBy:'name'">
+            <tr ng-repeat="image in images | orderBy:'name'">
               <td class="text-center">{{ image.name  }}</td>
               <td class="text-center">{{ image.tag }}</td>
               <td class="text-center">{{ image.time | date:'yyyy-MM-dd HH:mm' }}</td>

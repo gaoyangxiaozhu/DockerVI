@@ -96,7 +96,7 @@ app.factory('dialog', function(){
 })
 
 app.factory('image', function($http, $location, dialog){
-    var endpoint = 'http://10.103.241.154:2375/images/';
+    var endpoint = 'http://10.103.241.154:2377/images/';
     var _images = []; //存储获得的镜像信息
 
     //service  main for  image
@@ -117,7 +117,19 @@ app.factory('image', function($http, $location, dialog){
                  image.time = item.Created*1000;
                  image.size = item.VirtualSize;
 
-                 images.push(image);
+                 var alreadyHasFlag = false;
+                //  如果当前镜像和已经存入的镜像相同 则遗弃
+                 for(var index in images){
+                     var oldImage = images[index];
+                     if($.trim(oldImage.name)==image.name && $.trim(oldImage.tag == image.tag)){
+                         alreadyHasFlag = true;
+                         break;
+                     }
+                 }
+
+                 if(!alreadyHasFlag){
+                     images.push(image);
+                 }
              }
         }
         return images;
@@ -477,10 +489,14 @@ app.factory('container', function($http, $location, dialog){
             return $http(option);
         },
         getResourceStats: function(id){
-            var url = endpoint+id+'/stats';
+            var url = '/containers/'+id+'/stats/';
+            console.log(url);
             var option = {
                 url: url,
-                method: 'GET'
+                method: 'GET',
+                params:{
+                    endpoint: endpoint
+                }
             }
             return $http(option);
         },

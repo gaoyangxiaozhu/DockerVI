@@ -19,7 +19,7 @@
             <div class="details-head">
               <div class="row">
                 <div class="col-lg-6"> 
-                  <h1>名称: {{ container['node_name'][1] }}<span ng-if="container.Status == 'running'" class="state-label play"><i class="icon-play"></i>运行中</span><span ng-if="container.Status =='stop'" class="state-label state-label"> <i class="icon-pause"></i>停止</span><span ng-if="container.Status== 'error'" class="state-label error">Error</span></h1>
+                  <h1>名称: {{ container['node_name'][0] }}<span ng-if="container.Status == 'running'" class="state-label play"><i class="icon-play"></i>运行中</span><span ng-if="container.Status =='stop'" class="state-label state-label"> <i class="icon-pause"></i>停止</span><span ng-if="container.Status== 'error'" class="state-label error">Error</span></h1>
                 </div>
                 <div class="col-lg-6">
                   <div class="btn-group">

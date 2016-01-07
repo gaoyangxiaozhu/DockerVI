@@ -123,6 +123,7 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
         })
         .error(function(data, status, header){
                 console.log(status);
+                alert(data);
         });
     }
 }]);
