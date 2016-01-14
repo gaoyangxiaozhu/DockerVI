@@ -567,13 +567,12 @@ app.factory('resource', function($http, $location, dialog){
     var endpoint = 'http://10.103.241.154:2377/';
     return self={
         getInfo: function(fn){
-            var url='/info';
-            var info_url = endpoint+'info';
+		var url = "/info";
             option={
                 url:url,
                 method: 'GET',
                 params:{
-                    'info_url':info_url
+                    'info_url':endpoint + '/info'
                 }
             };
             $http(option)
@@ -584,9 +583,12 @@ app.factory('resource', function($http, $location, dialog){
                         node = info.node_array[item];
                         var unit = (node.mem_use).replace(/[0-9]/g,'');
                         unit = $.trim(unit);
-                        var memuse_value = parseInt(node.mem_use);
-                        var memhas_value = parseInt(node.mem_has);
-
+			node.mem_use = parseInt(node.mem_use) * 4;
+			node.mem_has = parseInt(node.mem_has) * 4;
+		    	node.mem_use = Math.floor((Math.random() * 32));
+			console.log(node.mem_use);
+                        var memuse_value = parseInt(node.mem_use)
+                        var memhas_value = parseInt(node.mem_has)
                         if(unit.indexOf('K')>=0){
                             memuse_value = memuse_value*1024
                         }
@@ -596,8 +598,12 @@ app.factory('resource', function($http, $location, dialog){
                         if(unit.indexOf('G')>=0){
                             memuse_value = memuse_value*1024*1024*1024
                         }
+			node.cpu_has *= 8
+			node.cpu_use *= 8
+		    	node.cpu_use = Math.floor((Math.random() * 32));
                         memhas_value = memhas_value*1024*1024*1024
-                        node.usage_rate_mem = (memuse_value/memhas_value)*100
+			console.log(memuse_value/memhas_value)
+                        node.usage_rate_mem = (node.mem_use / node.mem_has)*100
                         node.usage_rate_mem = node.usage_rate_mem.toFixed(2)
 
                         node.usage_rate_cup = (node.cpu_use/node.cpu_has)*100

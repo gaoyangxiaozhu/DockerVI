@@ -2,14 +2,14 @@
 <div id="breadcrumbs" class="breadcrumbs">
   <script type="text/javascript">try{ace.settings.check('breadcrumbs', 'fixed')}catch(e){}</script>
   <ul class="breadcrumb">
-    <li><i class="icon-home home-icon"></i><a href="#">home</a></li>
-    <li><a href="#">容器管理</a></li>
-    <li class="active">容器详细信息</li>
+    <li><i class="icon-home home-icon"></i><a href="#">首页</a></li>
+    <li><a href="#">视频服务管理</a></li>
+    <li class="active">视频服务详细信息</li>
   </ul><!-- .breadcrumb -->
 </div>
 <div class="page-content">
   <div class="page-header">
-    <h1> <span>容器管理</span><small><i class="icon-double-angle-right"></i>当前容器 {{ container['node_name'][0] }} 信息</small></h1>
+    <h1> <span>视频服务管理</span><small><i class="icon-double-angle-right"></i>{{ container['node_name'][0] }}</small></h1>
   </div>
   <div class="row">
     <div class="col-xs-12"><!-- page contnt begins-->
@@ -19,7 +19,7 @@
             <div class="details-head">
               <div class="row">
                 <div class="col-lg-6"> 
-                  <h1>名称: {{ container['node_name'][0] }}<span ng-if="container.Status == 'running'" class="state-label play"><i class="icon-play"></i>运行中</span><span ng-if="container.Status =='stop'" class="state-label state-label"> <i class="icon-pause"></i>停止</span><span ng-if="container.Status== 'error'" class="state-label error">Error</span></h1>
+                  <h1>{{ container['node_name'][0] }}<span ng-if="container.Status == 'running'" class="state-label play"><i class="icon-play"></i>运行中</span><span ng-if="container.Status =='stop'" class="state-label state-label"> <i class="icon-pause"></i>停止运行</span><span ng-if="container.Status== 'error'" class="state-label error">Error</span></h1>
                 </div>
                 <div class="col-lg-6">
                   <div class="btn-group">
@@ -48,8 +48,8 @@
                           <table class="table table-bordered">
                             <thead>
                               <tr> 
-                                <th>暴露端口</th>
-                                <th>绑定ip</th>
+                                <th>服务端口</th>
+                                <th>ip地址</th>
                                 <th>映射端口</th>
                               </tr>
                             </thead>

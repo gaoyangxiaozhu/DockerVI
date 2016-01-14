@@ -2,11 +2,11 @@ app.controller('resourceController', ['$scope', '$location', 'resource', functio
 
     // 设置crumb 和 page-header
     $scope.type='resource'
-    $scope.crumbOne = '资源管理'
+    $scope.crumbOne = '资源监控'
     $scope.curmbOneLink= '#/resource'
-    $scope.crumbTwo = '基础资源'
-    $scope.headerSpan = '基础资源'
-    $scope.headerDetail = '显示各个节点资源使用概况'
+    $scope.crumbTwo = '资源监控'
+    $scope.headerSpan = '资源监控'
+    $scope.headerDetail = '显示各个主机资源使用概况'
 
     $scope.getInfo = function(){
         function callBack(data){
