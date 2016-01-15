@@ -295,15 +295,16 @@ app.factory('container', function($http, $location, dialog){
         return portList;
     }
     // format volumes
-    function format_volumes(volumes){
+    function format_volumes(binds){
+        console.log(binds);
         var volumesList = [];
-        for(volumeInContainer in volumes){
+        for(index in binds){
             var item = {};
-            item.volumeInContainer = volumeInContainer;
-            item.volumeInHost = volumes[volumeInContainer];
+            item.volumeInContainer =binds[index].split(':')[0];
+            item.volumeInHost = binds[index].split(':')[1];
             volumesList.push(item);
         }
-
+        console.log(binds);
         return volumesList;
     }
     // format env define by  self
@@ -356,7 +357,7 @@ app.factory('container', function($http, $location, dialog){
         data.portList = format_bind_ports(data['HostConfig']['PortBindings']);
 
         // gett volumeList
-        data.volumesList = format_volumes(data['Volumes']);
+        data.volumesList = format_volumes(data['HostConfig']['Binds']);
 
         // get envList
         data.envList = format_env(data['Config']['Env']);

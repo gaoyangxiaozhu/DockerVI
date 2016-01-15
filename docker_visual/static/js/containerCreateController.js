@@ -80,13 +80,12 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
     }
 
     $scope.createConteiner = function(){
-	    alert($scope.containerForm)
         $scope.containerForm.$submitted = true;
         $scope.waitForCreated = false;
         if($scope.containerForm.$valid){
             $scope.waitForCreated = true;
 
-            var get_post_data_format = function(imageName, imageTag, containerName, containerSize, portList, envList, linkList){
+            var get_post_data_format = function(imageName, imageTag, containerName, containerSize, portList, envList, linkList, volumeList){
                 // 生成create container 所需要的参数
                 function get_cpu_shares(cpu){
                     // 252 -1  512 -2 768 - 3 1024- 4
@@ -126,6 +125,15 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                         case 'G': return num*1024*1024*1024;
                     }
                 }
+                function get_volume_format(volumeList){
+                    var bindsArray = [];
+                    for(var index in volumeList){
+                        var volume = volumeList[index];
+                        var item = [volume.volumeHost, volume.volumeDest].join(':');
+                        bindsArray.push(item);
+                    }
+                    return bindsArray;
+                }
                 option = {};
 
                 option.Image= imageName+":"+imageTag;
@@ -140,6 +148,7 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                 option.HostConfig.Links = get_links_format(linkList);
                 option.HostConfig.PortBindings = get_port_format(portList);
                 option.HostConfig.Memory = get_memory_format(containerSize);
+                option.HostConfig.Binds = get_volume_format(volumeList);
 
                 // 调用创建container的服务
                 function callBack(statusCode){
@@ -158,7 +167,8 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                                                 $scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
                                                 $scope.portSt.portInstanceList, //暴露和映射的端口
                                                 $scope.env.envInstanceList, //自定义环境变量
-                                                $scope.link.linkInstanceList) //链接服务
+                                                $scope.link.linkInstanceList, //链接服务
+                                                $scope.volume.volumeList) // 挂载卷
 
         }
 
