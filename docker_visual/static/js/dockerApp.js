@@ -296,7 +296,6 @@ app.factory('container', function($http, $location, dialog){
     }
     // format volumes
     function format_volumes(binds){
-        console.log(binds);
         var volumesList = [];
         for(index in binds){
             var item = {};
