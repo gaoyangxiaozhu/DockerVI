@@ -32,8 +32,16 @@
                 </div>
               </div>
               <div class="form-group">
+                <label for="cpu-quota" class="col-sm-3 control-label no-padding-right"> CPU核数</label>
+                <div class="col-sm-9">
+                  <slider min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" single="true"></slider>
+                  <p class="range-cpu"><span class="range-pre">{{ container.cpuFrom }} </span><span class="range-next">{{ container.cpuTo }}</span></p>
+                </div>
+              </div>
+
+              <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right"> 内存大小<span class="txt-color-red">*</span></label>
-                <div class="col-sm-9"> 
+                <div class="col-sm-9">
                   <label class="label-size">
                     <input type="radio" name="container_size" ng-model="container.size" value="{{ containerSize[0].num }}{{ containerSize[0].unit }}" class="ace"/><span class="lbl">{{ containerSize[0].num }}{{ containerSize[0].unit }}</span>
                   </label>
@@ -52,10 +60,9 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="cpu-quota" class="col-sm-3 control-label no-padding-right"> CPU核数</label>
+                <label for="cmd" class="col-sm-3 control-label no-padding-right"> 自启动命令  <span class="txt-color-red">*</span></label>
                 <div class="col-sm-9">
-                  <slider min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" single="true"></slider>
-                  <p class="range-cpu"><span class="range-pre">{{ container.cpuFrom }} </span><span class="range-next">{{ container.cpuTo }}</span></p>
+                  <textarea id="cmd"  type="text" name="cmd" rows="3" cols="50" ng-model="container.cmd" placeholder="多个命令之间用逗号分隔如cd working,data"></textarea>
                 </div>
               </div>
             </form>
@@ -84,7 +91,7 @@
                           <th> </th>
                         </tr>
                       </thead>
-                      <tbody> 
+                      <tbody>
                         <tr ng-repeat="portInstance in portSt.portInstanceList">
                           <td class="text-center">{{ portInstance.containerPort }}</td>
                           <td class="text-center">{{ portInstance.hostPort }}</td>
@@ -97,7 +104,7 @@
               </form>
             </div>
             <div ng-controller="envFieldController">
-              <form roel="addEnvForm" name="addEnvForm" novalidate="novalidate" class="form-horizontal">                   
+              <form roel="addEnvForm" name="addEnvForm" novalidate="novalidate" class="form-horizontal">
                 <div class="form-group">
                   <label for="volume" class="col-sm-3 control-label no-padding-right" style="font-weight:bold;">环境变量</label>
 		  <br/><hr/>
@@ -115,13 +122,13 @@
                   <div class="col-sm-7 col-sm-offset-3">
                     <table class="table table-bordered">
                       <thead>
-                        <tr> 
+                        <tr>
                           <th class="text-center">变量名称</th>
                           <th class="text-center">变量值</th>
                           <th> </th>
                         </tr>
                       </thead>
-                      <tbody> 
+                      <tbody>
                         <tr ng-repeat="env in env.envInstanceList">
                           <td class="text-center">{{ env.envKey }}</td>
                           <td class="text-center">{{ env.envValue }}</td>
@@ -135,7 +142,7 @@
             </div>
 
             <div ng-controller="volumeFieldController">
-              <form roel="addVolumeForm" name="addVolumeForm" novalidate="novalidate" class="form-horizontal">                   
+              <form roel="addVolumeForm" name="addVolumeForm" novalidate="novalidate" class="form-horizontal">
                 <div class="form-group">
                   <label for="volume" class="col-sm-3 control-label no-padding-right" style="font-weight:bold;">共享数据卷</label>
 		  <br/><hr/>
@@ -153,13 +160,13 @@
                   <div class="col-sm-7 col-sm-offset-3">
                     <table class="table table-bordered">
                       <thead>
-                        <tr> 
+                        <tr>
                           <th class="text-center">共享路径</th>
                           <th class="text-center">挂载路径</th>
                           <th> </th>
                         </tr>
                       </thead>
-                      <tbody> 
+                      <tbody>
                         <tr ng-repeat="volume in volume.volumeList">
                           <td class="text-center">{{ volume.volumeHost }}</td>
                           <td class="text-center">{{ volume.volumeDest }}</td>
@@ -173,7 +180,7 @@
             </div>
 
             <div ng-controller="containerLinkController">
-              <form roel="addLinkForm" name="addLinkForm" novalidate="novalidate" class="form-horizontal">                
+              <form roel="addLinkForm" name="addLinkForm" novalidate="novalidate" class="form-horizontal">
                 <div class="form-group">
                   <label for="volume" class="col-sm-3 control-label no-padding-right" style="font-weight:bold;">服务链接</label>
 		  <br/><hr/>
@@ -191,13 +198,13 @@
                   <div class="col-sm-7 col-sm-offset-3">
                     <table class="table table-bordered">
                       <thead>
-                        <tr> 
+                        <tr>
                           <th class="text-center">服务名称</th>
                           <th class="text-center">服务别名</th>
                           <th> </th>
                         </tr>
                       </thead>
-                      <tbody> 
+                      <tbody>
                         <tr ng-repeat="link in link.linkInstanceList">
                           <td class="text-center">{{ link.name }}</td>
                           <td class="text-center">{{ link.alias }}</td>
