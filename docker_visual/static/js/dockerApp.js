@@ -304,7 +304,6 @@ app.factory('container', function($http, $location, dialog){
             item.volumeInHost = binds[index].split(':')[1];
             volumesList.push(item);
         }
-        console.log(binds);
         return volumesList;
     }
     // format env define by  self
