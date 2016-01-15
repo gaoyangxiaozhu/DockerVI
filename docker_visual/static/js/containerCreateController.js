@@ -37,7 +37,7 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
     $scope.container.cpuMin = 0;
     $scope.container.cpuMax = 32;
     $scope.container.cpuFrom = $scope.container.cpuMin;
-    $scope.container.cpuTo = $scope.container.cpuMax;
+    $scope.container.cpuTo = 1;
     // 端口相关
 
     $scope.portSt={};
@@ -89,9 +89,9 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                 // 生成create container 所需要的参数
                 function get_cpu_shares(cpu){
                     // 252 -1  512 -2 768 - 3 1024- 4
-                    cpuShares = Math.ceil(cpu/252)
-                    cpuShares = cpuShares>4 ? 4: cpuShares
-                    return cpuShares
+                    var cpuShares = cpu;
+                    cpuShares = cpuShares>32 ? 32: cpuShares;
+                    return cpuShares;
                 }
                 function get_env_format(envList){
                     var env = [];
