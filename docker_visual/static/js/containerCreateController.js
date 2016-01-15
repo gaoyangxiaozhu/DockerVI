@@ -146,14 +146,16 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
 
                 // 由于使用了Django， ajax传递到后台的只能是表单格式的数据 不能出现某一个属性为对象 因此这里不能使用HostConfig了
                 option.HostConfig={};
-                //TODO 先简单这样处理了 
-                option.Cmd = $scope.container.cmd.split(',');
+                //TODO 先简单这样处理了
+                option.Cmd = $scope.container.cmd.split(' ');
                 // TODO 这里我设置了cpushares这个变量 数值越大cpu获得的相对资源比越大
                 option.HostConfig.Cpushares = parseInt(get_cpu_shares($scope.container.cpuTo));
                 option.HostConfig.Links = get_links_format(linkList);
                 option.HostConfig.PortBindings = get_port_format(portList);
                 option.HostConfig.Memory = get_memory_format(containerSize);
                 option.HostConfig.Binds = get_volume_format(volumeList);
+                console.log(option.Cmd);
+                console.log(option.HostConfig.Cpushares);
 
                 // 调用创建container的服务
                 function callBack(statusCode){
