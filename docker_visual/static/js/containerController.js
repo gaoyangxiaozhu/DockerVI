@@ -4,11 +4,11 @@ app.controller('containerController', ['$scope', '$location', 'container', funct
     var containers = [];
     // 设置crumb 和 page-header
     $scope.type='containers';
-    $scope.crumbOne = '容器管理'
+    $scope.crumbOne = '视频服务管理'
     $scope.curmbOneLink="#/container/list"
-    $scope.crumbTwo = '容器列表'
-    $scope.headerSpan = '容器列表'
-    $scope.headerDetail = '以列表形式显示容器列表内容'
+    $scope.crumbTwo = '视频服务列表'
+    $scope.headerSpan = '视频服务列表'
+    $scope.headerDetail = '以列表形式显示视频'
 
     //getSubList
     $scope.getSubList= function(page){

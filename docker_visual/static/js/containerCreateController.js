@@ -7,15 +7,23 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
 
     $scope.containerSize=[
         {
-            'num': 100,
+            'num': 128,
             'unit': 'M'
         },
         {
-            'num': 215,
+            'num': 256,
             'unit': 'M'
         },
         {
             'num': 512,
+            'unit': 'M'
+        },
+        {
+            'num': 1024,
+            'unit': 'M'
+        },
+        {
+            'num': 2048,
             'unit': 'M'
         }
     ];
@@ -24,12 +32,15 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
 
     $scope.container={};
     $scope.container.name="";
-    $scope.container.size="100M";
-    // cup相关
+    $scope.container.size="128M";
+    // cpu相关
     $scope.container.cpuMin = 0;
-    $scope.container.cpuMax =1024;
+    $scope.container.cpuMax = 32;
     $scope.container.cpuFrom = $scope.container.cpuMin;
-    $scope.container.cpuTo = $scope.container.cpuMax;
+    $scope.container.cpuTo = 1;
+
+    // TODO cmd相关
+    $scope.container.cmd=null; //默认 可为空
     // 端口相关
 
     $scope.portSt={};
@@ -45,6 +56,12 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
     $scope.env.envInstanceList=[];
     $scope.envKey ="";
     $scope.envValue="";
+
+    // volume 相关
+    $scope.volume={};
+    $scope.volume.volumeList=[];
+    $scope.volumeHost="";
+    $scope.volumeDest="";
 
     // link 相关
 
@@ -64,19 +81,20 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
         }
         return false;
     }
+
     $scope.createConteiner = function(){
         $scope.containerForm.$submitted = true;
         $scope.waitForCreated = false;
         if($scope.containerForm.$valid){
             $scope.waitForCreated = true;
 
-            var get_post_data_format = function(imageName, imageTag, containerName, containerSize, portList, envList, linkList){
+            var get_post_data_format = function(imageName, imageTag, containerName, containerSize, portList, envList, linkList, volumeList){
                 // 生成create container 所需要的参数
                 function get_cpu_shares(cpu){
                     // 252 -1  512 -2 768 - 3 1024- 4
-                    cpuShares = Math.ceil(cpu/252)
-                    cpuShares = cpuShares>4 ? 4: cpuShares
-                    return cpuShares
+                    var cpuShares = cpu;
+                    cpuShares = cpuShares>32 ? 32: cpuShares;
+                    return cpuShares;
                 }
                 function get_env_format(envList){
                     var env = [];
@@ -110,6 +128,15 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                         case 'G': return num*1024*1024*1024;
                     }
                 }
+                function get_volume_format(volumeList){
+                    var bindsArray = [];
+                    for(var index in volumeList){
+                        var volume = volumeList[index];
+                        var item = [volume.volumeHost, volume.volumeDest].join(':');
+                        bindsArray.push(item);
+                    }
+                    return bindsArray;
+                }
                 option = {};
 
                 option.Image= imageName+":"+imageTag;
@@ -119,11 +146,17 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
 
                 // 由于使用了Django， ajax传递到后台的只能是表单格式的数据 不能出现某一个属性为对象 因此这里不能使用HostConfig了
                 option.HostConfig={};
+                //TODO 先简单这样处理了
+		if ($scope.container.cmd != null && $scope.container.cmd != "")
+			option.Cmd = $scope.container.cmd.split(' ');
                 // TODO 这里我设置了cpushares这个变量 数值越大cpu获得的相对资源比越大
                 option.HostConfig.Cpushares = parseInt(get_cpu_shares($scope.container.cpuTo));
                 option.HostConfig.Links = get_links_format(linkList);
                 option.HostConfig.PortBindings = get_port_format(portList);
                 option.HostConfig.Memory = get_memory_format(containerSize);
+                option.HostConfig.Binds = get_volume_format(volumeList);
+                console.log(option.Cmd);
+                console.log(option.HostConfig.Cpushares);
 
                 // 调用创建container的服务
                 function callBack(statusCode){
@@ -142,7 +175,8 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                                                 $scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
                                                 $scope.portSt.portInstanceList, //暴露和映射的端口
                                                 $scope.env.envInstanceList, //自定义环境变量
-                                                $scope.link.linkInstanceList) //链接服务
+                                                $scope.link.linkInstanceList, //链接服务
+                                                $scope.volume.volumeList) // 挂载卷
 
         }
 
@@ -224,6 +258,31 @@ app.controller('envFieldController', ['$scope', '$routeParams', 'container', 'im
     }
 
 }]);
+
+app.controller('volumeFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
+    $scope.addVolume=function(){
+        if($scope.addVolumeForm.$invalid){
+            $scope.addVolumeForm.$submitted = true;
+            return;
+        }
+
+        var newVolumeItem = {};
+        newVolumeItem.volumeHost = $scope.volumeHost;
+        newVolumeItem.volumeDest = $scope.volumeDest;
+
+        $scope.volume.volumeList.push(newVolumeItem);
+
+        $scope.volumeHost="";
+        $scope.volumeDest="";
+        $scope.addVolumeForm.$setPristine();
+        $scope.addVolumeForm.$submitted = false;
+    }
+    $scope.delVolume =function(volume){
+        $scope.delItem(volume, $scope.volume.volumeList);
+    }
+
+}]);
+
 app.controller('containerLinkController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
     $scope.addLink=function(){
         if($scope.notChoosedLink){

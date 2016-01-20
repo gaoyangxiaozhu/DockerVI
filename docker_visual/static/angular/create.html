@@ -3,13 +3,13 @@
   <script type="text/javascript">try{ace.settings.check('breadcrumbs', 'fixed')}catch(e){}</script>
   <ul class="breadcrumb">
     <li><i class="icon-home home-icon"></i><a href="#">home</a></li>
-    <li><a href="#">镜像管理</a></li>
-    <li class="active">创建容器实例</li>
+    <li><a href="#">视频服务镜像管理</a></li>
+    <li class="active">视频服务管理</li>
   </ul><!-- .breadcrumb -->
 </div>
 <div class="page-content">
   <div class="page-header">
-    <h1> <span>创建容器</span><small><i class="icon-double-angle-right"></i>通过当前镜像创建容器实例</small></h1>
+    <h1> <span>创建视频服务</span><small><i class="icon-double-angle-right"></i>通过当前镜像创建视频服务</small></h1>
   </div>
   <div class="row">
     <div class="col-xs-12"><!-- page contnt begins-->
@@ -18,22 +18,30 @@
           <div class="col-lg-9">
             <form roel="containerForm" name="containerForm" novalidate="novalidate" class="form-horizontal">
               <div class="form-group">
-                <label for="image-name" class="col-sm-3 control-label no-padding-right">  镜像名称<span class="txt-color-red">*</span></label>
+                <label for="image-name" class="col-sm-3 control-label no-padding-right"> 视频服务镜像<span class="txt-color-red">*</span></label>
                 <label class="col-sm-3 no-padding-right">{{ imageName }}</label>
               </div>
               <div class="form-group">
-                <label for="image-name" class="col-sm-3 control-label no-padding-right">  标签<span class="txt-color-red">*</span></label>
+                <label for="image-name" class="col-sm-3 control-label no-padding-right">  版本<span class="txt-color-red">*</span></label>
                 <label class="col-sm-3 no-padding-right">{{ imageTag }}</label>
               </div>
               <div class="form-group">
-                <label for="container-name" class="col-sm-3 control-label no-padding-right"> 服务名称   <span class="txt-color-red">*</span></label>
+                <label for="container-name" class="col-sm-3 control-label no-padding-right"> 视频服务名称   <span class="txt-color-red">*</span></label>
                 <div ng-class="{'state-error': getStatusError(containerForm, 'container_name')}" class="col-sm-9">
                   <input id="container-name" type="text" name="container_name" ng-model="container.name" required="required"/>
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-3 control-label no-padding-right"> 容器实例大小<span class="txt-color-red">*</span></label>
-                <div class="col-sm-9"> 
+                <label for="cpu-quota" class="col-sm-3 control-label no-padding-right"> CPU核数</label>
+                <div class="col-sm-9">
+                  <slider min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" single="true"></slider>
+                  <p class="range-cpu"><span class="range-pre">{{ container.cpuFrom }} </span><span class="range-next">{{ container.cpuTo }}</span></p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right"> 内存大小<span class="txt-color-red">*</span></label>
+                <div class="col-sm-9">
                   <label class="label-size">
                     <input type="radio" name="container_size" ng-model="container.size" value="{{ containerSize[0].num }}{{ containerSize[0].unit }}" class="ace"/><span class="lbl">{{ containerSize[0].num }}{{ containerSize[0].unit }}</span>
                   </label>
@@ -43,40 +51,47 @@
                   <label class="label-size">
                     <input type="radio" name="container_size" ng-model="container.size" value="{{ containerSize[2].num }}{{ containerSize[2].unit }}" class="ace"/><span class="lbl">{{ containerSize[2].num }}{{ containerSize[2].unit }}</span>
                   </label>
+                  <label class="label-size">
+                    <input type="radio" name="container_size" ng-model="container.size" value="{{ containerSize[3].num }}{{ containerSize[3].unit }}" class="ace"/><span class="lbl">{{ containerSize[3].num }}{{ containerSize[3].unit }}</span>
+                  </label>
+                  <label class="label-size">
+                    <input type="radio" name="container_size" ng-model="container.size" value="{{ containerSize[4].num }}{{ containerSize[4].unit }}" class="ace"/><span class="lbl">{{ containerSize[4].num }}{{ containerSize[4].unit }}</span>
+                  </label>
                 </div>
               </div>
               <div class="form-group">
-                <label for="cpu-quota" class="col-sm-3 control-label no-padding-right"> CPU配额</label>
+                <label for="cmd" class="col-sm-3 control-label no-padding-right"> 自启动命令  <span class="txt-color-red">*</span></label>
                 <div class="col-sm-9">
-                  <slider min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" single="true"></slider>
-                  <p class="range-cpu"><span class="range-pre">{{ container.cpuFrom }} </span><span class="range-next">{{ container.cpuTo }}</span></p>
+                  <textarea id="cmd"  type="text" name="cmd" rows="3" cols="50" ng-model="container.cmd" placeholder="多个命令之间用逗号分隔如cd working,data"></textarea>
                 </div>
               </div>
             </form>
             <div ng-controller="portFieldController">
               <form roel="addPortForm" name="addPortForm" class="form-horizontal">
                 <div class="form-group">
-                  <label for="containerPort" class="col-sm-3 control-label no-padding-right">端口</label>
+                  <label for="volume" class="col-sm-3 control-label no-padding-right" style="font-weight:bold;">端口映射</label>
+		  <br/><hr/>
+                  <label for="containerPort" class="col-sm-3 control-label no-padding-right">源端口</label>
                   <div ng-class="{'state-error': getStatusError(addPortForm, 'container_port')}" class="col-sm-2">
                     <input id="containerPort" type="text" name="container_port" ng-model="portSt.newPort" required="required"/><span ng-show="portSt.newPortRegex" class="error">请输入正确的端口号</span>
                   </div>
-                  <label class="col-sm-1 col-sm-offset-1 control-label no-padding-right">映射为</label>
+                  <label class="col-sm-1 col-sm-offset-1 control-label no-padding-right">目标端口</label>
                   <div class="col-sm-3">
                     <input type="text" name="host_port" ng-model="portSt.hostPort"/><span ng-show="portSt.hostPortRegex" class="error">请输入正确的端口号</span>
                   </div>
-                  <div class="col-sm-1"> <span ng-click="addPort()" class="btn btn-sm">增加</span></div>
+                  <div class="col-sm-1"> <span ng-click="addPort()" class="btn btn-sm btn-info">增加</span></div>
                 </div>
                 <div ng-if="portSt.portInstanceList.length" class="form-group">
                   <div class="col-sm-7 col-sm-offset-3">
                     <table class="table table-bordered">
                       <thead>
                         <tr class="text-center">
-                          <th class="text-center">端口</th>
-                          <th class="text-center">绑定端口</th>
+                          <th class="text-center">源端口</th>
+                          <th class="text-center">目标端口</th>
                           <th> </th>
                         </tr>
                       </thead>
-                      <tbody> 
+                      <tbody>
                         <tr ng-repeat="portInstance in portSt.portInstanceList">
                           <td class="text-center">{{ portInstance.containerPort }}</td>
                           <td class="text-center">{{ portInstance.hostPort }}</td>
@@ -89,29 +104,31 @@
               </form>
             </div>
             <div ng-controller="envFieldController">
-              <form roel="addEnvForm" name="addEnvForm" novalidate="novalidate" class="form-horizontal">                   
+              <form roel="addEnvForm" name="addEnvForm" novalidate="novalidate" class="form-horizontal">
                 <div class="form-group">
-                  <label for="env" class="col-sm-3 control-label no-padding-right">环境变量</label>
+                  <label for="volume" class="col-sm-3 control-label no-padding-right" style="font-weight:bold;">环境变量</label>
+		  <br/><hr/>
+                  <label for="env" class="col-sm-3 control-label no-padding-right">变量名称</label>
                   <div ng-class="{'state-error': getStatusError(addEnvForm, 'container_env_name')}" class="col-sm-2">
                     <input id="env" type="text" name="container_env_name" ng-model="envKey" required="required"/>
                   </div>
-                  <label for="envVal" class="col-sm-2 control-label no-padding-right"></label>
+                  <label for="envVal" class="col-sm-2 control-label no-padding-right">变量值</label>
                   <div ng-class="{'state-error': getStatusError(addEnvForm, 'container_env_val')}" class="col-sm-3">
                     <input id="envVal" type="text" name="container_env_val" ng-model="envValue" required="required"/>
                   </div>
-                  <div class="col-sm-1"><span ng-click="addEnv()" class="btn btn-sm">增加</span></div>
+                  <div class="col-sm-1"><span ng-click="addEnv()" class="btn btn-sm btn-info">增加</span></div>
                 </div>
                 <div ng-if="env.envInstanceList.length" class="form-group">
                   <div class="col-sm-7 col-sm-offset-3">
                     <table class="table table-bordered">
                       <thead>
-                        <tr> 
-                          <th class="text-center">名称</th>
-                          <th class="text-center">值</th>
+                        <tr>
+                          <th class="text-center">变量名称</th>
+                          <th class="text-center">变量值</th>
                           <th> </th>
                         </tr>
                       </thead>
-                      <tbody> 
+                      <tbody>
                         <tr ng-repeat="env in env.envInstanceList">
                           <td class="text-center">{{ env.envKey }}</td>
                           <td class="text-center">{{ env.envValue }}</td>
@@ -123,30 +140,71 @@
                 </div>
               </form>
             </div>
-            <div ng-controller="containerLinkController">
-              <form roel="addLinkForm" name="addLinkForm" novalidate="novalidate" class="form-horizontal">                
+
+            <div ng-controller="volumeFieldController">
+              <form roel="addVolumeForm" name="addVolumeForm" novalidate="novalidate" class="form-horizontal">
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right">链接服务</label>
+                  <label for="volume" class="col-sm-3 control-label no-padding-right" style="font-weight:bold;">共享数据卷</label>
+		  <br/><hr/>
+                  <label for="volume_host" class="col-sm-3 control-label no-padding-right">共享路径</label>
+                  <div ng-class="{'state-error': getStatusError(addVolumeForm, 'container_volume_host')}" class="col-sm-2">
+                    <input id="volume_host" type="text" name="container_volume_host" ng-model="volumeHost" required="required"/>
+                  </div>
+                  <label for="volume_dest" class="col-sm-2 control-label no-padding-right">挂载路径</label>
+                  <div ng-class="{'state-error': getStatusError(addVolumeForm, 'container_volume_dest')}" class="col-sm-3">
+                    <input id="volume_dest" type="text" name="container_volume_dest" ng-model="volumeDest" required="required"/>
+                  </div>
+                  <div class="col-sm-1"><span ng-click="addVolume()" class="btn btn-sm btn-info">增加</span></div>
+                </div>
+                <div ng-if="volume.volumeList.length" class="form-group">
+                  <div class="col-sm-7 col-sm-offset-3">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th class="text-center">共享路径</th>
+                          <th class="text-center">挂载路径</th>
+                          <th> </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="volume in volume.volumeList">
+                          <td class="text-center">{{ volume.volumeHost }}</td>
+                          <td class="text-center">{{ volume.volumeDest }}</td>
+                          <td class="text-center"><span ng-click="delVolume(volume)" class="btn btn-sm btn-danger">删除</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div ng-controller="containerLinkController">
+              <form roel="addLinkForm" name="addLinkForm" novalidate="novalidate" class="form-horizontal">
+                <div class="form-group">
+                  <label for="volume" class="col-sm-3 control-label no-padding-right" style="font-weight:bold;">服务链接</label>
+		  <br/><hr/>
+                  <label class="col-sm-3 control-label no-padding-right">选择服务</label>
                   <div class="col-sm-2">
                     <select id="selectLinkService" ng-model="linkName" ng-options="v for v in containerNameList"></select><span ng-show="notChoosedLink &amp;&amp; clickedAddBtn" class="error">请选择一个服务</span>
                   </div>
-                  <label for="linkAlias" class="col-sm-2 control-label no-padding-right">别名</label>
+                  <label for="linkAlias" class="col-sm-2 control-label no-padding-right">服务别名</label>
                   <div class="col-sm-3">
                     <input id="linkAlias" type="text" name="link_alias" ng-model="linkAlias"/>
                   </div>
-                  <div class="col-sm-1"><span ng-click="addLink()" class="btn btn-sm">增加</span></div>
+                  <div class="col-sm-1"><span ng-click="addLink()" class="btn btn-sm btn-info">增加</span></div>
                 </div>
                 <div ng-if="link.linkInstanceList.length" class="form-group">
                   <div class="col-sm-7 col-sm-offset-3">
                     <table class="table table-bordered">
                       <thead>
-                        <tr> 
-                          <th class="text-center">名称</th>
-                          <th class="text-center">别名</th>
+                        <tr>
+                          <th class="text-center">服务名称</th>
+                          <th class="text-center">服务别名</th>
                           <th> </th>
                         </tr>
                       </thead>
-                      <tbody> 
+                      <tbody>
                         <tr ng-repeat="link in link.linkInstanceList">
                           <td class="text-center">{{ link.name }}</td>
                           <td class="text-center">{{ link.alias }}</td>

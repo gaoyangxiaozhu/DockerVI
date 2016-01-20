@@ -93,7 +93,7 @@
              scope.from = scope.min;
          }
          if(!scope.to || scope.to <=0){
-             scope.to= scope.max;
+             scope.to= 1;
          }
          var option={
              min: scope.min,
@@ -207,9 +207,13 @@
             }
             leftBtn.css(css);
             css={
-                'left':'100%'
+                'left':'3.5625%'
             }
             rightBtn.css(css);
+            css={
+                width:'3.5625%'
+            }
+            sliderBar.css(css);
         }
         removeLeftBtn(option.single);
         initPositionForLeftRightBtn();

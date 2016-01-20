@@ -2,7 +2,7 @@
 <div id="breadcrumbs" class="breadcrumbs">
   <script type="text/javascript">try{ace.settings.check('breadcrumbs', 'fixed')}catch(e){}</script>
   <ul class="breadcrumb">
-    <li><i class="icon-home home-icon"></i><a href="#">home</a></li>
+    <li><i class="icon-home home-icon"></i><a href="#">首页</a></li>
     <li><a href="{{ curmbOneLink }}">{{ crumbOne }}</a></li>
     <li class="active">{{ crumbTwo }}</li>
   </ul><!-- .breadcrumb -->
@@ -19,7 +19,7 @@
             <div class="resource-main col-sm-7 col-sm-offset-2">
               <ul class="resource-list">
                 <li ng-repeat="instance in info" class="clearfix">
-                  <h3>节点名称:<strong>{{ instance.name }}</strong></h3>
+                  <h3>主机名:<strong>{{ instance.name }}</strong></h3>
                   <div class="resource-details clearfix">
                     <div class="cpu-detail">
                       <div cpuPercent="instance.usage_rate_cup" data-percent="{{ instance.usage_rate_cup }}" data-color="#87CEEB" class="easy-pie-chart percentage"><span class="class percent">{{ instance.usage_rate_cup }} </span>%</div>
