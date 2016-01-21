@@ -28,7 +28,7 @@
                             th.text-center 创建时间
                             th.text-center 镜像大小
                             th.text-center 动作
-                        tr(ng-repeat='image in images')
+                        tr(ng-repeat="image in images | orderBy:'name'")
                             td.text-center {{ image.name  }}
                             td.text-center {{ image.tag }}
                             td.text-center {{ image.time | date:'yyyy-MM-dd HH:mm' }}
@@ -47,7 +47,7 @@
                             th.text-center 动作
                         tr(ng-repeat="container in containers | orderBy: 'Created'")
                             td.text-center 
-                                a(href='#/container/details/{{ container.Id | limitTo: 12 }}')
+                                a(href='#/container/details/{{ container["node_name"][1] }}')
                                     span {{ container['node_name'][1] }}
                             td.text-center 
                                 span {{ container['node_name'][0] }} 

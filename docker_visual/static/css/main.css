@@ -101,6 +101,11 @@ h1 span.state-label {
 .details-body {
   margin-top: 15px;
 }
+#cpuchart,
+#memorychart,
+#networkchart {
+  height: 200px;
+}
 /* end detail jade*/
 /* create jade */
 .label-size {

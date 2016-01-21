@@ -25,8 +25,7 @@
                         .details-head
                             .row
                                 .col-lg-6 
-                                    //- node_name[0] 应该是节点名称 node_name[1]应该是 容器名字 需要测试
-                                    h1 名称: {{ container['node_name'][1] }}
+                                    h1 名称: {{ container['node_name'][0] }}
                                         span.state-label.play(ng-if="container.Status == 'running'")
                                             i.icon-play
                                             | 运行中
@@ -41,7 +40,7 @@
                         .details-body
                             .row
                                 .col-lg-12
-                                    .tabbable
+                                    .tabbable.detailsTab
                                         ul.nav.nav-tabs#detailsTab
                                             li.active
                                                 a(data-toggle='tab' data-href="#network") 服务地址
@@ -52,8 +51,8 @@
                                             li
                                                 a(data-toggle='tab' data-href='#link') 链接
                                             li
-                                                a(data-toggle='tab' data-href='#log' ng-click='getLog()') 日志
-                                            li 
+                                                a(data-toggle='tab' data-href='#log') 日志
+                                            li.resource
                                                 a(data-toggle='tab' data-href="#resource" ng-click='getResourceStats()') 资源监控
                                         .tab-content
                                             #network.tab-pane.active 
@@ -125,7 +124,15 @@
                                                 .log-termial
                                                     pre.log(ng-bind='container.log')
                                             #resource.tab-pane
-                                                | 资源监控
+                                                #graph
+                                                    h2 CPU利用率
+                                                    #cpuchart
+                                                    h2 内存利用率
+                                                    #memorychart
+                                                    h2 发送字节和接收字节
+                                                    #networkchart
+                                                    
+                                                
                                                     
                         
                     

@@ -16,6 +16,139 @@ app.directive('myTipDirective', function(){
         }
     }
 });
+app.directive('detailsTab', function(){
+    return {
+        restrict: 'C',
+        link:  function(scope, element, attrs){
+            var cpuMorris=null;
+            var memoryMorris = null;
+            var networkMorris = null;
+            var resourceItem = $(element).find('li.resource');
+
+            // 点击myTab 显示对应的面板
+            // nav show
+            function nav_selected(){
+                that = $(this);
+                // 显示对应的面板
+                tabId = that.find('a').data('href');
+                $(tabId).addClass('active')
+                .siblings().removeClass('active');
+            }
+            $(document).on('click', '#detailsTab li', function(e){
+                e.preventDefault();
+                that = $(this);
+                nav_selected.call(that);
+            });
+
+            scope.$watchCollection('[graphData,]', function(){
+                if(scope.graphData){
+                    buildGraph(scope.graphData['data']);
+                }
+            });
+            buildGraph = function(data){
+                if(resourceItem.hasClass('active')){
+                    cpuMorris=null;
+                    memoryMorris = null;
+                    networkMorris = null;
+                    $('#cpuchart, #memorychart, #networkchart').children().remove();
+                    buildCpuGraph(data);
+                    buildMemoryGraph(data);
+                    buildNetworkGraph(data);
+                }else{
+                    scope.showGraphForResourceFlag=false;
+                }
+            }
+            buildMemoryGraph = function(graphData){
+                var memoryData = [];
+                if(!memoryMorris){
+                    for(index in graphData){
+                        var item={
+                            'time': graphData[index]['collect_time'],
+                            'memory_percent': graphData[index]['memory_percent']
+                        };
+                        memoryData.push(item);
+                    }
+                    memoryMorris=new Morris.Line({
+                        // ID of the element in which to draw the chart.
+                        element: 'memorychart',
+                        // Chart data records -- each entry in this array corresponds to a point on
+                        // the chart.
+                        data: memoryData,
+                        // The name of the data record attribute that contains x-values.
+                        xkey: 'time',
+                        // A list of names of data record attributes that contain y-values.
+                        ykeys: ['memory_percent'],
+                        // Labels for the ykeys -- will be displayed when you hover over the
+                        // chart.
+                        labels:['内存利用率'],
+                        yLabelFormat: function (y) { return y.toString() + '%'; },
+
+                    });
+                }
+            }
+            buildCpuGraph = function(graphData){
+                //TODO 测试用　
+                var cpuData = [];
+                if(!cpuMorris){
+                    for(index in graphData){
+                        var item={
+                            'time': graphData[index]['collect_time'],
+                            'cpu_percent': graphData[index]['cpu_percent']
+                        };
+                        cpuData.push(item);
+                    }
+                    cpuMorris=new Morris.Line({
+                        // ID of the element in which to draw the chart.
+                        element: 'cpuchart',
+                        // Chart data records -- each entry in this array corresponds to a point on
+                        // the chart.
+                        data: cpuData,
+                        // The name of the data record attribute that contains x-values.
+                        xkey: 'time',
+                        // A list of names of data record attributes that contain y-values.
+                        ykeys: ['cpu_percent'],
+                        // Labels for the ykeys -- will be displayed when you hover over the
+                        // chart.
+                        labels:['cpu利用率'],
+                        yLabelFormat: function (y) { return y.toString() + '%'; },
+
+                    });
+                }
+            }
+            buildNetworkGraph=function(graphData){
+                //TODO 测试用　
+                var networkData = [];
+                if(!networkMorris){
+                    for(index in graphData){
+                        var item={
+                            'time': graphData[index]['collect_time'],
+                            'network_rx_bytes': graphData[index]['network_rx_bytes'], //接受字节数
+                            'network_tx_bytes': graphData[index]['network_tx_bytes'] //发送字节数
+                        };
+                        networkData.push(item);
+                    }
+                    networkMorris=new Morris.Line({
+                        // ID of the element in which to draw the chart.
+                        element: 'networkchart',
+                        // Chart data records -- each entry in this array corresponds to a point on
+                        // the chart.
+                        data: networkData,
+                        // The name of the data record attribute that contains x-values.
+                        xkey: 'time',
+                        // A list of names of data record attributes that contain y-values.
+                        ykeys: ['network_rx_bytes', 'network_tx_bytes'],
+                        // Labels for the ykeys -- will be displayed when you hover over the
+                        // chart.
+                        labels:['接收字节', '发送字节'],
+                        yLabelFormat: function (y) { return y.toString() + 'Byte'; },
+
+                    });
+                }
+            }
+
+　      }
+    }
+});
 app.directive('easyPieChart', function(){
     return {
         restrict: 'C',
@@ -26,7 +159,7 @@ app.directive('easyPieChart', function(){
         },
         link: function(scope, element, attrs){
             // Hook in our watched items
-            scope.$watchCollection('[cpuPercent,menPercent]', function(){
+            scope.$watchCollection('[cpuPercent, menPercent]', function(){
                 build(scope, element, attrs);
             });
             function build(scope, element, attrs){
@@ -208,25 +341,10 @@ app.factory('container', function($http, $location, dialog){
     function data_fun_control(isList){
         if(isList){
             return function(id, fn){
-                var url = endpoint+'json?all=1';
-                var option={
-                    url: url,
-                    method:'GET'
-                };
-                $http(option)
-                .success(function(data, status, headers){
-                    for(item in data){
-                        data[item]['Status'] = format_state_container(data[item]['Status']);
-                        data[item]['node_name'] = format_name_node(data[item]['Names'][data[item]['Names'].length-1]);
-                    }
-                    _containers = data;
-                    if(typeof(fn)=='function'){
-                        fn(data);
-                    }
-                })
-                .error(function(data, status){
-                    console.log(status);
-                });
+                var data = _containers;
+                if(typeof(fn)=='function'){
+                    fn(data);
+                }
             }
         }else{
             return function(id ,fn, key){
@@ -372,6 +490,26 @@ app.factory('container', function($http, $location, dialog){
     //service  main for  container
     var self=null;
     return self={
+        init: function(){
+            var url = endpoint+'json?all=1';
+            var option={
+                url: url,
+                method:'GET',
+                async: false
+            };
+
+            $.ajax(option)
+            .done(function(data, status, XHR){
+                for(item in data){
+                    data[item]['Status'] = format_state_container(data[item]['Status']);
+                    data[item]['node_name'] = format_name_node(data[item]['Names'][data[item]['Names'].length-1]);
+                }
+                _containers = data;
+            })
+            .fail(function(XHR, status, errorThrown){
+                console.log(status);
+            });
+        },
         new: function(option, fn){
             var url = '/new/container/';
             var create_url= endpoint+'create?name='+option.Name;
@@ -420,7 +558,7 @@ app.factory('container', function($http, $location, dialog){
             inner_data_process(id, fn);
 
         },
-        start: function(id, afterStartFun){
+        start: function(id, name, afterStartFun){
             var url = endpoint+id+'/start';
             var option={
                 url:url,
@@ -431,10 +569,37 @@ app.factory('container', function($http, $location, dialog){
                 if(typeof(afterStartFun)=='function'){
                     afterStartFun(data);
                 }
+                //运行成功以后 开启资源收集线程模块 收集资源使用状况
+                self.storeResourceUsage(name)
             })
             .error(function(data, status, headers){
                 console.log(status);
             });
+        },
+        storeResourceUsage: function(name){
+            var url = '/get/resource_usage/'+name+'/';
+            var option = {
+                url: url,
+                method: 'GET'
+            }
+            $http(option)
+            .success(function(data, status, headers){
+                console.log(data['status']);
+            })
+            .error(function(data, status, headers){
+                console.log(data);
+            })
+
+        },
+        resourceCollectForCurrentRunningContainers: function(){
+            for(var index in _containers){
+                var container = _containers[index];
+                if(container['Status']=='running'){
+                    name = container['node_name'][1];
+                    self.storeResourceUsage(name);
+
+                }
+            }
         },
         stop: function(id, afterStopFun){
             var cUrl= endpoint+id+'/stop';
@@ -490,13 +655,9 @@ app.factory('container', function($http, $location, dialog){
         },
         getResourceStats: function(id){
             var url = '/containers/'+id+'/stats/';
-            console.log(url);
             var option = {
                 url: url,
-                method: 'GET',
-                params:{
-                    endpoint: endpoint
-                }
+                method: 'GET'
             }
             return $http(option);
         },

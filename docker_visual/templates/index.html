@@ -30,7 +30,9 @@
     <!-- define css by gyy-->  
   </head>
   <link type="text/css" rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link type="text/css" rel="stylesheet" href="{% static 'css/morris.css' %}">
   <link type="text/css" rel="stylesheet" href="{% static 'css/slider.css' %}">
+  <link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
   <body>
     <div id="main-container" ng-app="dockerApp" class="main-container">
       <script type="text/javascript">try{ace.settings.check('main-container', 'fixed')}catch(e){}</script>
@@ -53,7 +55,7 @@
                 <li data-id="#docker-images" data-info-detail="远程访问并以列表形式显示镜像信息" class="image-list-item"><a href="#/image/list"><i class="icon-double-angle-right"></i>镜像列表</a></li>
               </ul>
             </li>
-            <li><a href="#" class="dropdown-toggle"><i class="icon-list"></i><span class="menu-text">视微服务管理</span><b class="arrow icon-angle-down"></b></a>
+            <li><a href="#" class="dropdown-toggle"><i class="icon-list"></i><span class="menu-text">容器管理</span><b class="arrow icon-angle-down"></b></a>
               <ul data-info="容器管理" class="submenu">
                 <li data-id="#docker-container" data-info-detail="远程访问并以列表形式显示容器信息" class="container-list-item"><a href="#/container/list"><i class="icon-double-angle-right"></i>容器列表</a></li>
               </ul>
@@ -139,6 +141,8 @@
       <script type="text/javascript" src="{% static 'assets/js/ace-elements.min.js' %}"></script>
       <script type="text/javascript" src="{% static 'assets/js/ace.min.js' %}"></script><!-- inline scripts related to this page -->
       <script type="text/javascript" src="{% static 'js/common.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/raphael.js' %}"></script>
+      <script type="text/javascript" src="{% static 'js/morris.js' %}"></script>
       <script type="text/javascript" src="{% static 'js/angular.js' %}"></script>
       <script type="text/javascript" src="{% static 'js/angular-filter.min.js' %}"></script>
       <script type="text/javascript" src="{% static 'js/angular-route.js' %}"></script>

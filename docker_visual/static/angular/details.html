@@ -32,14 +32,14 @@
             <div class="details-body">
               <div class="row">
                 <div class="col-lg-12">
-                  <div class="tabbable">
+                  <div class="tabbable detailsTab">
                     <ul id="detailsTab" class="nav nav-tabs">
                       <li class="active"><a data-toggle="tab" data-href="#network">服务地址</a></li>
                       <li><a data-toggle="tab" data-href="#volume">数据卷</a></li>
                       <li> <a data-toggle="tab" data-href="#env">环境变量</a></li>
                       <li><a data-toggle="tab" data-href="#link">链接</a></li>
-                      <li><a data-toggle="tab" data-href="#log" ng-click="getLog()">日志</a></li>
-                      <li> <a data-toggle="tab" data-href="#resource" ng-click="getResourceStats()">资源监控</a></li>
+                      <li><a data-toggle="tab" data-href="#log">日志</a></li>
+                      <li class="resource"><a data-toggle="tab" data-href="#resource" ng-click="getResourceStats()">资源监控</a></li>
                     </ul>
                     <div class="tab-content">
                       <div id="network" class="tab-pane active"> 
@@ -129,7 +129,16 @@
                           <pre ng-bind="container.log" class="log"></pre>
                         </div>
                       </div>
-                      <div id="resource" class="tab-pane">资源监控</div>
+                      <div id="resource" class="tab-pane">
+                        <div id="graph">
+                          <h2>CPU利用率</h2>
+                          <div id="cpuchart"></div>
+                          <h2>内存利用率</h2>
+                          <div id="memorychart"></div>
+                          <h2>发送字节和接收字节</h2>
+                          <div id="networkchart"></div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
