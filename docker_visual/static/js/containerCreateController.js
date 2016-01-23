@@ -71,6 +71,10 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
     $scope.linkName="";
     $scope.linkAlias="";
 
+
+     // TODO cmd相关
+     $scope.container.cmd=null; //默认 可为空
+
     // 用于判断是否正在通过表单数据创建数据
 
     $scope.waitForCreated= false;
@@ -88,14 +92,22 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
         if($scope.containerForm.$valid){
             $scope.waitForCreated = true;
 
-            var get_post_data_format = function(imageName, imageTag, containerName, containerSize, portList, envList, linkList){
+            var get_post_data_format = function(imageName, imageTag, containerName, containerSize, portList, envList, linkList, volumeList){
                 // 生成create container 所需要的参数
                 function get_cpu_shares(cpu){
-                    // 252 -1  512 -2 768 - 3 1024- 4
-                    cpuShares = Math.ceil(cpu/252)
-                    cpuShares = cpuShares>4 ? 4: cpuShares
+                    cpuShares = cpu;
+                    cpuShares = cpuShares> 32 ? 32: cpuShares
                     return cpuShares
                 }
+                function get_volume_format(volumeList){
+                     var bindsArray = [];
+                     for(var index in volumeList){
+                         var volume = volumeList[index];
+                         var item = [volume.volumeHost, volume.volumeDest].join(':');
+                         bindsArray.push(item);
+                     }
+                     return bindsArray;
+                 }
                 function get_env_format(envList){
                     var env = [];
                     for(index in envList){
@@ -137,11 +149,16 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
 
                 // 由于使用了Django， ajax传递到后台的只能是表单格式的数据 不能出现某一个属性为对象 因此这里不能使用HostConfig了
                 option.HostConfig={};
+                //TODO 先简单这样处理了
+                if($.trim($scope.container.cmd)){
+                    option.Cmd = $scope.container.cmd.split(' ');
+                }
                 // TODO 这里我设置了cpushares这个变量 数值越大cpu获得的相对资源比越大
                 option.HostConfig.Cpushares = parseInt(get_cpu_shares($scope.container.cpuTo));
                 option.HostConfig.Links = get_links_format(linkList);
                 option.HostConfig.PortBindings = get_port_format(portList);
                 option.HostConfig.Memory = get_memory_format(containerSize);
+                option.HostConfig.Binds = get_volume_format(volumeList);
 
                 // 调用创建container的服务
                 function callBack(statusCode){
@@ -160,7 +177,8 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                                                 $scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
                                                 $scope.portSt.portInstanceList, //暴露和映射的端口
                                                 $scope.env.envInstanceList, //自定义环境变量
-                                                $scope.link.linkInstanceList) //链接服务
+                                                $scope.link.linkInstanceList, //链接服务
+                                                $scope.volume.volumeList) //挂载卷
 
         }
 

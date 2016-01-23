@@ -32,6 +32,13 @@
                 </div>
               </div>
               <div class="form-group">
+                <label for="cpu-quota" class="col-sm-3 control-label no-padding-right"> CPU配额</label>
+                <div class="col-sm-9">
+                  <slider min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" single="true"></slider>
+                  <p class="range-cpu"><span class="range-pre">{{ container.cpuFrom }} </span><span class="range-next">{{ container.cpuTo }}</span></p>
+                </div>
+              </div>
+              <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right"> 容器实例大小<span class="txt-color-red">*</span></label>
                 <div class="col-sm-9"> 
                   <label class="label-size">
@@ -55,10 +62,9 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="cpu-quota" class="col-sm-3 control-label no-padding-right"> CPU配额</label>
+                <label for="cmd" class="col-sm-3 control-label no-padding-right">自启动命令<span class="txt-color-red">*</span></label>
                 <div class="col-sm-9">
-                  <slider min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" single="true"></slider>
-                  <p class="range-cpu"><span class="range-pre">{{ container.cpuFrom }} </span><span class="range-next">{{ container.cpuTo }}</span></p>
+                  <textarea id="cmd" name="cmd" rows="3" cols="50" ng-model="container.cmd" placeholder="多个命令之间用逗号分隔如cd working,data"></textarea>
                 </div>
               </div>
             </form>

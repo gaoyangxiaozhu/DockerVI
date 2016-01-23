@@ -413,15 +413,14 @@ app.factory('container', function($http, $location, dialog){
         return portList;
     }
     // format volumes
-    function format_volumes(volumes){
+    function format_volumes(binds){
         var volumesList = [];
-        for(volumeInContainer in volumes){
+        for(index in binds){
             var item = {};
-            item.volumeInContainer = volumeInContainer;
-            item.volumeInHost = volumes[volumeInContainer];
+            item.volumeInContainer = binds[index].split(':')[0];
+            item.volumeInHost = binds[index].split(':')[1];
             volumesList.push(item);
         }
-
         return volumesList;
     }
     // format env define by  self
@@ -474,7 +473,7 @@ app.factory('container', function($http, $location, dialog){
         data.portList = format_bind_ports(data['HostConfig']['PortBindings']);
 
         // gett volumeList
-        data.volumesList = format_volumes(data['Volumes']);
+        data.volumesList = format_volumes(data['HostConfig']['Binds']);
 
         // get envList
         data.envList = format_env(data['Config']['Env']);
@@ -534,7 +533,7 @@ app.factory('container', function($http, $location, dialog){
                     afterStartFun = function(){
                         $location.path('/container/list');
                     }
-                    self.start(newName, afterStartFun);
+                    self.start("",newName, afterStartFun);
                 }
                 else{
                     //code 为 409 说明存在命名冲突
@@ -559,7 +558,7 @@ app.factory('container', function($http, $location, dialog){
 
         },
         start: function(id, name, afterStartFun){
-            var url = endpoint+id+'/start';
+            var url = endpoint+name+'/start';
             var option={
                 url:url,
                 method: 'POST'
@@ -637,7 +636,14 @@ app.factory('container', function($http, $location, dialog){
               }
               $http(option)
               .success(function(data, status, header){
-                  self.data(null, fn); //删除成功后，更新_containers变量
+                  //删除成功后，更新_containers变量
+                  for(index in _containers){
+                      container = _containers[index];
+                      if(container.Id.slice(0,12) == id){
+                         _containers.splice(index,1);
+                      }
+                  }
+                  self.data('', fn);
               })
               .error(function(data, status, header){
                   console.log(status);

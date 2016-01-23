@@ -222,7 +222,7 @@ def container_resource_stats(request, name):
 # 当容器开始运行的时候， 会调用此函数
 # 此时函数主体 不停的获取需要的数据 并 存入数据库（每30秒获取一次）
 # 当容器停止时，停止读取数据
-def store_resource_usage_perthirtysecond(name):
+def store_resource_usage_pertwosecond(name):
     url = endpoint+'/containers/'+name+'/stats?stream=false'
     while(is_run_current_container(name)):
         # 通过计算两次的差值获取ｃｐｕ的利用率
@@ -237,20 +237,21 @@ def store_resource_usage_perthirtysecond(name):
             data =screen_and_format(old_resource_data, new_resource_data, name)
             #存入数据库
             store_data_to_database(data)
-        # 设置每五秒读取一次　用于测试
-        #　实际由于操作数据库　会有额外的５秒增加
-        time.sleep(5)
+        # 设置每1秒读取一次　用于测试
+        #　实际由于操作数据库　会有额外的５-7秒增加
+        time.sleep(1)
 
 
 
 @csrf_exempt
 def add_thread_for_get_resource_usage(request, name):
+    print name
     status = 'fail'
     if name not in names:
         names.append(name)
-        new_thread = MyThread(store_resource_usage_perthirtysecond,
+        new_thread = MyThread(store_resource_usage_pertwosecond,
                             (name,),
-                            store_resource_usage_perthirtysecond.__name__)
+                            store_resource_usage_pertwosecond.__name__)
         new_thread.start()
         status = 'success'
     else:

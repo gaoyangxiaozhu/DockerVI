@@ -36,6 +36,16 @@
                                     span.txt-color-red *
                                 div.col-sm-9(ng-class="{'state-error': getStatusError(containerForm, 'container_name')}")
                                     input#container-name(type="text" name="container_name" ng-model="container.name" required)
+                            
+                                                    
+                            .form-group
+                                label.col-sm-3.control-label.no-padding-right(for="cpu-quota")  CPU配额
+                                div.col-sm-9
+                                    //- input#cpu-quota(type="text" name="cpu-quota" ng-model="container.cpuquota")
+                                    slider(min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" single="true")
+                                    p.range-cpu
+                                        span.range-pre {{ container.cpuFrom }} 
+                                        span.range-next {{ container.cpuTo }}
                             .form-group
                                 label.col-sm-3.control-label.no-padding-right  容器实例大小
                                     span.txt-color-red *
@@ -58,15 +68,11 @@
                                     label.label-size
                                         input.ace(type='radio' name="container_size" ng-model="container.size" value="{{ containerSize[2].num }}{{ containerSize[2].unit }}")
                                         span.lbl {{ containerSize[5].num }}{{ containerSize[5].unit }}
-                                                    
                             .form-group
-                                label.col-sm-3.control-label.no-padding-right(for="cpu-quota")  CPU配额
-                                div.col-sm-9
-                                    //- input#cpu-quota(type="text" name="cpu-quota" ng-model="container.cpuquota")
-                                    slider(min="{{ container.cpuMin }}" max="{{ container.cpuMax }}" from="container.cpuFrom" to="container.cpuTo" single="true")
-                                    p.range-cpu
-                                        span.range-pre {{ container.cpuFrom }} 
-                                        span.range-next {{ container.cpuTo }}
+                                label.col-sm-3.control-label.no-padding-right(for="cmd") 自启动命令
+                                    span.txt-color-red *
+                                .col-sm-9
+                                    textarea#cmd(name="cmd" rows='3',cols="50", ng-model="container.cmd" placeholder="多个命令之间用逗号分隔如cd working,data")
                         div(ng-controller="portFieldController")
                             h5.head 端口映射
                             hr

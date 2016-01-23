@@ -80,6 +80,7 @@ app.controller('containerController', ['$scope', '$location', 'container', funct
         function updateContainers(){
             $scope.getSubList($scope.currentPage);
         }
+        console.log(currentContainer.Id);
         container.remove(currentContainer.Id.slice(0,12), updateContainers);
     }
 }]);
@@ -118,14 +119,14 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
 
     // 运行容器
     $scope.startContainer= function(currentContainer){
-
+        console.log(currentContainer);
         // 成功启动容器后执行的回调函数
         var after_start_container= function(data){
 
             // 重新启动后刷新所有数据 重新渲染表格
             container.data(ID, current_detail_init);
         }
-        container.start(currentContainer.Id, currentContainer['node_name'][1], after_start_container);
+        container.start(currentContainer.Id, currentContainer['node_name'][0], after_start_container);
     }
 
     // 停止容器
@@ -155,7 +156,7 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
                     console.log(status);
             });
             if($scope.showGraphForResourceFlag){
-                t=setTimeout(invokeContainerGetResourceFunction,3000);
+                t=setTimeout(invokeContainerGetResourceFunction,4500); //每4秒渲染一次
             }else{
                 clearTimeout(t);
             }
