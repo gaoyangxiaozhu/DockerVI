@@ -6,7 +6,7 @@ from django.views.generic import View, TemplateView
 from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from .form import createContainerForm
-from .models import ResourceUsage
+from .models import CommonUsage, ProxyStream1, ProxyStream2
 from .myThread import MyThread
 import urllib
 import urllib2
@@ -123,6 +123,22 @@ def is_run_current_container(name):
     except urllib2.HTTPError, e:
         code = e.code
         return 'error'
+def get_current_container_cpu_mem_msg(name):
+    url = endpoint+'/containers/'+name+'/json'
+    req = urllib2.Request(url=url)
+    try:
+        res=urllib2.urlopen(req)
+        req_data=json.loads(res.read())
+        cpu = int(req_data['HostConfig']['CpuShares'])/256
+        mem = int(req_data['HostConfig']['Memory'])/1024/1024
+
+        print cpu, mem
+        return (cpu,mem)
+
+    except urllib2.HTTPError, e:
+        code = e.code
+        return 'error'
+
 def get_current_reource_usage(url):
     req = urllib2.Request(url=url)
     try:
@@ -177,7 +193,25 @@ def screen_and_format(old_data, new_data, name):
     print(format_data)
     return format_data
 
-def store_data_to_database(data):
+def store_data_to_database(name, data):
+    cpu,mem =get_current_container_cpu_mem_msg(name)
+    if cpu == 0:
+        cpu = 4
+    cpu = str(cpu)
+    if mem == 0:
+        mem = '8GB'
+    if mem < 1024:
+        mem = str(mem)+'MB'
+    else:
+        mem = mem/1024
+        mem = str(mem)+'GB'
+
+    ResourceUsage = CommonUsage
+    if name=='test-1':
+        ResourceUsage = ProxyStream1
+    else:
+        if name == 'ProxyStream2':
+            ResourceUsage = ProxyStream2
     resource_instance = ResourceUsage(
                             service_name = data['service_name'],
                             cpu_percent = data['cpu_percent'],
@@ -186,11 +220,19 @@ def store_data_to_database(data):
                             memory_percent = data['memory_percent'],
                             network_rx_bytes = data['network_rx_bytes'],
                             network_tx_bytes = data['network_tx_bytes'],
-                            collect_time = data['collect_time']
+                            collect_time = data['collect_time'],
+                            cpu= cpu,
+                            memory = mem
                             )
     resource_instance.save()
 
 def get_current_resource_usage_from_database(name):
+    ResourceUsage = CommonUsage
+    if name=='test-1':
+        ResourceUsage = ProxyStream1
+    else:
+        if name == 'ProxyStream2':
+            ResourceUsage = ProxyStream2
     data_objects = ResourceUsage.objects.filter(service_name=name).order_by('collect_time')
     print(len(data_objects));
     if len(data_objects) >=20:
@@ -236,7 +278,7 @@ def store_resource_usage_pertwosecond(name):
             # 筛选并格式化需要的数据
             data =screen_and_format(old_resource_data, new_resource_data, name)
             #存入数据库
-            store_data_to_database(data)
+            store_data_to_database(name, data)
         # 设置每1秒读取一次　用于测试
         #　实际由于操作数据库　会有额外的５-7秒增加
         time.sleep(1)
