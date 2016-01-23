@@ -49,6 +49,16 @@
                                     label.label-size
                                         input.ace(type='radio' name="container_size" ng-model="container.size" value="{{ containerSize[2].num }}{{ containerSize[2].unit }}")
                                         span.lbl {{ containerSize[2].num }}{{ containerSize[2].unit }}
+                                    label.label-size
+                                        input.ace(type='radio' name="container_size" ng-model="container.size" value="{{ containerSize[2].num }}{{ containerSize[2].unit }}")
+                                        span.lbl {{ containerSize[3].num }}{{ containerSize[3].unit }}
+                                    label.label-size
+                                        input.ace(type='radio' name="container_size" ng-model="container.size" value="{{ containerSize[2].num }}{{ containerSize[2].unit }}")
+                                        span.lbl {{ containerSize[4].num }}{{ containerSize[4].unit }}
+                                    label.label-size
+                                        input.ace(type='radio' name="container_size" ng-model="container.size" value="{{ containerSize[2].num }}{{ containerSize[2].unit }}")
+                                        span.lbl {{ containerSize[5].num }}{{ containerSize[5].unit }}
+                                                    
                             .form-group
                                 label.col-sm-3.control-label.no-padding-right(for="cpu-quota")  CPU配额
                                 div.col-sm-9
@@ -58,25 +68,27 @@
                                         span.range-pre {{ container.cpuFrom }} 
                                         span.range-next {{ container.cpuTo }}
                         div(ng-controller="portFieldController")
+                            h5.head 端口映射
+                            hr
                             form.form-horizontal(roel="addPortForm" name="addPortForm")
-                                .form-group
-                                    label.col-sm-3.control-label.no-padding-right(for="containerPort") 端口
+                                .form-group.clear                              
+                                    label.col-sm-3.control-label.no-padding-right(for="containerPort") 源端口
                                     .col-sm-2(ng-class="{'state-error': getStatusError(addPortForm, 'container_port')}")
                                         input#containerPort(type="text" name="container_port" ng-model="portSt.newPort" required)
                                         span.error(ng-show="portSt.newPortRegex") 请输入正确的端口号
-                                    label.col-sm-1.col-sm-offset-1.control-label.no-padding-right 映射为
+                                    label.col-sm-1.col-sm-offset-1.control-label.no-padding-right 目标端口
                                     .col-sm-3
                                         input(type="text" name="host_port" ng-model="portSt.hostPort")
                                         span.error(ng-show="portSt.hostPortRegex") 请输入正确的端口号
                                     .col-sm-1 
-                                        span.btn.btn-sm(ng-click="addPort()") 增加
+                                        span.btn.btn-sm.btn-info(ng-click="addPort()") 增加
                                 .form-group(ng-if="portSt.portInstanceList.length")
                                     .col-sm-7.col-sm-offset-3
                                         table.table.table-bordered
                                             thead
                                                 tr.text-center
-                                                    th.text-center 端口
-                                                    th.text-center 绑定端口
+                                                    th.text-center 源端口
+                                                    th.text-center 目标端口
                                                     th 
                                             tbody 
                                                 tr(ng-repeat="portInstance in portSt.portInstanceList")
@@ -85,23 +97,25 @@
                                                     td.text-center
                                                         span.btn.btn-sm.btn-danger(ng-click="delePort(portInstance)") 删除
                         div(ng-controller="envFieldController")
+                            h5.head 环境变量
+                            hr
                             form.form-horizontal(roel="addEnvForm" name="addEnvForm" novalidate)                    
                                 .form-group
-                                    label.col-sm-3.control-label.no-padding-right(for="env") 环境变量
+                                    label.col-sm-3.control-label.no-padding-right(for="env") 变量名称
                                     .col-sm-2(ng-class="{'state-error': getStatusError(addEnvForm, 'container_env_name')}")
                                         input#env(type="text" name="container_env_name", ng-model="envKey" required)
-                                    label.col-sm-2.control-label.no-padding-right(for="envVal")
+                                    label.col-sm-2.control-label.no-padding-right(for="envVal")　变量值
                                     .col-sm-3(ng-class="{'state-error': getStatusError(addEnvForm, 'container_env_val')}")
                                         input#envVal(type="text" name="container_env_val" ng-model="envValue" required)
                                     .col-sm-1
-                                        span.btn.btn-sm(ng-click="addEnv()") 增加
+                                        span.btn.btn-sm.btn-info(ng-click="addEnv()") 增加
                                 .form-group(ng-if="env.envInstanceList.length")
                                     .col-sm-7.col-sm-offset-3
                                         table.table.table-bordered
                                             thead
                                                 tr 
-                                                    th.text-center 名称
-                                                    th.text-center 值
+                                                    th.text-center 变量名称
+                                                    th.text-center 变量值
                                                     th 
                                             tbody 
                                                 tr(ng-repeat="env in env.envInstanceList")
@@ -109,8 +123,37 @@
                                                     td.text-center {{ env.envValue }}
                                                     td.text-center
                                                         span.btn.btn-sm.btn-danger(ng-click="deleEnv(env)") 删除
+                        div(ng-controller="volumeFieldController")
+                            h5.head 共享数据卷
+                            hr
+                            form.form-horizontal(role="addVolumeForm" name="addVolumeForm" novalidate)
+                                .form-group
+                                    label.col-sm-3.control-label.no-padding-right(for="volumehost") 共享路径
+                                    .col-sm-2(ng-class="{'state-error': getStatusError(addVolumeForm, 'container_volume_host')}")
+                                        input#volumehost(type="text" name="container_volume_host", ng-model="volumeHost" required)
+                                    label.col-sm-2.control-label.no-padding-right(for="volumedest")　挂载路径
+                                    .col-sm-3(ng-class="{'state-error': getStatusError(addVolumeForm, 'container_volume_dest')}")
+                                        input#volumedest(type="text" name="container_volume_dest" ng-model="volumeDest" required)
+                                    .col-sm-1
+                                        span.btn.btn-sm.btn-info(ng-click="addVolume()") 增加
+                                .form-group(ng-if="volume.volumeList.length")
+                                    .col-sm-7.col-sm-offset-3
+                                        table.table.table-bordered
+                                            thead
+                                                tr 
+                                                    th.text-center 共享路径
+                                                    th.text-center 挂载路径
+                                                    th 
+                                            tbody 
+                                                tr(ng-repeat="volume in volume.volumeList")
+                                                    td.text-center {{ volume.volumeHost }}
+                                                    td.text-center {{　volume.volumeDest }}
+                                                    td.text-center
+                                                        span.btn.btn-sm.btn-danger(ng-click="delVolume(volume)") 删除
                         div(ng-controller="containerLinkController")
-                            form.form-horizontal(roel="addLinkForm" name="addLinkForm" novalidate)                 
+                            h5.head 服务链接
+                            hr
+                            form.form-horizontal(role="addLinkForm" name="addLinkForm" novalidate)                 
                                 .form-group
                                     label.col-sm-3.control-label.no-padding-right() 链接服务
                                     .col-sm-2
@@ -121,7 +164,7 @@
                                     .col-sm-3
                                         input#linkAlias(type="text" name="link_alias" ng-model="linkAlias")
                                     .col-sm-1
-                                        span.btn.btn-sm(ng-click="addLink()") 增加
+                                        span.btn.btn-sm.btn-info(ng-click="addLink()") 增加
                                 .form-group(ng-if="link.linkInstanceList.length")
                                     .col-sm-7.col-sm-offset-3
                                         table.table.table-bordered

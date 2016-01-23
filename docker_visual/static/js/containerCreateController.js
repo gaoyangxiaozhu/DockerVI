@@ -7,15 +7,27 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
 
     $scope.containerSize=[
         {
-            'num': 100,
+            'num': 128,
             'unit': 'M'
         },
         {
-            'num': 215,
+            'num': 256,
             'unit': 'M'
         },
         {
             'num': 512,
+            'unit': 'M'
+        },
+        {
+            'num': 1024,
+            'unit': 'M'
+        },
+        {
+            'num': 2048,
+            'unit':'M'
+        },
+        {
+            'num': 4096,
             'unit': 'M'
         }
     ];
@@ -24,10 +36,10 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
 
     $scope.container={};
     $scope.container.name="";
-    $scope.container.size="100M";
+    $scope.container.size="128M";
     // cup相关
     $scope.container.cpuMin = 0;
-    $scope.container.cpuMax =1024;
+    $scope.container.cpuMax =32;
     $scope.container.cpuFrom = $scope.container.cpuMin;
     $scope.container.cpuTo = $scope.container.cpuMax;
     // 端口相关
@@ -45,6 +57,12 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
     $scope.env.envInstanceList=[];
     $scope.envKey ="";
     $scope.envValue="";
+
+    // volume 相关
+    $scope.volume={};
+    $scope.volume.volumeList=[];
+    $scope.volumeHost="";
+    $scope.volumeDest="";
 
     // link 相关
 
@@ -224,6 +242,30 @@ app.controller('envFieldController', ['$scope', '$routeParams', 'container', 'im
     }
 
 }]);
+
+ app.controller('volumeFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
+     $scope.addVolume=function(){
+         if($scope.addVolumeForm.$invalid){
+             $scope.addVolumeForm.$submitted = true;
+             return;
+         }
+
+         var newVolumeItem = {};
+         newVolumeItem.volumeHost = $scope.volumeHost;
+         newVolumeItem.volumeDest = $scope.volumeDest;
+
+         $scope.volume.volumeList.push(newVolumeItem);
+
+         $scope.volumeHost="";
+         $scope.volumeDest="";
+         $scope.addVolumeForm.$setPristine();
+         $scope.addVolumeForm.$submitted = false;
+         }
+         $scope.delVolume =function(volume){
+             $scope.delItem(volume, $scope.volume.volumeList);
+         }
+}]);
+
 app.controller('containerLinkController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
     $scope.addLink=function(){
         if($scope.notChoosedLink){
