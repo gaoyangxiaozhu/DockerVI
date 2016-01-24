@@ -110,6 +110,7 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
     $scope.getLog = function(){
         container.getLog(ID)
         .success(function(data, status, header){
+            data = data['data']
             $scope.container.log = data ? data: 'no logs';
         })
         .error(function(data, status, header){
@@ -154,6 +155,7 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
             })
             .error(function(data, status, header){
                     console.log(status);
+                    clearTimeout(t);
             });
             if($scope.showGraphForResourceFlag){
                 t=setTimeout(invokeContainerGetResourceFunction,4500); //每4秒渲染一次

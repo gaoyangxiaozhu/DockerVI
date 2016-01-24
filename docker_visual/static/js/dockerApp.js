@@ -140,7 +140,7 @@ app.directive('detailsTab', function(){
                         // Labels for the ykeys -- will be displayed when you hover over the
                         // chart.
                         labels:['接收字节', '发送字节'],
-                        yLabelFormat: function (y) { return y.toString() + 'Byte'; },
+                        yLabelFormat: function (y) { return y.toString() + 'Byte/s'; },
 
                     });
                 }
@@ -229,7 +229,7 @@ app.factory('dialog', function(){
 })
 
 app.factory('image', function($http, $location, dialog){
-    var endpoint = 'http://10.103.241.154:2377/images/';
+    var endpoint = 'http://10.103.242.128:2377/images/';
     var _images = []; //存储获得的镜像信息
 
     //service  main for  image
@@ -269,14 +269,18 @@ app.factory('image', function($http, $location, dialog){
     }
     return self={
         data: function(option, fn){
-                var url = option ? endpoint+option.name+':'+option.tag+'/json': endpoint+'json';
+                var curl = option ? endpoint+option.name+':'+option.tag+'/json': endpoint+'json';
+                var url="/image/list/";
                 var option={
                     url: url,
-                    method: 'GET'
+                    method: 'GET',
+                    params:{
+                        url:curl
+                    }
                 };
                 $http(option)
                 .success(function(data, status, headers){
-                    data = format_data(data);
+                    data = format_data(data['data']);
                     _images = data; //将data赋值为images
                     if(typeof(fn) == 'function'){
                         fn(data);
@@ -332,7 +336,7 @@ app.factory('image', function($http, $location, dialog){
 
 });
 app.factory('container', function($http, $location, dialog){
-    var endpoint = 'http://10.103.241.154:2377/containers/';
+    var endpoint = 'http://10.103.242.128:2377/containers/';
     var _containers= {}; //存储container列表
 
     // data 函数实体动态构建函数 如果isＬist为true 则返回一个函数用来获取整个container列表 否则返回一个data内部函数获取当前id的container信息
@@ -350,14 +354,19 @@ app.factory('container', function($http, $location, dialog){
             return function(id ,fn, key){
                 // 如果key不为空 则函数最后返回data[key]的值
 
-                var url = endpoint+id+'/json';
+                var curl = endpoint+id+'/json';
+                var url = '/container/';
                 var val = null;
                 var option={
                     url: url,
-                    method: 'GET'
+                    method: 'GET',
+                    params:{
+                        url:curl
+                    }
                 }
                 $http(option)
                 .success(function(data, status, headers){
+                    data = data['data']
                     data = format_data(data);
 
                     if(typeof(fn) == 'function'){
@@ -379,7 +388,6 @@ app.factory('container', function($http, $location, dialog){
     //获得container的运行状态
     function format_state_container(state){
         // 对于获得某一个container的详细信息的运行状态 state参数为一个object
-
         if(typeof(state) == 'string'){
             var stateStr = $.trim(state);
             var re = /Exited/;
@@ -490,15 +498,20 @@ app.factory('container', function($http, $location, dialog){
     var self=null;
     return self={
         init: function(){
-            var url = endpoint+'json?all=1';
+            var curl = endpoint+'json?all=1';
+            var url = '/containers/list/';
             var option={
                 url: url,
                 method:'GET',
-                async: false
+                async: false,
+                data:{
+                    url: curl
+                }
             };
 
             $.ajax(option)
             .done(function(data, status, XHR){
+                data = data['data']
                 for(item in data){
                     data[item]['Status'] = format_state_container(data[item]['Status']);
                     data[item]['node_name'] = format_name_node(data[item]['Names'][data[item]['Names'].length-1]);
@@ -514,7 +527,16 @@ app.factory('container', function($http, $location, dialog){
             var create_url= endpoint+'create?name='+option.Name;
             var newName = option.Name;
             delete option.Name;
-
+            if(option.Env.length==0){
+                delete option.Env
+            }
+            console.log(option.HostConfig)
+            for(index in option.HostConfig){
+                if(option.HostConfig[index].length==0 && typeof(option.HostConfig[index])=='object'){
+                    delete option.HostConfig[index]
+                }
+            }
+            console.log(option)
             var data={
                 'url': create_url,
                 'params': option
@@ -528,6 +550,7 @@ app.factory('container', function($http, $location, dialog){
             }
             $.ajax(option)
             .done(function(data, status, headers){
+                console.log('success');
                 //  创建成功后开启容器
                 if(data.status == 'ok'){
                     afterStartFun = function(){
@@ -595,6 +618,11 @@ app.factory('container', function($http, $location, dialog){
                 var container = _containers[index];
                 if(container['Status']=='running'){
                     name = container['node_name'][1];
+                    //不存储manage 和　mysql的资源信息
+
+                    if(name=='manage'|| name =='mysql'){
+                        continue;
+                    }
                     self.storeResourceUsage(name);
 
                 }
@@ -652,10 +680,14 @@ app.factory('container', function($http, $location, dialog){
             dialog.show(do_remove, $('#dialog-delform'));
         },
         getLog: function(id){
-            var url = endpoint+id+'/logs?stderr=1&stdout=1';
+            var curl = endpoint+id+'/logs?stderr=1&stdout=1';
+            var url = '/getLog/';
             var option = {
                 url: url,
-                method: 'GET'
+                method: 'GET',
+                params:{
+                    url: curl
+                }
             }
             return $http(option);
         },
@@ -669,13 +701,19 @@ app.factory('container', function($http, $location, dialog){
         },
         getNameList: function(isRun,fn){// isRun 为 true的话， 只获得正在运行的docker实例的名字
 
-            var url = endpoint+'json?all=1';
+            var curl = endpoint+'json?all=1';
+            var url = '/get_name_list/'
             var option = {
                 url: url,
-                method: 'GET'
+                method: 'GET',
+                params:{
+                    url:curl
+                }
             };
             $http(option)
             .success(function(data, status, headers){
+                data = data['data']
+
                 var nameList = [];
                 var length = data.length;
 
@@ -731,7 +769,7 @@ app.factory('container', function($http, $location, dialog){
 
 });
 app.factory('resource', function($http, $location, dialog){
-    var endpoint = 'http://10.103.241.154:2377/';
+    var endpoint = 'http://10.103.242.128:2377/';
     return self={
         getInfo: function(fn){
             var url='/info';

@@ -6,7 +6,7 @@ from django.views.generic import View, TemplateView
 from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from .form import createContainerForm
-from .models import CommonUsage, ProxyStream1, ProxyStream2
+from .models import CommonUsage, ProxyStream1, ProxyStream2,OtherResourceUsage
 from .myThread import MyThread
 import urllib
 import urllib2
@@ -15,7 +15,7 @@ import time
 
 #global endpoint
 
-endpoint = 'http://10.103.241.154:2377'
+endpoint = 'http://10.103.242.128:2377'
 
 #存储当前已经运行资源收集模块的容器的name　防止一个容器开启多个thread收集resource usage
 names = []
@@ -29,26 +29,63 @@ def resource(request, *args, **kwargs):
             'status': 'error',
             'msg': _('inValid url'),
         })
-
-    req_data= json.loads(urllib2.urlopen(get_resource_info_url).read())
+    try:
+        req_data= json.loads(urllib2.urlopen(get_resource_info_url).read())
+    except urllib2.HTTPError, e:
+        code = e.code
+        print 'error'
 
     def format_data(data):
         nodes  = int(data[3][1]) #nodes number
         data = data[4:]
         node_array = []
         for i in range(nodes):
-            name = data[i*5][0]
-            cpu = data[i*5+2][1].split('/')
-            mem = data[i*5+3][1].split('/')
+            name = data[i*6][0]
+            cpu = data[i*6+3][1].split('/')
+            mem = data[i*6+4][1].split('/')
+            print cpu,mem,name
             node = dict(name=name, cpu_use=int(cpu[0]), cpu_has=int(cpu[1]), mem_use=mem[0], mem_has=mem[1])
             node_array.append(node)
         _data=dict(nodes=nodes, node_array=node_array)
         return _data
-
+    print req_data['DriverStatus']
     data = format_data(req_data['DriverStatus'])
     return JsonResponse({
         'status': 'ok',
         'msg': data,
+    })
+@csrf_exempt
+def  get_data_common_func(request, *args, **kwargs):
+    url = request.GET.get('url',None)
+    if url is None:
+        return JsonResponse({
+            'status': 'error',
+            'msg': _('inValid url'),
+        })
+    try:
+        req_data= json.loads(urllib2.urlopen(url).read())
+    except urllib2.HTTPError, e:
+        code = e.code
+        print 'error'
+    print req_data
+    return JsonResponse({
+        'data': req_data
+    })
+def get_log(request, *args, **kwargs):
+    url = request.GET.get('url',None)
+    if url is None:
+        return JsonResponse({
+            'status': 'error',
+            'msg': _('inValid url'),
+        })
+    try:
+        req_data= urllib2.urlopen(url).read()
+    except urllib2.HTTPError, e:
+        code = e.code
+        print 'error'
+    print req_data
+    return JsonResponse({
+        'data': req_data
     })
 @csrf_exempt
 def delete_container_or_image(request, method):
@@ -79,6 +116,7 @@ def delete_container_or_image(request, method):
 def new_container(request):
     #json str to dict
     data = json.loads(request.body)
+    print data
     url = data['url']
     params = data['params']
 
@@ -175,8 +213,8 @@ def screen_and_format(old_data, new_data, name):
     memory_usage = new_data['memory_stats']['usage']
     memory_percent=round(float(memory_usage)/float(memory_limit)*100.0,2)
 
-    network_rx_bytes = new_data['networks']['eth0']['rx_bytes']
-    network_tx_bytes = new_data['networks']['eth0']['tx_bytes']
+    network_rx_bytes = new_data['networks']['eth0']['rx_bytes'] - old_data['networks']['eth0']['rx_bytes']
+    network_tx_bytes = new_data['networks']['eth0']['tx_bytes'] - old_data['networks']['eth0']['tx_bytes']
 
     current_time = time.strftime(ISOTIME, time.localtime())
 
@@ -196,18 +234,19 @@ def screen_and_format(old_data, new_data, name):
 def store_data_to_database(name, data):
     cpu,mem =get_current_container_cpu_mem_msg(name)
     if cpu == 0:
-        cpu = 4
+        cpu = 24
     cpu = str(cpu)
-    if mem == 0:
-        mem = '8GB'
     if mem < 1024:
-        mem = str(mem)+'MB'
+        if mem == 0:
+            mem = '32GB'
+        else:
+            mem = str(mem)+'MB'
     else:
         mem = mem/1024
         mem = str(mem)+'GB'
 
-    ResourceUsage = CommonUsage
-    if name=='test-1':
+    ResourceUsage = OtherResourceUsage
+    if name=='ProxyStream1':
         ResourceUsage = ProxyStream1
     else:
         if name == 'ProxyStream2':
@@ -227,8 +266,8 @@ def store_data_to_database(name, data):
     resource_instance.save()
 
 def get_current_resource_usage_from_database(name):
-    ResourceUsage = CommonUsage
-    if name=='test-1':
+    ResourceUsage = OtherResourceUsage
+    if name=='ProxyStream1':
         ResourceUsage = ProxyStream1
     else:
         if name == 'ProxyStream2':

@@ -15,7 +15,11 @@ class CommonUsage(models.Model):
     class Meta:
         abstract = True
         ordering = ['collect_time']
-
+class OtherResourceUsage(CommonUsage):
+        def __unicode__(self):
+            return self.service_name
+        def __str__(self):
+            return self.service_name
 class ProxyStream1(CommonUsage):
     code_rate = models.CharField(max_length=50)
     resolution = models.CharField(max_length=50)
