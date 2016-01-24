@@ -3,6 +3,12 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
 
     $scope.imageName = $routeParams.imageName;
     $scope.imageTag = $routeParams.imageTag;
+    if($routeParams.imageRepo){
+        $scope.imageRepo = $routeParams.imageRepo;
+    }
+    if($routeParams.username){
+        $scope.username = $routeParams.username;
+    }
     // todo 先这样定义三种容器大小选项 以后明白cup部分 以及对angular有进一步了解后进行改进
 
     $scope.containerSize=[
@@ -92,7 +98,7 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
         if($scope.containerForm.$valid){
             $scope.waitForCreated = true;
 
-            var get_post_data_format = function(imageName, imageTag, containerName, containerSize, portList, envList, linkList, volumeList){
+            var get_post_data_format = function(containerName, containerSize, portList, envList, linkList, volumeList){
                 // 生成create container 所需要的参数
                 function get_cpu_shares(cpu){
                     cpuShares = cpu;
@@ -140,9 +146,23 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                         case 'G': return num*1024*1024*1024;
                     }
                 }
+                function get_image_full_name(){
+                    if($scope.imageRepo){
+                        option.Image = [$scope.imageRepo, $scope.username, $scope.imageName].join('/');
+                        option.Image = [option.Image, $scope.imageTag].join(':');
+                    }else{
+                        if($scope.username){
+                            option.Image = [$scope.username, $scope.imageName].join('/');
+                            option.Image = [option.Image, $scope.imageTag].join(':');
+                        }else{
+                            option.Image = [option.imageName, option.imageTag].join(':');
+                        }
+                    }
+                    return option.Image;
+                }
                 option = {};
 
-                option.Image= imageName+":"+imageTag;
+                option.Image= get_image_full_name();
                 option.Name = containerName;
 
                 option.Env = get_env_format(envList);
@@ -173,8 +193,7 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
             }
             // 执行ajax函数 根据表单数据生成container
 
-            var postData = get_post_data_format($scope.imageName, $scope.imageTag, //用于创建容器的image信息
-                                                $scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
+            var postData = get_post_data_format($scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
                                                 $scope.portSt.portInstanceList, //暴露和映射的端口
                                                 $scope.env.envInstanceList, //自定义环境变量
                                                 $scope.link.linkInstanceList, //链接服务

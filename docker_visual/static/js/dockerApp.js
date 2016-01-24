@@ -239,31 +239,68 @@ app.factory('image', function($http, $location, dialog){
         var imageName, imageTag, repo;
         for(index in data){
             var item = data[index];
-             for(repoIndex in item['RepoTags']){
-                 repo = item['RepoTags'][repoIndex];
+            for(index in item['RepoTags']){
+                var isPrivate = false;
+                var repo = item['RepoTags'][index];
+                var imagePrefixStr = repo.slice(0, repo.lastIndexOf(':'));
+                var image={};
+                var re = /^\d+\.\d+\.\d+\.\d+:\d{4}$/;
+                var imagePrefixStrArray= imagePrefixStr.split('/');
 
-                 imageName = repo.split(':')[0];
-                 imageTag = repo.split(':')[1];
-                 var image={};
-                 image.name = imageName;
-                 image.tag = imageTag;
-                 image.time = item.Created*1000;
-                 image.size = item.VirtualSize;
+                image.tag = repo.slice(repo.lastIndexOf(':')+1);
 
-                 var alreadyHasFlag = false;
-                //  如果当前镜像和已经存入的镜像相同 则遗弃
-                 for(var index in images){
-                     var oldImage = images[index];
-                     if($.trim(oldImage.name)==image.name && $.trim(oldImage.tag == image.tag)){
-                         alreadyHasFlag = true;
-                         break;
-                     }
-                 }
+                if(imagePrefixStrArray.length==1){
+                    // 说明是官方仓库的官方镜像
+                    image.repo = 'docker.io.com';
+                    image.username ='docker';
+                    image.name = imagePrefixStrArray[0];
+                }else{
+                    var ipOrUser = imagePrefixStrArray[0];
+                    //如果为true说明是私有仓库
+                    if(re.test(ipOrUser)){
+                        image.repo = ipOrUser;
+                        if(imagePrefixStrArray.length==2){
+                            //说明没有用户名　默认设置为krystism
+                            image.username = 'krystism';
+                            image.name = imagePrefixStrArray[1];
+                        }else{
+                            image.username = imagePrefixStrArray[1];
+                            image.name = imagePrefixStrArray[2];
+                        }
+                        isPrivate = true;
 
-                 if(!alreadyHasFlag){
-                     images.push(image);
+                    }else{
+                        if(repo.length==2){
+                            continue;//如果repo有两个定且第一个不是ＩＰ 就取第二个
+                        }
+                        //否则为官方仓库的个人镜像
+                        image.repo = 'docker.io.com';
+                        image.username = ipOrUser;
+                        image.name = imagePrefixStrArray[1];
+                    }
+                }
+                if(isPrivate){
+                    break;
+                }
+            }
+
+             image.time = item.Created*1000;
+             image.size = item.VirtualSize;
+
+             var alreadyHasFlag = false;
+            //  如果当前镜像和已经存入的镜像相同 则遗弃
+             for(var index in images){
+                 var oldImage = images[index];
+                 if($.trim(oldImage.name)==image.name && $.trim(oldImage.tag == image.tag)){
+                     alreadyHasFlag = true;
+                     break;
                  }
              }
+
+             if(!alreadyHasFlag){
+                 images.push(image);
+             }
+
         }
         return images;
     }
@@ -530,13 +567,12 @@ app.factory('container', function($http, $location, dialog){
             if(option.Env.length==0){
                 delete option.Env
             }
-            console.log(option.HostConfig)
             for(index in option.HostConfig){
                 if(option.HostConfig[index].length==0 && typeof(option.HostConfig[index])=='object'){
                     delete option.HostConfig[index]
                 }
             }
-            console.log(option)
+            console.log(option);
             var data={
                 'url': create_url,
                 'params': option
@@ -550,12 +586,12 @@ app.factory('container', function($http, $location, dialog){
             }
             $.ajax(option)
             .done(function(data, status, headers){
-                console.log('success');
                 //  创建成功后开启容器
                 if(data.status == 'ok'){
                     afterStartFun = function(){
                         $location.path('/container/list');
                     }
+                    console.log('create success');
                     self.start("",newName, afterStartFun);
                 }
                 else{
@@ -588,6 +624,7 @@ app.factory('container', function($http, $location, dialog){
             }
             $http(option)
             .success(function(data, status, heades){
+                console.log('start success')
                 if(typeof(afterStartFun)=='function'){
                     afterStartFun(data);
                 }
@@ -620,7 +657,7 @@ app.factory('container', function($http, $location, dialog){
                     name = container['node_name'][1];
                     //不存储manage 和　mysql的资源信息
 
-                    if(name=='manage'|| name =='mysql'){
+                    if(name=='manage'|| name =='mysql' || name == 'docker_visual'){
                         continue;
                     }
                     self.storeResourceUsage(name);
@@ -680,7 +717,7 @@ app.factory('container', function($http, $location, dialog){
             dialog.show(do_remove, $('#dialog-delform'));
         },
         getLog: function(id){
-            var curl = endpoint+id+'/logs?stderr=1&stdout=1';
+            var curl = endpoint+id+'/logs?stderr=1&stdout=1&tail=80';
             var url = '/getLog/';
             var option = {
                 url: url,

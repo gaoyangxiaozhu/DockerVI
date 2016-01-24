@@ -42,8 +42,21 @@ app.controller('imageListController', ['$scope', '$location', 'image', function(
 
 
 
-    $scope.createContainerInstance = function(imageName, imageTag){
-        url = "/#/container/create/?imageName="+imageName+"&imageTag="+imageTag;
+    $scope.createContainerInstance = function(image){
+        repoName = image.repo;
+        username = image.username;
+        imageName = image.name;
+        imageTag = image.tag;
+        var re = /^\d+\.\d+\.\d+\.\d+:\d{4}$/;
+        if(re.test(repoName)){
+            url = "/#/container/create/?imageRepo="+repoName+"&username="+username+"&imageName="+imageName+"&imageTag="+imageTag;
+        }else{
+            if(username=='docker'){
+                url = "/#/container/create/?imageName="+imageName+"&imageTag="+imageTag;
+            }else{
+                url = "/#/container/create/?username="+username+"&imageName="+imageName+"&imageTag="+imageTag;
+            }
+        }
         window.location= url;
     };
     // 删除容器

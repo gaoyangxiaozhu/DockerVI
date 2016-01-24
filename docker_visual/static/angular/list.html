@@ -17,6 +17,8 @@
         <section id="docker">
           <table ng-if="type=='images'" class="table table-bordered">
             <tr> 
+              <th class="text-center">镜像仓库</th>
+              <th class="text-center">镜像用户</th>
               <th class="text-center">镜像名称</th>
               <th class="text-center">标签</th>
               <th class="text-center">创建时间</th>
@@ -24,13 +26,15 @@
               <th class="text-center">动作</th>
             </tr>
             <tr ng-repeat="image in images | orderBy:'name'">
+              <td class="text-center">{{ image.repo }}</td>
+              <td class="text-center">{{ image.username }}</td>
               <td class="text-center">{{ image.name  }}</td>
               <td class="text-center">{{ image.tag }}</td>
               <td class="text-center">{{ image.time | date:'yyyy-MM-dd HH:mm' }}</td>
               <td class="text-center">{{ image.size }}</td>
               <td class="text-center"> 
                 <button ng-click="delImage(image)" class="btn btn-danger btn-del-cm btn-xs"><i class="icon-trash bigger-120"></i></button>
-                <button ng-click="createContainerInstance(image.name, image.tag)" class="btn btn-xs btn-primary">创建容器</button>
+                <button ng-click="createContainerInstance(image)" class="btn btn-xs btn-primary">创建容器</button>
               </td>
             </tr>
           </table>

@@ -48,7 +48,6 @@ def resource(request, *args, **kwargs):
             node_array.append(node)
         _data=dict(nodes=nodes, node_array=node_array)
         return _data
-    print req_data['DriverStatus']
     data = format_data(req_data['DriverStatus'])
     return JsonResponse({
         'status': 'ok',
@@ -71,19 +70,21 @@ def  get_data_common_func(request, *args, **kwargs):
     return JsonResponse({
         'data': req_data
     })
+@csrf_exempt
 def get_log(request, *args, **kwargs):
     url = request.GET.get('url',None)
+    print url
     if url is None:
         return JsonResponse({
             'status': 'error',
             'msg': _('inValid url'),
         })
     try:
-        req_data= urllib2.urlopen(url).read()
+        req_data= urllib2.urlopen(url).readlines()
     except urllib2.HTTPError, e:
         code = e.code
         print 'error'
-    print req_data
+    req_data=str(req_data)
     return JsonResponse({
         'data': req_data
     })
@@ -116,7 +117,6 @@ def delete_container_or_image(request, method):
 def new_container(request):
     #json str to dict
     data = json.loads(request.body)
-    print data
     url = data['url']
     params = data['params']
 
@@ -127,7 +127,10 @@ def new_container(request):
             })
 
     params = json.dumps(params)
+    print(url)
+    print(params)
     req = urllib2.Request(url=url, data=params)
+
     req.add_header('Content-Type', 'application/json')
     code = 200
     try:
@@ -170,7 +173,6 @@ def get_current_container_cpu_mem_msg(name):
         cpu = int(req_data['HostConfig']['CpuShares'])/256
         mem = int(req_data['HostConfig']['Memory'])/1024/1024
 
-        print cpu, mem
         return (cpu,mem)
 
     except urllib2.HTTPError, e:
@@ -182,7 +184,6 @@ def get_current_reource_usage(url):
     try:
         res = urllib2.urlopen(req)
         req_data= json.loads(res.read())
-        print req_data['cpu_stats']['cpu_usage']['total_usage']
 
         if req_data['cpu_stats']['cpu_usage']['total_usage'] == 0:
             return 'error'
@@ -228,7 +229,6 @@ def screen_and_format(old_data, new_data, name):
         'network_tx_bytes': network_tx_bytes,
         'collect_time': current_time,
     }
-    print(format_data)
     return format_data
 
 def store_data_to_database(name, data):
@@ -326,7 +326,6 @@ def store_resource_usage_pertwosecond(name):
 
 @csrf_exempt
 def add_thread_for_get_resource_usage(request, name):
-    print name
     status = 'fail'
     if name not in names:
         names.append(name)
