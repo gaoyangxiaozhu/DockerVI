@@ -9,6 +9,8 @@ urlpatterns = [
     url(r'^containers/list/$', views.get_data_common_func),
     url(r'^container/$', views.get_data_common_func),
     url(r'^get_name_list/$', views.get_data_common_func),
+    url(r'^container/start/$', views.start_or_stop_container),
+    url(r'^container/stop/$', views.start_or_stop_container),
     url(r'^getLog/$', views.get_log),
     url(r'^delete/images/$', views.delete_container_or_image, {'method':'delete'}, name='image'),
     url(r'^delete/containers/$', views.delete_container_or_image, {'method': 'delete'}, name='container'),

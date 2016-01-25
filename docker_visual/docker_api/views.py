@@ -6,16 +6,17 @@ from django.views.generic import View, TemplateView
 from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from .form import createContainerForm
-from .models import CommonUsage, ProxyStream1, ProxyStream2,OtherResourceUsage
+from .models import *
+
 from .myThread import MyThread
 import urllib
-import urllib2
+import urllib2, requests
 import json
 import time
 
 #global endpoint
 
-endpoint = 'http://10.103.242.128:2377'
+endpoint = 'http://10.103.241.112:2377'
 
 #存储当前已经运行资源收集模块的容器的name　防止一个容器开启多个thread收集resource usage
 names = []
@@ -56,6 +57,7 @@ def resource(request, *args, **kwargs):
 @csrf_exempt
 def  get_data_common_func(request, *args, **kwargs):
     url = request.GET.get('url',None)
+    print url
     if url is None:
         return JsonResponse({
             'status': 'error',
@@ -66,9 +68,30 @@ def  get_data_common_func(request, *args, **kwargs):
     except urllib2.HTTPError, e:
         code = e.code
         print 'error'
-    print req_data
     return JsonResponse({
         'data': req_data
+    })
+@csrf_exempt
+def  start_or_stop_container(request, *args, **kwargs):
+    url = request.GET.get('url',None)
+    print 'url= ',url
+    if url is None:
+        return JsonResponse({
+            'status': 'error',
+            'msg': _('inValid url'),
+        })
+    try:
+        # data ={}
+        # data = json.dumps(data)
+        req= requests.post(url)
+    except requests.HTTPError, e:
+        code = e.code
+        print 'error'
+        return JsonResponse({
+            'data':'error'
+        })
+    return JsonResponse({
+        'data': 'success'
     })
 @csrf_exempt
 def get_log(request, *args, **kwargs):
@@ -127,15 +150,14 @@ def new_container(request):
             })
 
     params = json.dumps(params)
-    print(url)
-    print(params)
-    req = urllib2.Request(url=url, data=params)
+    # req = urllib2.Request(url=url, data=params)
 
-    req.add_header('Content-Type', 'application/json')
+    # req.add_header('Content-Type', 'application/json')
     code = 200
     try:
-        res = urllib2.urlopen(req)
-    except urllib2.HTTPError,e:
+        # res = urllib2.urlopen(req)
+        res = requests.post(url, params)
+    except requests.HTTPError,e:
         code = e.code
         return JsonResponse({
             'status': 'error',
@@ -170,7 +192,8 @@ def get_current_container_cpu_mem_msg(name):
     try:
         res=urllib2.urlopen(req)
         req_data=json.loads(res.read())
-        cpu = int(req_data['HostConfig']['CpuShares'])/256
+        cores = int(req_data['Node']['Cpus'])
+        cpu = int(req_data['HostConfig']['CpuShares'])/int(1024/cores)
         mem = int(req_data['HostConfig']['Memory'])/1024/1024
 
         return (cpu,mem)
@@ -214,6 +237,7 @@ def screen_and_format(old_data, new_data, name):
     memory_usage = new_data['memory_stats']['usage']
     memory_percent=round(float(memory_usage)/float(memory_limit)*100.0,2)
 
+
     network_rx_bytes = new_data['networks']['eth0']['rx_bytes'] - old_data['networks']['eth0']['rx_bytes']
     network_tx_bytes = new_data['networks']['eth0']['tx_bytes'] - old_data['networks']['eth0']['tx_bytes']
 
@@ -230,27 +254,43 @@ def screen_and_format(old_data, new_data, name):
         'collect_time': current_time,
     }
     return format_data
-
+def get_table(name):
+    nameList={
+        'ProxyStream1':ProxyStream1,
+        'ProxyStream2':ProxyStream2,
+        'ProxyStream3':ProxyStream3,
+        'OnlineFormat1': OnlineFormat1,
+        'OnlineFormat2': OnlineFormat2,
+        'OnlineFormat3': OnlineFormat3,
+        'CorssDetection1': CrossDetection1,
+        'CrossDetection2': CrossDetection2,
+        'CrossDetection3': CrossDetection3
+    }
+    table= nameList.get(name)
+    if table:
+        return table
+    else:
+        return OtherResourceUsage
 def store_data_to_database(name, data):
     cpu,mem =get_current_container_cpu_mem_msg(name)
     if cpu == 0:
         cpu = 24
+    cpu_utilize=float(data['cpu_percent']/100)*cpu
     cpu = str(cpu)
     if mem < 1024:
         if mem == 0:
             mem = '32GB'
+            mem_utilize = str(float(data['memory_percent']/100)*32)+'GB'
         else:
+            mem_utilize = str(float(data['memory_percent']/100)*mem)+'MB'
             mem = str(mem)+'MB'
     else:
         mem = mem/1024
+        mem_utilize = str(float(data['memory_percent']/100)*mem)+'MB'
         mem = str(mem)+'GB'
 
-    ResourceUsage = OtherResourceUsage
-    if name=='ProxyStream1':
-        ResourceUsage = ProxyStream1
-    else:
-        if name == 'ProxyStream2':
-            ResourceUsage = ProxyStream2
+    ResourceUsage = get_table(name)
+
     resource_instance = ResourceUsage(
                             service_name = data['service_name'],
                             cpu_percent = data['cpu_percent'],
@@ -260,24 +300,19 @@ def store_data_to_database(name, data):
                             network_rx_bytes = data['network_rx_bytes'],
                             network_tx_bytes = data['network_tx_bytes'],
                             collect_time = data['collect_time'],
+                            cpu_utilize = cpu_utilize,
+                            mem_utilize = mem_utilize,
                             cpu= cpu,
                             memory = mem
                             )
     resource_instance.save()
 
 def get_current_resource_usage_from_database(name):
-    ResourceUsage = OtherResourceUsage
-    if name=='ProxyStream1':
-        ResourceUsage = ProxyStream1
-    else:
-        if name == 'ProxyStream2':
-            ResourceUsage = ProxyStream2
+    ResourceUsage = get_table(name)
     data_objects = ResourceUsage.objects.filter(service_name=name).order_by('collect_time')
-    print(len(data_objects));
-    if len(data_objects) >=20:
+    if len(data_objects) >=400:
         length = len(data_objects)
-        data_objects = data_objects[length-21:length-1]
-    print(len(data_objects));
+        data_objects = data_objects[length-401:length-1]
     return data_objects
 def format_data(data):
     dataArray = []
@@ -318,15 +353,18 @@ def store_resource_usage_pertwosecond(name):
             data =screen_and_format(old_resource_data, new_resource_data, name)
             #存入数据库
             store_data_to_database(name, data)
-        # 设置每1秒读取一次　用于测试
+        # 设置每10秒读取一次　用于测试
         #　实际由于操作数据库　会有额外的５-7秒增加
-        time.sleep(1)
+        time.sleep(4)
 
 
 
 @csrf_exempt
 def add_thread_for_get_resource_usage(request, name):
     status = 'fail'
+    return JsonResponse({
+        'status': '暂停收集!'
+    })
     if name not in names:
         names.append(name)
         new_thread = MyThread(store_resource_usage_pertwosecond,

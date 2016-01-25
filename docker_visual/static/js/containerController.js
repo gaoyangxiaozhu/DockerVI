@@ -66,12 +66,11 @@ app.controller('containerController', ['$scope', '$location', 'container', funct
 
     // 停止容器
     $scope.stopContainer= function(currentContainer){
-
         // 成功关闭容器后执行的回调函数
         var after_stop_container = function(data){
             currentContainer.Status = 'stop';
         }
-
+        console.log('heheh');
         container.stop(currentContainer.Id, after_stop_container);
     }
     // 删除容器
@@ -98,7 +97,6 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
     //这里面也调用了resourceCollectForCurrentRunningContainers函数　主要是在用户直接进入此页面以后也可以开启对各个资源的收集
 
     container.resourceCollectForCurrentRunningContainers();
-
     // ID其实是容器的name
 
     var ID = $routeParams.ID;
@@ -120,7 +118,6 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
 
     // 运行容器
     $scope.startContainer= function(currentContainer){
-        console.log(currentContainer);
         // 成功启动容器后执行的回调函数
         var after_start_container= function(data){
 
@@ -132,20 +129,17 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
 
     // 停止容器
     $scope.stopContainer= function(currentContainer){
-
         // 成功关闭容器后执行的回调函数
         var after_stop_container = function(data){
 
             // 关闭容器后刷新所有数据 重新渲染表格
             container.data(ID, current_detail_init);
         }
+        console.log(currentContainer.Id);
         container.stop(currentContainer.Id, after_stop_container);
     }
     //资源stream
     $scope.showGraphForResourceFlag = false;
-    // $scope.$watchCollection('[showGraphForResourceFlag,]', function(){
-    //     console.log($scope.showGraphForResourceFlag);
-    // });
     $scope.getResourceStats = function(){
         $scope.showGraphForResourceFlag = true;
         function invokeContainerGetResourceFunction(){
@@ -158,7 +152,7 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
                     clearTimeout(t);
             });
             if($scope.showGraphForResourceFlag){
-                t=setTimeout(invokeContainerGetResourceFunction,4500); //每4秒渲染一次
+                t=setTimeout(invokeContainerGetResourceFunction,450000); //每4秒渲染一次
             }else{
                 clearTimeout(t);
             }

@@ -57,6 +57,7 @@ app.controller('imageListController', ['$scope', '$location', 'image', function(
                 url = "/#/container/create/?username="+username+"&imageName="+imageName+"&imageTag="+imageTag;
             }
         }
+        url=url+"&fullSourceName="+image.full_source_name;
         window.location= url;
     };
     // 删除容器

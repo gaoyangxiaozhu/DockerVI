@@ -81,6 +81,7 @@ app.directive('detailsTab', function(){
                         // Labels for the ykeys -- will be displayed when you hover over the
                         // chart.
                         labels:['内存利用率'],
+                        xLabels:['30min'],
                         yLabelFormat: function (y) { return y.toString() + '%'; },
 
                     });
@@ -110,6 +111,7 @@ app.directive('detailsTab', function(){
                         // Labels for the ykeys -- will be displayed when you hover over the
                         // chart.
                         labels:['cpu利用率'],
+                        xLabels:['30min'],
                         yLabelFormat: function (y) { return y.toString() + '%'; },
 
                     });
@@ -140,6 +142,7 @@ app.directive('detailsTab', function(){
                         // Labels for the ykeys -- will be displayed when you hover over the
                         // chart.
                         labels:['接收字节', '发送字节'],
+                        xLabels:['30min'],
                         yLabelFormat: function (y) { return y.toString() + 'Byte/s'; },
 
                     });
@@ -229,7 +232,7 @@ app.factory('dialog', function(){
 })
 
 app.factory('image', function($http, $location, dialog){
-    var endpoint = 'http://10.103.242.128:2377/images/';
+    var endpoint = 'http://10.103.241.112:2377/images/';
     var _images = []; //存储获得的镜像信息
 
     //service  main for  image
@@ -244,21 +247,21 @@ app.factory('image', function($http, $location, dialog){
                 var repo = item['RepoTags'][index];
                 var imagePrefixStr = repo.slice(0, repo.lastIndexOf(':'));
                 var image={};
-                var re = /^\d+\.\d+\.\d+\.\d+:\d{4}$/;
                 var imagePrefixStrArray= imagePrefixStr.split('/');
 
                 image.tag = repo.slice(repo.lastIndexOf(':')+1);
-
+                image.full_source_name = repo;
                 if(imagePrefixStrArray.length==1){
                     // 说明是官方仓库的官方镜像
                     image.repo = 'docker.io.com';
                     image.username ='docker';
                     image.name = imagePrefixStrArray[0];
                 }else{
-                    var ipOrUser = imagePrefixStrArray[0];
+                    var socketOrUser = imagePrefixStrArray[0];
                     //如果为true说明是私有仓库
-                    if(re.test(ipOrUser)){
-                        image.repo = ipOrUser;
+                    if(socketOrUser.indexOf(':')>=0){
+                        image.repo = socketOrUser;
+                        image.full_source_name = repo;
                         if(imagePrefixStrArray.length==2){
                             //说明没有用户名　默认设置为krystism
                             image.username = 'krystism';
@@ -275,7 +278,7 @@ app.factory('image', function($http, $location, dialog){
                         }
                         //否则为官方仓库的个人镜像
                         image.repo = 'docker.io.com';
-                        image.username = ipOrUser;
+                        image.username = socketOrUser;
                         image.name = imagePrefixStrArray[1];
                     }
                 }
@@ -373,7 +376,7 @@ app.factory('image', function($http, $location, dialog){
 
 });
 app.factory('container', function($http, $location, dialog){
-    var endpoint = 'http://10.103.242.128:2377/containers/';
+    var endpoint = 'http://10.103.241.112:2377/containers/';
     var _containers= {}; //存储container列表
 
     // data 函数实体动态构建函数 如果isＬist为true 则返回一个函数用来获取整个container列表 否则返回一个data内部函数获取当前id的container信息
@@ -439,10 +442,10 @@ app.factory('container', function($http, $location, dialog){
         }
     }
     // format portbinds
-    function format_bind_ports(portBindings){
+    function format_bind_ports(ports){
         var portList=[];
-        for(exposePort in portBindings){
-            var bindPortList = portBindings[exposePort];
+        for(exposePort in ports){
+            var bindPortList = ports[exposePort];
             if(bindPortList){
                 for(var item in bindPortList){
                     var bindPort = bindPortList[item];
@@ -515,7 +518,7 @@ app.factory('container', function($http, $location, dialog){
         data.Status= format_state_container(data['State']);
 
         // get portList
-        data.portList = format_bind_ports(data['HostConfig']['PortBindings']);
+        data.portList = format_bind_ports(data['NetworkSettings']['Ports']);
 
         // gett volumeList
         data.volumesList = format_volumes(data['HostConfig']['Binds']);
@@ -617,13 +620,18 @@ app.factory('container', function($http, $location, dialog){
 
         },
         start: function(id, name, afterStartFun){
-            var url = endpoint+name+'/start';
+            var curl = endpoint+name+'/start';
+            var url = '/container/start/';
             var option={
                 url:url,
-                method: 'POST'
+                method: 'POST',
+                params:{
+                    url:curl
+                }
             }
             $http(option)
             .success(function(data, status, heades){
+                data = data['data'];
                 console.log('start success')
                 if(typeof(afterStartFun)=='function'){
                     afterStartFun(data);
@@ -666,13 +674,20 @@ app.factory('container', function($http, $location, dialog){
             }
         },
         stop: function(id, afterStopFun){
-            var cUrl= endpoint+id+'/stop';
+            console.log(id);
+            var curl= endpoint+id+'/stop';
+            var url = '/container/stop/';
+            console.log(curl);
             var option={
-                url: cUrl,
-                method: 'POST'
+                url: url,
+                method:'GET',
+                params:{
+                    url:curl
+                }
             }
             $http(option)
             .success(function(data, status, headers){
+                console.log('success');
                 if(typeof(afterStopFun)=='function'){
                     afterStopFun(data);
                 }
@@ -806,7 +821,7 @@ app.factory('container', function($http, $location, dialog){
 
 });
 app.factory('resource', function($http, $location, dialog){
-    var endpoint = 'http://10.103.242.128:2377/';
+    var endpoint = 'http://10.103.241.112:2377/';
     return self={
         getInfo: function(fn){
             var url='/info';

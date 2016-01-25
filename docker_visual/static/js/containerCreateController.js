@@ -1,14 +1,9 @@
 // container details page controller
 app.controller('containerCreateController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
-
+    $scope.imageFullSourceName = $routeParams.fullSourceName;
+    console.log($scope.imageFullSourceName);
     $scope.imageName = $routeParams.imageName;
     $scope.imageTag = $routeParams.imageTag;
-    if($routeParams.imageRepo){
-        $scope.imageRepo = $routeParams.imageRepo;
-    }
-    if($routeParams.username){
-        $scope.username = $routeParams.username;
-    }
     // todo 先这样定义三种容器大小选项 以后明白cup部分 以及对angular有进一步了解后进行改进
 
     $scope.containerSize=[
@@ -132,8 +127,13 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                 }
                 function get_port_format(portList){
                     var ports = {};
+                    console.log(portList);
                     for(index in portList){
-                        ports[portList[index]['containerPort']] = [{'HostPort': portList[index]['hostPort']}];
+                        if(ports[portList[index]['containerPort']]){
+                            ports[portList[index]['containerPort']].push({'HostPort': portList[index]['hostPort']});
+                        }else{
+                            ports[portList[index]['containerPort']] = [{'HostPort': portList[index]['hostPort']}];
+                        }
                     }
                     return ports;
                 }
@@ -146,23 +146,9 @@ app.controller('containerCreateController', ['$scope', '$routeParams', 'containe
                         case 'G': return num*1024*1024*1024;
                     }
                 }
-                function get_image_full_name(){
-                    if($scope.imageRepo){
-                        option.Image = [$scope.imageRepo, $scope.username, $scope.imageName].join('/');
-                        option.Image = [option.Image, $scope.imageTag].join(':');
-                    }else{
-                        if($scope.username){
-                            option.Image = [$scope.username, $scope.imageName].join('/');
-                            option.Image = [option.Image, $scope.imageTag].join(':');
-                        }else{
-                            option.Image = [option.imageName, option.imageTag].join(':');
-                        }
-                    }
-                    return option.Image;
-                }
                 option = {};
 
-                option.Image= get_image_full_name();
+                option.Image= $scope.imageFullSourceName;
                 option.Name = containerName;
 
                 option.Env = get_env_format(envList);
