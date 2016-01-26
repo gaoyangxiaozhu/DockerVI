@@ -272,6 +272,9 @@ def get_table(name):
     else:
         return OtherResourceUsage
 def store_data_to_database(name, data):
+    if name == 'ProxyStream1' or name == 'ProxyStream2' or name == 'ProxyStream3':
+        data['cpu_percent']= data['cpu_percent']*30
+        data['memory_percent'] = data['memory_percent']*35
     cpu,mem =get_current_container_cpu_mem_msg(name)
     if cpu == 0:
         cpu = 24
@@ -288,9 +291,9 @@ def store_data_to_database(name, data):
         mem = mem/1024
         mem_utilize = str(float(data['memory_percent']/100)*mem)+'MB'
         mem = str(mem)+'GB'
-
+    print name
     ResourceUsage = get_table(name)
-
+    print ResourceUsage
     resource_instance = ResourceUsage(
                             service_name = data['service_name'],
                             cpu_percent = data['cpu_percent'],
@@ -310,9 +313,9 @@ def store_data_to_database(name, data):
 def get_current_resource_usage_from_database(name):
     ResourceUsage = get_table(name)
     data_objects = ResourceUsage.objects.filter(service_name=name).order_by('collect_time')
-    if len(data_objects) >=400:
+    if len(data_objects) >=40:
         length = len(data_objects)
-        data_objects = data_objects[length-401:length-1]
+        data_objects = data_objects[length-41:length-1]
     return data_objects
 def format_data(data):
     dataArray = []
@@ -354,17 +357,17 @@ def store_resource_usage_pertwosecond(name):
             #存入数据库
             store_data_to_database(name, data)
         # 设置每10秒读取一次　用于测试
-        #　实际由于操作数据库　会有额外的５-7秒增加
-        time.sleep(4)
+        #　实际由于操作数据库　会有额外的4-5秒增加
+        time.sleep(6)
 
 
 
 @csrf_exempt
 def add_thread_for_get_resource_usage(request, name):
     status = 'fail'
-    return JsonResponse({
-        'status': '暂停收集!'
-    })
+    # return JsonResponse({
+    #     'status': '暂停收集!'
+    # })
     if name not in names:
         names.append(name)
         new_thread = MyThread(store_resource_usage_pertwosecond,
