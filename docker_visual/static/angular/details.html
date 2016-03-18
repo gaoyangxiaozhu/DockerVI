@@ -132,11 +132,26 @@
                       <div id="resource" class="tab-pane">
                         <div id="graph">
                           <h2>CPU利用率</h2>
-                          <div id="cpuchart"></div>
+                          <div id="cpuchart" ng-class="{'hide': isLoading}"></div>
+                          <div ng-show="isLoading" class="loading cpu">
+                            <div class="table-cell">
+                              <div ng-class="{'active': isLoading }" class="circle"></div>
+                            </div>
+                          </div>
                           <h2>内存利用率</h2>
-                          <div id="memorychart"></div>
+                          <div id="memorychart" ng-class="{'hide': isLoading}"></div>
+                          <div ng-show="isLoading" class="loading mem">
+                            <div class="table-cell">
+                              <div ng-class="{'active': isLoading }" class="circle"></div>
+                            </div>
+                          </div>
                           <h2>发送字节和接收字节</h2>
-                          <div id="networkchart"></div>
+                          <div id="networkchart" ng-class="{'hide': isLoading}"></div>
+                          <div ng-show="isLoading" class="loading network">
+                            <div class="table-cell">
+                              <div ng-class="{'active': isLoading }" class="circle"></div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>

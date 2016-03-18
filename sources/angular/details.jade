@@ -126,12 +126,20 @@
                                             #resource.tab-pane
                                                 #graph
                                                     h2 CPU利用率
-                                                    #cpuchart
+                                                    #cpuchart(ng-class="{'hide': isLoading}")
+                                                    .loading.cpu(ng-show="isLoading")
+                                                        .table-cell
+                                                            .circle(ng-class="{'active': isLoading }")
                                                     h2 内存利用率
-                                                    #memorychart
+                                                    #memorychart(ng-class="{'hide': isLoading}")
+                                                    .loading.mem(ng-show="isLoading")
+                                                        .table-cell
+                                                            .circle(ng-class="{'active': isLoading }")
                                                     h2 发送字节和接收字节
-                                                    #networkchart
-                                                    
+                                                    #networkchart(ng-class="{'hide': isLoading}")
+                                                    .loading.network(ng-show="isLoading")
+                                                        .table-cell
+                                                            .circle(ng-class="{'active': isLoading }")
                                                 
                                                     
                         

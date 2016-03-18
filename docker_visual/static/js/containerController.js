@@ -105,6 +105,7 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
     }
     container.data(ID, current_detail_init);
 
+
     $scope.getLog = function(){
         container.getLog(ID)
         .success(function(data, status, header){
@@ -140,23 +141,33 @@ app.controller('containerDetailController', ['$scope', '$routeParams', 'containe
     }
     //资源stream
     $scope.showGraphForResourceFlag = false;
+    $scope.isLoading = false;
+    $scope.noData = false;
     $scope.getResourceStats = function(){
         $scope.showGraphForResourceFlag = true;
         function invokeContainerGetResourceFunction(){
             container.getResourceStats(ID)
             .success(function(data, status, header){
                 $scope.graphData = data
+                if($scope.graphData['data'].length==0){
+                    $scope.isLoading = true;
+                    $scope.noData = true;
+                }else{
+                    $scope.noData = false;
+                }
             })
             .error(function(data, status, header){
-                    console.log(status);
+                console.log('error');
                     clearTimeout(t);
             });
+            console.log($scope.showGraphForResourceFlag);
             if($scope.showGraphForResourceFlag){
-                t=setTimeout(invokeContainerGetResourceFunction,450000); //每4秒渲染一次
+                t=setTimeout(invokeContainerGetResourceFunction,4500); //每4秒渲染一次
             }else{
                 clearTimeout(t);
             }
         }
+        $scope.isLoading = true;
         invokeContainerGetResourceFunction();
     }
 }]);

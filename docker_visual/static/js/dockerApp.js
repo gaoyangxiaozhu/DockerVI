@@ -67,7 +67,7 @@ app.directive('detailsTab', function(){
                 that = $(this);
                 nav_selected.call(that);
             });
-
+			// 观察graphData是否改变　改变就重新渲染数据
             scope.$watchCollection('[graphData,]', function(){
                 if(scope.graphData){
                     buildGraph(scope.graphData['data']);
@@ -79,9 +79,11 @@ app.directive('detailsTab', function(){
                     memoryMorris = null;
                     networkMorris = null;
                     $('#cpuchart, #memorychart, #networkchart').children().remove();
+					scope.isLoading = false;
                     buildCpuGraph(data);
                     buildMemoryGraph(data);
                     buildNetworkGraph(data);
+
                 }else{
                     scope.showGraphForResourceFlag=false;
                 }

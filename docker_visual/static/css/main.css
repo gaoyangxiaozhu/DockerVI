@@ -101,10 +101,49 @@ h1 span.state-label {
 .details-body {
   margin-top: 15px;
 }
+#resource {
+  position: relative;
+}
 #cpuchart,
 #memorychart,
-#networkchart {
+#networkchart,
+.loading {
   height: 200px;
+}
+#cpuchart.hide,
+#memorychart.hide,
+#networkchart.hide {
+  visibility: hidden !important;
+  display: block !important;
+}
+.loading {
+  position: absolute;
+  width: 100%;
+  display: table;
+}
+.loading .table-cell {
+  display: table-cell;
+  vertical-align: middle;
+}
+.loading .table-cell .circle {
+  height: 50px;
+  width: 50px;
+  margin: 0 auto;
+  border: 10px #5597cf solid;
+  border-radius: 25px;
+  border-right: #68a2d5;
+}
+.loading .table-cell .circle.active {
+  animation: loading 0.4s infinite;
+}
+.loading.cpu {
+  top: 50px;
+}
+.loading.mem {
+  top: 300px;
+}
+.loading.network {
+  top: 500px;
 }
 /* end detail jade*/
 /* create jade */
@@ -163,4 +202,60 @@ li {
 /* end*/
 .footer {
   margin-top: 200px;
+}
+@-moz-keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(260deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(260deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(260deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  75% {
+    transform: rotate(260deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
