@@ -7,9 +7,30 @@
 /**
 配置docker 监听的IP地址
 */
-var DOCKERADDRESS = "http://127.0.0.1:8080/"; //docker的IP
+var DOCKERADDRESS = "http://10.103.241.112:2377/"; //docker的IP
 
-var app = angular.module('dockerApp', ['ngRoute', 'pager', 'slider', 'angular.filter']);
+var app = angular.module('dockerApp', ['ngRoute', 'ngProgress', 'pager', 'slider', 'angular.filter']);
+app.run(function ($rootScope, ngProgressFactory) {
+	   //加载进度
+		$rootScope.progressbar = ngProgressFactory.createInstance();
+        // 设置页面上方用于提示加载进度的导航栏
+	    $rootScope.$on('$routeChangeStart', function (event, next, current){
+	    	$rootScope.progressbar.setColor('green');
+			$rootScope.progressbar.reset(); // Required to handle all edge cases.
+			$rootScope.progressbar.start();
+	    });
+		// When route successfully changed.
+		$rootScope.$on('$stateChangeSuccess', function(event, current, previous){
+			$rootScope.progressbar.complete();
+			$rootScope.currentRoute = current;
+			$rootScope.previousRoute = previous;
+		});
+		// When some error occured.
+		$rootScope.$on('$routeChangeError', function() {
+			$rootScope.progressbar.reset();
+		});
+	  });
+
 app.constant('DOCKERADDRESS', DOCKERADDRESS );
 
 app.directive('myTipDirective', function(){
@@ -657,7 +678,6 @@ app.factory('container', function($http, $location, dialog,DOCKERADDRESS){
             }
             $http(option)
             .success(function(data, status, headers){
-                console.log(data['status']);
             })
             .error(function(data, status, headers){
                 console.log(data);
