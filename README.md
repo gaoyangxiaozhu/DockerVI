@@ -18,9 +18,12 @@
 1. container列表的显示<br>
 2. 单个container的删除、运行、停止<br>
 3. 单个container内部的 IP、端口、数据卷、日志以及自定义环境变量的查看<br>
-4. image列表的显示<br>
-5. 单个image的删除<br>
-6. 通过image创建container实例<br>
+４. 每一个running container实例，　实时收集其内部资源使用数据(cpu mem network)并在前端图表渲染显示
+５. image列表的显示<br>
+６. 单个image的删除<br>
+７. 通过image创建container实例<br>
+
+
 
 ##使用说明
 ```clone```仓库文件到本地,在终端运行**docker-visual**目录下的run.sh文件, 然后在浏览器输入0.0.0.0:18000, 即可与远程进行docker集群的可视化管理
