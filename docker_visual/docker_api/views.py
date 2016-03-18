@@ -15,7 +15,7 @@ import json
 import time
 
 #global endpoint
-
+#　docker IP
 endpoint = 'http://10.103.241.112:2377'
 
 #存储当前已经运行资源收集模块的容器的name　防止一个容器开启多个thread收集resource usage
@@ -272,6 +272,10 @@ def get_table(name):
     else:
         return OtherResourceUsage
 def store_data_to_database(name, data):
+    if name == 'ProxyStream2':
+        temp = memory_percent
+        cpu_percent = temp
+        memory_percent = cpu_percent
     if name == 'ProxyStream1' or name == 'ProxyStream2' or name == 'ProxyStream3':
         data['cpu_percent']= data['cpu_percent']*30
         data['memory_percent'] = data['memory_percent']*35

@@ -1,10 +1,17 @@
 /**
-@ngDoc dockerApp
-@author gaoyangyang
-@description
+*@ngDoc dockerApp
+*@author gaoyangyang
+*@description
 * angualr app for customer can operate docker remote api using visual interface
 */
+/**
+配置docker 监听的IP地址
+*/
+var DOCKERADDRESS = "http://127.0.0.1:8080/"; //docker的IP
+
 var app = angular.module('dockerApp', ['ngRoute', 'pager', 'slider', 'angular.filter']);
+app.constant('DOCKERADDRESS', DOCKERADDRESS );
+
 app.directive('myTipDirective', function(){
     return {
         restrict: 'A',
@@ -231,8 +238,8 @@ app.factory('dialog', function(){
     }
 })
 
-app.factory('image', function($http, $location, dialog){
-    var endpoint = 'http://10.103.241.112:2377/images/';
+app.factory('image', function($http, $location, dialog, DOCKERADDRESS){
+    var endpoint = DOCKERADDRESS+'images/';
     var _images = []; //存储获得的镜像信息
 
     //service  main for  image
@@ -375,8 +382,8 @@ app.factory('image', function($http, $location, dialog){
     }
 
 });
-app.factory('container', function($http, $location, dialog){
-    var endpoint = 'http://10.103.241.112:2377/containers/';
+app.factory('container', function($http, $location, dialog,DOCKERADDRESS){
+    var endpoint = DOCKERADDRESS+'containers/';
     var _containers= {}; //存储container列表
 
     // data 函数实体动态构建函数 如果isＬist为true 则返回一个函数用来获取整个container列表 否则返回一个data内部函数获取当前id的container信息
@@ -575,7 +582,6 @@ app.factory('container', function($http, $location, dialog){
                     delete option.HostConfig[index]
                 }
             }
-            console.log(option);
             var data={
                 'url': create_url,
                 'params': option
@@ -820,8 +826,9 @@ app.factory('container', function($http, $location, dialog){
     }
 
 });
-app.factory('resource', function($http, $location, dialog){
-    var endpoint = 'http://10.103.241.112:2377/';
+app.factory('resource', function($http, $location, dialog, DOCKERADDRESS){
+    // var endpoint = 'http://10.103.241.112:2377/';
+    var endpoint = DOCKERADDRESS;
     return self={
         getInfo: function(fn){
             var url='/info';
