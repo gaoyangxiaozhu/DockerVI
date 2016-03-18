@@ -5,7 +5,8 @@
 
 ---
 实现可视化操作docker 远程 api
-可用于swarm集群或单机docker引擎的远程控制管理
+可用于dockeer swarm集群的远程控制管理
+*注*　单机docker监控会前端显示会出现一定问题，　以后修复....
 ##采用angular+django实现
 
 
