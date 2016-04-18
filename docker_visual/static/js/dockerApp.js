@@ -7,7 +7,7 @@
 /**
 配置docker 监听的IP地址
 */
-var DOCKERADDRESS = "http://10.103.241.112:2377/"; //docker的IP
+var DOCKERADDRESS = "http://10.103.242.128:2377/"; //docker的IP
 
 var app = angular.module('dockerApp', ['ngRoute', 'ngProgress', 'pager', 'slider', 'angular.filter']);
 app.run(function ($rootScope, ngProgressFactory) {
