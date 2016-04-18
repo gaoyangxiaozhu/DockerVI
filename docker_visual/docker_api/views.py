@@ -16,7 +16,7 @@ import time
 
 #global endpoint
 #　docker IP
-endpoint = 'http://10.103.241.112:2377'
+endpoint = 'http://10.103.242.128:2377'
 
 #存储当前已经运行资源收集模块的容器的name　防止一个容器开启多个thread收集resource usage
 names = []
@@ -41,15 +41,17 @@ def resource(request, *args, **kwargs):
         data = data[4:]
         node_array = []
         for i in range(nodes):
-            name = data[i*6][0]
-            cpu = data[i*6+3][1].split('/')
-            mem = data[i*6+4][1].split('/')
-            print cpu,mem,name
+            name = data[i*9][0]
+            cpu = data[i*9+3][1].split('/')
+            mem = data[i*9+4][1].split('/')
+            print cpu
+            print mem
+            print name
             node = dict(name=name, cpu_use=int(cpu[0]), cpu_has=int(cpu[1]), mem_use=mem[0], mem_has=mem[1])
             node_array.append(node)
         _data=dict(nodes=nodes, node_array=node_array)
         return _data
-    data = format_data(req_data['DriverStatus'])
+    data = format_data(req_data['SystemStatus'])
     return JsonResponse({
         'status': 'ok',
         'msg': data,
