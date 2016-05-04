@@ -1,0 +1,91 @@
+.breadcrumbs#breadcrumbs
+    script(type="text/javascript").
+      try{ace.settings.check('breadcrumbs', 'fixed')}catch(e){}
+    ul.breadcrumb
+        li
+            i.icon-home.home-icon
+            a(href="#") home
+        li
+            a(href="{{ curmbOneLink }}") {{ crumbOne }}
+        li.active {{ crumbTwo }}
+    <!-- .breadcrumb -->
+.page-content
+    .page-header
+        h1 
+            span {{ headerSpan }}
+            small
+                i.icon-double-angle-right
+                | {{ headerDetail }}
+    .row
+        .col-xs-12
+            <!-- page contnt begins-->
+            .content-body
+                section#docker
+                    table.table.table-bordered(ng-if="type=='images'")
+                        tr 
+                            th.text-center 镜像仓库
+                            th.text-center 镜像用户
+                            th.text-center 镜像名称
+                            th.text-center 标签
+                            th.text-center 创建时间
+                            th.text-center 镜像大小
+                            th.text-center 动作
+                        tr(ng-repeat="image in images | orderBy:'name'")
+                            td.text-center {{ image.repo }}
+                            td.text-center {{ image.username }}
+                            td.text-center {{ image.name  }}
+                            td.text-center {{ image.tag }}
+                            td.text-center {{ image.time | date:'yyyy-MM-dd HH:mm' }}
+                            td.text-center {{ image.size }}
+                            td.text-center 
+                                button.btn.btn-danger.btn-del-cm.btn-xs(ng-click="delImage(image)")
+                                    i.icon-trash.bigger-120
+                                button.btn.btn-xs.btn-primary(ng-click='createContainerInstance(image)') 创建容器
+                    table.table.table-bordered(ng-if="type=='containers'")
+                        tr 
+                            th.text-center 名称
+                            th.text-center 节点
+                            th.text-center 状态
+                            th.text-center 镜像
+                            th.text-center 创建时间
+                            th.text-center 动作
+                        tr(ng-repeat="container in containers | orderBy: 'Created'")
+                            td.text-center 
+                                a(href='#/container/details/{{ container["node_name"][1] }}')
+                                    span {{ container['node_name'][1] }}
+                            td.text-center 
+                                span {{ container['node_name'][0] }} 
+                            td.text-center
+                                span.state-label.play(ng-if="container.Status == 'running'")
+                                    i.icon-play
+                                    | 运行中
+                                span.state-label(ng-if="container.Status =='stop'") 
+                                    i.icon-pause
+                                    | 停止
+                                span.state-label.error(ng-if="container.Status== 'error'") Error
+                            td.text-center {{ container.Image }}
+                            td.text-center {{ container.Created*1000 | date:'yyyy-MM-dd HH:mm' }}
+                            td.text-center
+                                button.btn.btn-danger.btn-del-cm.btn-xs.tooltip-error(data-rel="tooltip" data-placement="top" title="删除" my-tip-directive ng-click="delContainer(container)")
+                                    i.icon-trash.bigger-120
+                                button.btn.btn-xs.btn-primary(ng-if="container.Status=='stop'", ng-click="startContainer(container)" data-rel="tooltip" data-placement="top" title="运行" my-tip-directive) 
+                                    i.icon-play
+                                button.btn.btn-xs.btn-grey(ng-if="container.Status=='running'", ng-click="stopContainer(container)" data-rel="tooltip" data-placement="top" title="停止" my-tip-directive)
+                                    i.icon-pause
+                                button.btn.btn-xs(ng-if="container.Status=='error'") 无动作
+                    .pager-content
+                        paging.center-block(page="currentPage" page-size="pageSize" total="total" scroll-top="false" show-prev-next="true" paging-action="getSubList(page)")
+                .detail-panel
+                    .widget-header.header-color-purple.widget-header-fixed
+                        h5.bigger.lighter
+                            | Details
+                        .widget-toolbar
+                            span(data-action='close')
+                                i.icon-remove
+                        
+                    .profile-user-info.profile-user-info-striped
+                        
+                    
+            <!-- page content end -->
+        <!-- ./col-->
+<!-- /.page-content-->
