@@ -14,16 +14,6 @@ var fs = require('fs');
 
 // 连接数据库.
 mongoose.connect(config.mongo.uri, config.mongo.options);
-// var modelsPath = path.join(__dirname, 'model');
-// fs.readdirSync(modelsPath).forEach(function (file) {
-// 	if (/(.*)\.(js$|coffee$)/.test(file)) {
-// 		require(modelsPath + '/' + file);
-// 	}
-// });
-//
-// // 初始化数据
-// console.log(config.seedDB);
-// // if(config.seedDB) { require('./config/seed'); }
 
 var app = express();
 var server = require('http').createServer(app);

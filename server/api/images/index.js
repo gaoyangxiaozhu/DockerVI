@@ -6,6 +6,6 @@ var controller = require('./images.controller');
 
 var router = express.Router();
 
-router.get('/list/', controller.list);
+router.get('/getImagesList', controller.list);
 
 module.exports = router;

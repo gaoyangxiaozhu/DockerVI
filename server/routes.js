@@ -11,7 +11,6 @@ module.exports = function(app){
 
   app.use('/api/containers', require('./api/containers'));
 
-  // app.use('/auth', require('./auth'));
   app.use('/api/images',require('./api/images'));
 
   app.use('/api/build', require('./api/build'));
