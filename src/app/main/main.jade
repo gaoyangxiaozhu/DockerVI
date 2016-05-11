@@ -1,0 +1,33 @@
+extends layout.jade
+block head_extra
+block content
+    .main-container#main-container
+        .main-container-inner
+            include ../components/slidebar/sidebar.jade
+            .main-content
+            // .main-content
+                section#docker
+                    .resource.row
+                        .resource-main.col-sm-7.col-sm-offset-2
+                            ul.resource-list
+                                li.clearfix(ng-repeat="instance in info")
+                                    h3 节点名称:
+                                        strong {{ instance.name }}
+                                    .resource-details.clearfix
+                                        .cpu-detail
+                                            .easy-pie-chart.percentage(cpuPercent="instance.usage_rate_cup" data-percent="{{ instance.usage_rate_cup }}" data-color="#87CEEB")
+                                                span.class.percent {{ instance.usage_rate_cup }} 
+                                                | %
+                                            .msg
+                                                | CPU使用情况 {{ instance.cpu_use}}/{{instance.cpu_has}}
+                                        .mem-detail
+                                            .easy-pie-chart.percentage(memPercent="instance.usage_rate_mem" data-percent="{{ instance.usage_rate_mem }}" data-color="#D15B47")
+                                                span.class.percent {{ instance.usage_rate_mem }}
+                                                | %
+                                            .msg
+                                                | Memory使用情况 {{ instance.mem_use }}/{{ instance.mem_has }}
+            // .main-container
+block footer
+block footer_extra
+    
+            

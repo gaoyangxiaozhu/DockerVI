@@ -1,0 +1,24 @@
+
+<!-- page contnt begins-->
+.content-body
+    section#docker
+        table.table.table-bordered(ng-if="type=='images'")
+            tr 
+                th.text-center 镜像仓库
+                th.text-center 镜像用户
+                th.text-center 镜像名称
+                th.text-center 标签
+                th.text-center 创建时间
+                th.text-center 镜像大小
+                th.text-center 动作
+            tr(ng-repeat="image in images | orderBy:'name'")
+                td.text-center {{ image.repo }}
+                td.text-center {{ image.username }}
+                td.text-center {{ image.name  }}
+                td.text-center {{ image.tag }}
+                td.text-center {{ image.time | date:'yyyy-MM-dd HH:mm' }}
+                td.text-center {{ image.size }}
+                td.text-center 
+                    button.btn.btn-danger.btn-del-cm.btn-xs(ng-click="delImage(image)")
+                        i.icon-trash.bigger-120
+                    button.btn.btn-xs.btn-primary(ng-click='createContainerInstance(image)') 创建容器
