@@ -5,7 +5,8 @@ var gutil = require('gulp-util');
 exports.paths = {
   src: 'src',
   dist: 'dist',
-  server:'server'
+  server:'server',
+  tmp: '.tmp'
 };
 
 //用于wiredep获取bower依赖主要JS文件列表的options
@@ -21,5 +22,5 @@ exports.errorHandler = function() {
   return function (err) {
     gutil.beep();
     gutil.log(err.toString());
-  }
+  };
 };
