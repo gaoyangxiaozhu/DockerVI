@@ -5,7 +5,7 @@ var bunyan = require('bunyan');
 
 
 var logger = bunyan.createLogger({
-	name: 'hutublog',
+	name: 'docker-visual',
 	serializers: {
 	 req: bunyan.stdSerializers.req,
 	 res: bunyan.stdSerializers.res,
@@ -15,8 +15,6 @@ var logger = bunyan.createLogger({
 		{
 			level: 'info',
 			stream: process.stdout
-			//path: 'logs/info.log',
-			//path: path.join(__dirname,'../../logs/' + process.env.NODE_ENV + '-' +'info.log')
 		},{
 			level: 'trace',
 			stream: process.stdout
@@ -26,16 +24,13 @@ var logger = bunyan.createLogger({
 			stream: process.stderr
 		},{
 			level: 'error',
-			path: 'logs/bunyan-' + process.env.NODE_ENV + '-' +'error.log'
-			//path: path.join(__dirname,'../../logs/' + process.env.NODE_ENV + '-' +'error.log')
+			path: path.join(__dirname,'../../logs/' + process.env.NODE_ENV + '-' +'error.log')
 		},{
 			level:'fatal',
-			path: 'logs/bunyan-' + process.env.NODE_ENV + '-' +'fatal.log'
-			//path: path.join(__dirname,'../../logs/' + process.env.NODE_ENV + '-' +'fatal.log')
+			path: path.join(__dirname,'../../logs/' + process.env.NODE_ENV + '-' +'fatal.log')
 		},{
 			level: 'warn',
-			path: 'logs/bunyan-' + process.env.NODE_ENV + '-' +'warn.log',
-			//path: path.join(__dirname,'../../logs/' + process.env.NODE_ENV + '-' +'warn.log')
+			path: path.join(__dirname,'../../logs/' + process.env.NODE_ENV + '-' +'warn.log')
 		}
 	]
 });
