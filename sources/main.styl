@@ -24,35 +24,7 @@
           border 2px solid #4297d7
 .ui-jqgrid tr.ui-row-ltr td, .ui-jqgrid tr.ui-row-rtl td
     word-wrap break-word
-.content-body
-    position relative
-    .detail-panel
-        position absolute
-        width 0
-        height 500px
-        max-height 500px
-        overflow hidden
-        top 0
-        right -100px
-        z-index 9999
-        transition width ease .5s
-        -webkit-transition width ease .5s
-        background #fff
-        border 1px solid #fff
-        box-shadow 0 0 5px #000
-        -webkit-box-shadow 0 0 5px  #000
-        visibility hidden
-        &.show
-            visibility visible
-            width 1000px
-            right 0
-            overflow auto
-            border 1px solid rgba(0,0,0,0.2)
-        .widget-toolbar
-            cursor pointer
-        .profile-info-value
-            span
-                word-break break-all
+
 /* end */
 pre
     &.log
@@ -75,114 +47,16 @@ span.state-label
         padding-left 7px
         padding-right 8px
 /* detail.jade*/
-h1
-    span.state-label
-        font-size 16px
-        padding 5px 10px
-        line-height 36px
-.details-head
-    .btn-group
-        margin 20px 0 10px 0
-        button
-            line-height 24px
-.details-body
-    margin-top 15px
-#resource
-    position relative
-#cpuchart
-#memorychart
-#networkchart
-.loading
-    height 200px
-#cpuchart
-#memorychart
-#networkchart
-    &.hide
-        visibility hidden !important
-        display block !important
 
-.loading
-    position absolute
-    width 100%
-    display table
-    .table-cell
-        display table-cell
-        vertical-align middle
-        .circle
-            height 50px
-            width @height
-            margin 0 auto
-            border 10px lighten(#428bca, 10%) solid
-            border-radius 25px
-            border-right lighten(#428bca, 20%)
-            &.active
-                animation loading .4s infinite
-    &.cpu
-        top 50px
-    &.mem
-        top 300px
-    &.network
-        top 500px
-@keyframes loading
-    0%
-        transform rotate(0deg)
-    50%
-        transform rotate(180deg)
-    75%
-        transform rotate(260deg)
-    100%
-        transform rotate(360deg)
 /* end detail jade*/
 /* create jade */
-.label-size
-    padding-right 25px
-h5.head
-    font-weight bold
-    width 25%
-    text-align right
-    margin-bottom 0
-    margin-top 0
 
-
-form
-    .form-group
-        .state-error
-            input
-            select
-                &:not(:focus)
-                    background #fff0f0
-                    border-color #A90329
-    span.error
-        display  block
-        margin-top 6px
-        padding: 0 1px
-        font-size 11px
-        line-height 15px
-        color #d56161
-
-    .range-cpu
-        margin-left 10px
-        width 300px
-        span
-            &.range-next
-                float right
 /* end*/
 
 /* resource jade*/
 ul, li
     list-style none
-.resource-list
-    width 100%
-    float left
-    li
-        width 100%
-        padding-bottom 20px
-        .resource-details
-            padding-left 1.5em
-            .cpu-detail
-            .mem-detail
-                width 50%
-                float left
+
 /* end*/
 .footer
     margin-top 200px
