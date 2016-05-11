@@ -1,0 +1,30 @@
+
+<!-- page contnt begins-->
+.content-body
+    section#docker
+        table.table.table-bordered
+            tr 
+                th.text-center 名称
+                th.text-center 节点
+                th.text-center 状态
+                th.text-center 镜像
+                th.text-center 创建时间
+                th.text-center 动作
+            tr(ng-repeat="container in containers | orderBy: 'Created'")
+                td.text-center 
+                    a(href='#/container/details/{{ container["node_name"][1] }}')
+                        span {{ container['node_name'][1] }}
+                td.text-center 
+                    span {{ container['node_name'][0] }} 
+                td.text-center
+                    span.state-label.play(ng-if="container.Status == 'running'")
+                        i.icon-play
+                        | 运行中
+                    span.state-label(ng-if="container.Status =='stop'") 
+                        i.icon-pause
+                        | 停止
+                    span.state-label.error(ng-if="container.Status== 'error'") Error
+                td.text-center {{ container.Image }}
+                td.text-center {{ container.Created*1000 | date:'yyyy-MM-dd HH:mm' }}
+                td.text-center
+                    span 查看详情

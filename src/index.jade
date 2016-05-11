@@ -1,0 +1,25 @@
+doctype html
+html(ng-app="dockerApp")
+    head
+        meta(charset="utf-8")
+        title docker集群可视化管理
+        base(href="/")
+        meta(name="description" content="this is docker swarm manager")
+        meta(name="keyword" content="docker visual node angular swarm")
+        meta(name="viewport" content="width=device-width")
+        //- Place favicon.ico and apple-touch-icon.png in the root directory 
+        //- bower:css 
+        //- endbower
+        //- inject:css 
+        //- endinject
+    body
+        .row
+            .col-xs-12
+                div(ui-view)
+        //- bower:js
+        //- run `gulp inject` to automatically populate bower script dependencies -->
+        //- endbower
+
+        //- inject:js
+        //-js files will be automatically insert here -->
+        //- endinject
