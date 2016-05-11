@@ -4,3 +4,4 @@ node_modules
 *.pyc
 .idea/
 docker_visual/docker_visual/*.pyc
+server/session
