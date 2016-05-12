@@ -1,0 +1,8 @@
+{
+  "development": {
+    "IsDebug":true
+  },
+  "production": {
+    "IsDebug":false
+  }
+}
