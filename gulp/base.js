@@ -12,6 +12,17 @@ var browserSync = require('browser-sync');
 var gulpNgConfig = require('gulp-ng-config');
 
 
+//配置环境任务
+gulp.task('dev-config',function () {
+  return gulp.src('app.conf.json')
+        .pipe(gulpNgConfig('dockerApp',{
+          environment: 'development',
+          createModule: false,
+          wrap: "(function(){\n 'use strict'; \n <%= module %> \n })();"
+        }))
+        .pipe(gulp.dest(path.join(config.paths.src,'/app')));
+});
+
 /*****************代码检查 start*********************************************/
 gulp.task('scripts',function () {
 	return gulp.src(path.join(config.paths.src,'app/**/*.js'))
@@ -26,5 +37,93 @@ gulp.task('scripts',function () {
 /*****************clean start*********************************************/
 gulp.task('clean', function () {
   $.del([path.join(config.paths.dist, '/'), path.join(config.paths.tmp, '/')]);
+  $.del([path.join(config.path.src, 'app/*.html'), path.join(config.paths.src, 'app/**/*.html')]);
 });
 /*****************clean end*********************************************/
+
+/************编译jade******************/
+gulp.task('jade', function(){
+    gulp.src([
+        path.join(config.path.src, 'app/**/*.jade')
+    ])
+    .pipe($.jade({
+      pretty: true
+    }))
+    .pipe(gulp.dest('./'));
+});
+/************ jade end **********************/
+
+/******编译之前将scss注入index.scss  start ************/
+gulp.task('inject_sass',function () {
+	//1,将所有scss文件注入到index.scss
+	var injectFiles = gulp.src([
+			path.join(config.paths.src,'app/**/*.scss'),
+			path.join('!'+ config.paths.src, 'app/index.scss')
+		],{read:false});
+	/**
+	 * 参考API:https://github.com/klei/gulp-inject#optionsstarttag
+	 */
+	var injectOptions = {
+	  transform: function(filePath) {
+	    filePath = filePath.replace(config.paths.src + '/app/', '');
+	    return '@import "' + filePath + '";';
+	  },
+	  starttag: '// injector',
+	  endtag: '// endinjector',
+	  addRootSlash: false
+	};
+	return gulp.src(path.join(config.paths.src,'app/index.scss'))
+					.pipe($.inject(injectFiles,injectOptions))
+					.pipe(wiredep(_.assign({}, config.wiredep)))
+					.pipe(gulp.dest(path.join(config.paths.src,'app/')));
+});
+/******编译之前将scss注入index.scss   end ************/
+
+/*****************CSS(SASS编译) start*********************************************/
+gulp.task('styles:sass',['inject_sass'],function () {
+
+	return gulp.src(path.join(config.paths.src,'app/index.scss'))
+		.pipe($.plumber(config.errorHandler()))
+		.pipe($.sourcemaps.init())
+		.pipe($.sass({outputStyle: 'expanded'}))
+		.pipe($.autoprefixer())
+		.pipe($.sourcemaps.write())
+		.pipe(gulp.dest(path.join(config.paths.tmp,'/serve/app/')))
+		//css改变时无刷新改变页面
+		.pipe(browserSync.reload({ stream: true }));
+});
+
+/*****************inject(css,js注入index.jade) start***************************/
+//sass编译和compass编译二选一
+gulp.task('inject', ['scripts', 'styles:sass'], function () {
+  var injectStyles = gulp.src([
+    path.join(config.paths.tmp, '/serve/app/**/*.css'),
+    path.join('!' + config.paths.tmp, '/serve/app/vendor.css')
+  ], { read: false });
+
+  var injectScripts = gulp.src([
+    path.join(config.paths.src, '/app/**/*.module.js'),
+    path.join(config.paths.src, '/app/**/*.js'),
+    path.join('!' + config.paths.src, '/app/**/*.spec.js'),
+    path.join('!' + config.paths.src, '/app/**/*.mock.js')
+  ]).pipe($.angularFilesort());
+
+  var injectOptions = {
+     ignorePath: [config.paths.src],
+     addRootSlash: false
+  };
+	return gulp.src(path.join(config.paths.src, '/*.jade'))
+		.pipe($.plumber(config.errorHandler()))
+		.pipe($.inject($.eventStream.merge(
+		  injectStyles,
+		  injectScripts
+		),injectOptions))
+		.pipe(wiredep(_.extend({}, config.wiredep)))
+        .pipe($.jade({
+          pretty: true
+        }))
+        .pipe('./')
+	    .pipe(gulp.dest(path.join(config.paths.tmp, '/serve')));
+
+});
+/*****************inject(css,js注入html) end*********************************************/

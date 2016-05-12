@@ -10,14 +10,44 @@ var browserSyncSpa = require('browser-sync-spa');
 var nodemon = require('gulp-nodemon');
 var gulpSequence = require('gulp-sequence');
 
+
+
 //开始之前先将必要文件注入
 gulp.task('watch', function () {
-	//监控html文件
-	gulp.watch([
-			path.join(config.paths.src,'/app/**/*.html')
-		],function (event) {
-			browserSync.reload(event.path);
+
+	gulpSequence('jade', ['inject'], function() {
+
+		//监控jade文件(除index.jade之外)
+		gulp.watch([
+			path.join(config.paths.src, '/**/*.jade')
+		], ['jade']);
+
+		//监控index.jade, 和bower.json文件
+		gulp.watch([path.join(config.paths.src,'/*.jade'),'bower.json'],['inject']);
+		//监控CSS文件
+		gulp.watch([path.join(config.paths.src,'/app/**/*.scss')],function (event) {
+			if(event.type === 'changed'){
+				gulp.start('styles:compass');
+			}else{
+				gulp.start('inject');
+			}
 		});
+		//监控JS文件
+		gulp.watch([path.join(config.paths.src,'/app/**/*.js')],function (event) {
+			if(event.type === 'changed'){
+				gulp.start('scripts');
+			}else{
+				gulp.start('inject');
+			}
+		});
+		//监控html文件
+		gulp.watch([
+				path.join(config.paths.src,'/app/**/*.html')
+			],function (event) {
+				browserSync.reload(event.path);
+			});
+	});
+
 
 });
 
@@ -76,7 +106,7 @@ function browserSyncInit (baseDir) {
 // 	browserSyncInit([path.join(config.paths.tmp, '/serve'), config.paths.src]);
 // });
 gulp.task('serve',function () {
-	gulpSequence('nodemon',['watch'],function () {
+	gulpSequence('nodemon',['dev-config','watch'],function () {
 		browserSyncInit([path.join(config.paths.tmp, '/serve'), config.paths.src]);
 	});
 });
