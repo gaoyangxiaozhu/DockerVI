@@ -6,11 +6,11 @@ var controller = require('./containers.controller');
 
 var router = express.Router();
 
-router.get('/getContainerList',controller.list);
-router.get('/:id/getContainer', controller.details);
-router.delete('/:id', controller.actions);
+router.get('/getContainerList',controller.getContainerList);
+router.get('/:id/getContainer', controller.getContainer);
+router.delete('/:id', controller.deleteContainer);
 //stop or start
-router.post('/:id/updateContainer', controller.actions);
+router.post('/:id/updateContainer', controller.updateContainer);
 
 
 module.exports = router;
