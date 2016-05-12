@@ -9,10 +9,18 @@ $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/"
  *  自动注入 bower.json中的依赖scss.
  */
 // bower:scss
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
 // endbower
 
 /**
  *  gulp 中任务inject将自动注入其它scss文件
  */
 // injector
+@import "base.scss";
+@import "containerCreate/containerCreate.scss";
+@import "containerDetail/containerDetail.scss";
+@import "imageList/imageList.scss";
+@import "containerList/containerList.scss";
+@import "main/main.scss";
+@import "components/slidebar/sidebar.scss";
 // endinjector

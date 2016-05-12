@@ -1,31 +1,37 @@
-.label-size
-    padding-right 25px
-h5.head
-    font-weight bold
-    width 25%
-    text-align right
-    margin-bottom 0
-    margin-top 0
+.label-size{
+    padding-right:25px;
+}
 
-form
-    .form-group
-        .state-error
-            input
-            select
-                &:not(:focus)
-                    background #fff0f0
-                    border-color #A90329
-    span.error
-        display  block
-        margin-top 6px
-        padding: 0 1px
-        font-size 11px
-        line-height 15px
-        color #d56161
+h5.head{
+    font-weight:bold;
+    width:25%;
+    text-align:right;
+    margin-bottom:0;
+    margin-top:0;
+}
 
-    .range-cpu
-        margin-left 10px
-        width 300px
-        span
-            &.range-next
-                float right
+form{
+    .form-group{
+        .state-error{
+            input,select{
+                &:not(:focus){
+                    background:#fff0f0;
+                    border-color:#A90329;
+                }
+            }
+        }
+    }
+    span.error{
+        display:block;
+        margin-top:6px;
+        padding: 0 1px;
+        font-size:11px;
+        line-height:15px;
+        color:#d56161;
+    }
+
+    .range-cpu{
+        margin-left:10px;
+        width:300px;
+    }
+}

@@ -1,6 +1,6 @@
 (function(){
     // container details page controller
-    angular.module("dockerApp")
+    angular.module("dockerApp.containerCreate")
     .controller('containerCreateCtrl', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
         $scope.imageFullSourceName = $routeParams.fullSourceName;
         console.log($scope.imageFullSourceName);
@@ -202,7 +202,8 @@
                 scopeArrayList.pop();
         }
     }]);
-    app.controller('portFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
+    angular.module('dockerApp.containerCreate')
+    .controller('portFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
         $scope.addPort=function(){
             $scope.portSt.newPortRegex = false;
             $scope.portSt.hostPortRegex = false;
@@ -244,7 +245,8 @@
         }
 
     }]);
-    app.controller('envFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
+    angular.module('dockerApp.containerCreate')
+    .controller('envFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
         $scope.addEnv=function(){
             if($scope.addEnvForm.$invalid){
                 $scope.addEnvForm.$submitted = true;
@@ -267,8 +269,8 @@
         };
 
     }]);
-
-     app.controller('volumeFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
+    angular.module('dockerApp.containerCreate')
+    .controller('volumeFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
          $scope.addVolume=function(){
              if($scope.addVolumeForm.$invalid){
                  $scope.addVolumeForm.$submitted = true;
@@ -290,8 +292,8 @@
                  $scope.delItem(volume, $scope.volume.volumeList);
              };
     }]);
-
-    app.controller('containerLinkController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
+    angular.module('dockerApp.containerCreate')
+    .controller('containerLinkController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
         $scope.addLink=function(){
             if($scope.notChoosedLink){
                 $scope.clickedAddBtn = true;
