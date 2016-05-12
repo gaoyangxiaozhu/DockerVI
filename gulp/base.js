@@ -37,19 +37,19 @@ gulp.task('scripts',function () {
 /*****************clean start*********************************************/
 gulp.task('clean', function () {
   $.del([path.join(config.paths.dist, '/'), path.join(config.paths.tmp, '/')]);
-  $.del([path.join(config.path.src, 'app/*.html'), path.join(config.paths.src, 'app/**/*.html')]);
+  $.del([path.join(config.paths.src, 'app/*.html'), path.join(config.paths.src, 'app/**/*.html')]);
 });
 /*****************clean end*********************************************/
 
 /************编译jade******************/
 gulp.task('jade', function(){
     gulp.src([
-        path.join(config.path.src, 'app/**/*.jade')
+        path.join(config.paths.src, 'app/**/*.jade')
     ])
     .pipe($.jade({
       pretty: true
     }))
-    .pipe(gulp.dest('./'));
+    .pipe(gulp.dest(path.join(config.paths.src, 'app')));
 });
 /************ jade end **********************/
 
@@ -122,7 +122,7 @@ gulp.task('inject', ['scripts', 'styles:sass'], function () {
         .pipe($.jade({
           pretty: true
         }))
-        .pipe('./')
+        .pipe(gulp.dest(config.paths.src))
 	    .pipe(gulp.dest(path.join(config.paths.tmp, '/serve')));
 
 });
