@@ -14,6 +14,10 @@
                   id:'getContainerList'
               }
           },
+          getContainerCount:{
+            method: 'GET',
+            id: 'getContainerCount'
+          },
           getContainer:{
               method: 'GET',
               params: {
@@ -38,6 +42,14 @@
           getContainerList : function(callback){
               var cb = callback || angular.noop;
               return containerResource.getContainerList(function(result) {
+                  return cb(result);
+              }, function(err) {
+                  return cb(err);
+              }).$promise;
+          },
+          getContainerCount: function(data, callback){
+              var cb = callback || angular.noop;
+              return containerResource.getContainerCount(data,function(result) {
                   return cb(result);
               }, function(err) {
                   return cb(err);
