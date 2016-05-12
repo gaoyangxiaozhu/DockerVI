@@ -6,37 +6,37 @@
 'use strict';
 
 var _ = require('lodash');
-var request = require('superagent');
+var request = require('../../components/superagent');
 var endpoint = require('../endpoint').SWARMADDRESS;
 
 exports.getImagesList = function(req, res){
 
 	var url = endpoint + '/images/json';
-	var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
-	var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
-
+	var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0) ? parseInt(req.query.itemsPerPage) : 10;
+	var currentPage = (parseInt(req.query.currentPage) > 0) ? parseInt(req.query.currentPage) : 1;
 	request.get(url)
 	.then(function(response){
-			var _data = request.body;
-			if(!request.ok){
-					throw new Error("error");
-			}
-			//返回当前需要的数据
-			_data = _data.slice((currentPage-1)*10, (currentPage-1)*10 + itemsPerPage);
-			res.send(_data);
+		var _data = response.body;
+		if(!response.ok){
+				throw new Error("error");
+		}
+
+		//返回当前需要的数据
+		_data = _data.slice((currentPage - 1) * 10, (currentPage - 1) * 10 + itemsPerPage);
+		res.send(_data);
 
 	}).fail(function(err){
 			res.send({'error_msg': 'error'});
-	});
+	}).done();
 };
 
 exports.getImagesCount = function(req, res){
-	
+
 	var url = endpoint + '/images/json';
 	request.get(url)
 	.then(function(response){
-			var _data = request.body;
-			if(!request.ok){
+			var _data = response.body;
+			if(!response.ok){
 					throw new Error("error");
 			}
 			res.send({data : _data.length });

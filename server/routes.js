@@ -15,7 +15,7 @@ module.exports = function(app){
 
   app.use('/api/build', require('./api/build'));
 
-	app.use('/api/stack',require('./api/stack'));
+  app.use('/api/stack',require('./api/stack'));
 
   var env = app.get('env');
   if ('development' !== env) {
