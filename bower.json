@@ -1,5 +1,5 @@
 {
-  "name": "docker-visual",
+  "name": "dockerApp",
   "version": "0.0.2",
   "dependencies": {
     "angular": "1.3.13",
@@ -10,7 +10,6 @@
     "angular-sanitize": "~1.4.0",
     "angular-touch": "~1.4.0",
     "angular-ui-router": "~0.2.15",
-    "angular-route": "~1.5.6",
     "AngularJS-Toaster": "angularjs-toaster#~0.4.15",
     "animate.css": "~3.3.0",
     "bootstrap-markdown": "~2.9.0",
@@ -20,8 +19,7 @@
     "install": "~1.0.4",
     "jquery": "~1.11.3",
     "raphael": "~2.0.0",
-    "morris": "~0.5.1",
-    "markdown-it": "~4.4.0",
+    "morrisjs": "~0.5.1",
     "marked": "~0.3.4",
     "ng-file-upload": "~5.0.9",
     "ng-lodash": "~0.2.3",
