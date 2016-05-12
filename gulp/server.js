@@ -97,14 +97,11 @@ function browserSyncInit (baseDir) {
 		    },
 		    //使用代理
 		    middleware:[
-			    proxyMiddleware(['/api/**','/auth/**'], {target: 'http://localhost:9000',changeOrigin:true})
+			    proxyMiddleware(['/api/**','/auth/**'], {target: 'http://localhost:9000', changeOrigin:true})
 			  ]
 			}
 		});
 }
-// gulp.task('serve', ['watch','nodemon'], function () {
-// 	browserSyncInit([path.join(config.paths.tmp, '/serve'), config.paths.src]);
-// });
 gulp.task('serve',function () {
 	gulpSequence('nodemon',['dev-config','watch'],function () {
 		browserSyncInit([path.join(config.paths.tmp, '/serve'), config.paths.src]);
