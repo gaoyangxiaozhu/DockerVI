@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  angular.module('docker.resources')
+  angular.module('dockerApp.resources')
     .factory('Image', function($resource){
       var containerResource = $resource('/api/images/:id/:controller', {
           id: '@_id'

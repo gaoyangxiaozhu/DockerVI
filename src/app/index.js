@@ -1,3 +1,6 @@
+/**
+ * dockerApp初始化入口文件
+ */
 (function () {
    'use strict';
 
@@ -12,6 +15,7 @@
            'ngProgress',
            'toaster',
            'ngFileUpload',
+           'bw.paging',
            'dockerApp.resources',
            'dockerApp.service',
            'dockerApp.directives',
@@ -20,31 +24,25 @@
            'dockerApp.containerCreate',
            'dockerApp.containerDetail',
        ])
-   .config(function ($logProvider,$stateProvider, $urlRouterProvider, $locationProvider, $httpProvider,IsDebug) {
+   .config(function ($logProvider, $stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, IsDebug) {
+
      $locationProvider.html5Mode(true);
      $httpProvider.defaults.timeout = 500000;
-     $httpProvider.interceptors.push('AuthInterceptor');
      // Enable log
      $logProvider.debugEnabled(IsDebug);
      $urlRouterProvider.otherwise('/');
+
    })
      .run(function ($rootScope, ngProgressFactory, $state, lodash, $cookies, toaster) {
            //默认头像
            $rootScope.default_avatar = '/assets/images/avatar.png';
-           //登录模块.
-           $rootScope.opneSnsModal = function () {
-               CustomModalService.open('SnsSignInCtrl','app/settings/sns_sign_in.html');
-           };
            //加载进度
            $rootScope.progressbar = ngProgressFactory.createInstance();
 
-           // 页面权限判断
            $rootScope.$on('$stateChangeStart', function (event, toState) {
                $rootScope.progressbar.setColor('green');
                    $rootScope.progressbar.reset(); // Required to handle all edge cases.
                    $rootScope.progressbar.start();
-                   event.preventDefault();
-                   $state.go('home');
            });
 
            // When route successfully changed.

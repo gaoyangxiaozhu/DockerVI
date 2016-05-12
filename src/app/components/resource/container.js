@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  angular.module('docker.resources')
+  angular.module('dockerApp.resources')
     .factory('Container', function($resource){
       var containerResource = $resource('/api/containers/:id/:controller', {
           id: '@_id'
@@ -39,7 +39,7 @@
 
         });
       return {
-          getContainerList : function(callback){
+        getContainerList : function(callback){
               var cb = callback || angular.noop;
               return containerResource.getContainerList(function(result) {
                   return cb(result);
@@ -47,7 +47,7 @@
                   return cb(err);
               }).$promise;
           },
-          getContainerCount: function(data, callback){
+        getContainerCount : function(data, callback){
               var cb = callback || angular.noop;
               return containerResource.getContainerCount(data,function(result) {
                   return cb(result);
@@ -55,7 +55,7 @@
                   return cb(err);
               }).$promise;
           },
-          getContainer : function (data, callback) {
+        getContainer : function (data, callback) {
               var cb = callback || angular.noop;
               return containerResource.getContainer(data,function(result) {
                   return cb(result);
@@ -63,7 +63,7 @@
                   return cb(err);
               }).$promise;
           },
-        createContainer:function (id, data, callback) {
+        createContainer : function (id, data, callback) {
             var cb = callback || angular.noop;
             return containerResource.createContainer({ id : id }, data, function(result) {
                 return cb(result);
