@@ -13,16 +13,38 @@
               params: {
                   id:'getImagesList'
               }
+          },
+          getImagesCount:{
+              method: 'GET',
+              params: {
+                  id: 'getImagesCount'
+              }
           }
         });
       return {
         getImagesList : function(callback){
           var cb = callback || angular.noop;
-          return containerResource.getContainerList(function(result) {
-            return cb(result);
-          }, function(err) {
-            return cb(err);
-          }).$promise;
+          return imagesResource.getContainerList(function(result) {
+                        return cb(result);
+                }, function(err) {
+                        return cb(err);
+                }).$promise;
+        },
+        getImagesCount : function(callback){
+            var cb = callback || angular.noop;
+            return imagesResource.getContainerList(function(result) {
+                          return cb(result);
+                  }, function(err) {
+                          return cb(err);
+                  }).$promise;
+        },
+        deleteImage:function(data,callback){
+            var cb = callback || angular.noop;
+            return imagesResource.remove(data, function(result) {
+                return cb(result);
+            }, function(err) {
+                return cb(err);
+            }).$promise;
         }
      };
     });
