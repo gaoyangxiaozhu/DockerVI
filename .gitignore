@@ -7,3 +7,4 @@ docker_visual/docker_visual/*.pyc
 server/session
 bower_components/
 src/app/**/*.html
+src/*.html
