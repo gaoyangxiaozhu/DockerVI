@@ -5,7 +5,7 @@
 'use strict'
 
 var                Q = require('q');
-
+var            async = require('async');
 var         GRequest = require('./components/request');
 var         endpoint = require('./api/endpoint').SWARMADDRESS;
 var          request = require('./components/superagent');
