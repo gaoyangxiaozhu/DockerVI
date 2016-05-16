@@ -1,15 +1,13 @@
-block head_extra
-block content
-    .main-container#main-container
-        .main-container-inner
-            include ../components/slidebar/sidebar.jade
-            .main-content
-            // .main-content
-            section#docker
-                .resource.row
-                    .resource-main.col-sm-7.col-sm-offset-2
-            // .main-container
-block footer
-block footer_extra
+
+.main
+    .container
+        .main-content
+            .app-list
+                a.icon-view#cluster(ui-sref="cluster" title="集群资源使用情况") 集群资源
+                a.icon-view#containerList(ui-sref="containerList" title="集群容器应用列表") 应用列表
+                a.icon-view#imageList(ui-sref="imageList" title="集群容器镜像列表") 镜像列表
+                    
+        
+
     
             
