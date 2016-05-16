@@ -60,15 +60,15 @@
           },
         getContainer : function (data, callback) {
               var cb = callback || angular.noop;
-              return containerResource.getContainer(data,function(result) {
+              return containerResource.getContainer(data, function(result) {
                   return cb(result);
               }, function(err) {
                   return cb(err);
               }).$promise;
           },
-        createContainer : function (id, data, callback) {
+        createContainer : function (data, callback) {
             var cb = callback || angular.noop;
-            return containerResource.createContainer({ id : id }, data, function(result) {
+            return containerResource.createContainer(data, function(result) {
                 return cb(result);
             }, function(err) {
                 return cb(err);
