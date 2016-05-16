@@ -1,7 +1,7 @@
 // container list page controller
 (function(){
-    angular.module("dockerApp.containerList")
-    .controller('ContainerListCtrl', ['$scope', '$location', 'Container', function($scope, $location, container){
+    angular.module("dockerApp.containers")
+    .controller('ContainerListCtrl', ['$scope', '$location', 'Container', function($scope, $location, Container){
         $scope.containerList = [];
 
         $scope.option = {
@@ -13,13 +13,15 @@
             $scope.isLoading = true;
              //数量需要过滤
              Container.getContainerCount(options).then(function(result){
+
                 $scope.containerCount = result.count;
-                $scope.numPages = Math.ceil($scope.containerCount/$scope.options.itemsPerPage);
+                $scope.numPages = Math.ceil($scope.containerCount / $scope.options.itemPerPage);
              });
             //获取列表
             Container.getContainerList(options).then(function(result){
                 $scope.isLoading = false;
-                $scope.blogList = result.data;
+                $scope.containerList = result;
+                console.log(result);
             }).catch(function(){
                $scope.isLoading = false;
                 $scope.containerList = [];

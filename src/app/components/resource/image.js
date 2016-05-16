@@ -3,7 +3,7 @@
 
   angular.module('dockerApp.resources')
     .factory('Image', function($resource){
-      var containerResource = $resource('/api/images/:id/:controller', {
+      var imagesResource = $resource('/api/images/:id/:controller', {
           id: '@_id'
         },
         {
@@ -12,7 +12,8 @@
               method: 'GET',
               params: {
                   id:'getImagesList'
-              }
+              },
+               isArray: true
           },
           getImagesCount:{
               method: 'GET',
@@ -22,17 +23,17 @@
           }
         });
       return {
-        getImagesList : function(callback){
+        getImagesList : function(data, callback){
           var cb = callback || angular.noop;
-          return imagesResource.getContainerList(function(result) {
+          return imagesResource. getImagesList(function(result) {
                         return cb(result);
                 }, function(err) {
                         return cb(err);
                 }).$promise;
         },
-        getImagesCount : function(callback){
+        getImagesCount : function(data, callback){
             var cb = callback || angular.noop;
-            return imagesResource.getContainerList(function(result) {
+            return imagesResource.getImagesCount(function(result) {
                           return cb(result);
                   }, function(err) {
                           return cb(err);
