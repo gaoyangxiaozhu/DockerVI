@@ -3,12 +3,138 @@
  * @description
  * 容器相关的操作
  */
-var request = require('../../components/superagent');
-var Q = require('q');
-var express = require('express');
+var  request = require('../../components/superagent');
+var        Q = require('q');
+var    async = require('async');
+var  express = require('express');
 var endpoint = require('../endpoint').SWARMADDRESS;
 
 
+function formatContainerState(state){
+        error = state.Error;
+        running = state.Running;
+        if(error){
+            return 'error';
+        }
+        return running ? 'running': 'stop';
+}
+function formatBindPorts(ports){
+    var portList=[];
+    for(var exposePort in ports){
+        var bindPortList = ports[exposePort];
+        if(bindPortList){
+            for(var index in bindPortList){
+                var bindPort = bindPortList[index];
+                var item = {};
+                item.exposePort = exposePort;
+                item.bindHostIp = bindPort.HostIp;
+                item.bindHostPort = bindPort.HostPort;
+                portList.push(item);
+            }
+        }
+    }
+    // return porlist , the value that every item in list  is 'exposePort' , bindIp, bindHostPort
+    return portList;
+}
+function formatVolumes(binds){
+    var volumesList = [];
+    for(var index in binds){
+        var item = {};
+        item.volumeInContainer = binds[index].split(':')[0];
+        item.volumeInHost = binds[index].split(':')[1];
+        volumesList.push(item);
+    }
+    return volumesList;
+}
+// format env define by  self
+function formatEnv(env){
+    var envList = [];
+    for(var index in env){
+        var item={};
+        item.name= env[index].split('=')[0];
+        item.value = env[index].split('=')[1];
+
+        envList.push(item);
+    }
+
+    return envList;
+}
+// format link
+function formatLinks(links){
+    var linkList =[];
+    for(var index in links){
+        var item = {};
+        item.server = links[index].split(':')[0].slice(1);
+        item.alias = links[index].split(':')[1].slice(1);
+
+        linkList.push(item);
+    }
+
+    return linkList;
+}
+    // format name
+function formatContainerName(name){
+    name = name.slice(1); //去掉首字符'/'
+    var names = name.split('/');
+    var node = names[0];
+    name = names[1];
+    if(node && node[0] == '/'){
+        node=node.slice(1);
+    }
+    if(name && name[0] == '/'){
+        name=name.slice(1);
+    }
+    return [node, name];
+}
+
+// format APT function
+function formatData(data){
+    // get state
+    data.Status= formatContainerState(data.States);
+
+    // get portList
+    data.portList = formatBindPorts(data.NetworkSettings.Ports);
+
+    // gett volumeList
+	data.volumesList = formatVolumes(data.HostConfig.Binds);
+
+    // get envList
+    data.envList = formatEnv(data.Config.Env);
+
+    // get linkLis
+    data.linkList = formatLinks(data.HostConfig.Links);
+
+    // get name  && node
+    var names = formatContainerName(data.Name);
+    data.node = names[0];
+    data.name = names[1];
+
+    return data;
+}
+//aysnc map中用于获取容器状态的迭代器
+function getContainerStatus(data, cb){
+    var id = data.Id;
+    var url = endpoint + '/containers/' + id + '/json';
+
+    request.get(url)
+	.then(function(response){
+			var body = response.body;
+			if(!response.ok){
+					cb('error', null);
+			}
+            try {
+                delete data.Status;//删除原有的状态字段
+                //获取格式化后的状态字段
+                data.status = formatContainerState(body.State);
+                cb(null, data);
+            } catch(e){
+                cb(e.message, null);
+            }
+	}).fail(function(err){
+			cb(err.message, null);
+	});
+
+}
 exports.getContainerList = function(req, res){
 
 	var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
@@ -18,16 +144,34 @@ exports.getContainerList = function(req, res){
 
 	request.get(url)
 	.then(function(response){
-			var _data = request.body;
-			if(!request.ok){
+			var data = response.body;
+			if(!response.ok){
 					throw new Error("error");
 			}
 			//返回当前需要的数据
-			_data = _data.slice((currentPage-1)*10, (currentPage-1)*10 + itemsPerPage);
-			res.send(_data);
+			data = data.slice((currentPage-1)*10, (currentPage-1)*10 + itemsPerPage);
+            return data;
 
-	}).fail(function(err){
-			res.send({'error_msg': 'error'});
+	})
+    .then(function(data){
+        //获取容器列表中每个容器的名字和主机名
+        return data.map(function(item, index){
+                    var names = formatContainerName(item.Names[0]);
+                    item.node = names[0];
+                    item.name = names[1];
+                    return item;
+               });
+    })
+    .then(function(data){
+        //获取每个容器的运行状态
+        async.map(data, getContainerStatus, function(err, results){
+            if(err){
+                res.status(404).send({'error_msg': err.message});
+            }
+            res.send(results);
+        });
+    }).fail(function(err){
+        res.status(404).send({'error_msg': err.message});
 	});
 };
 exports.getContainerCount = function(req, res){
@@ -35,13 +179,13 @@ exports.getContainerCount = function(req, res){
 
 	request.get(url)
 	.then(function(response){
-			var _data = request.body;
-			if(!request.ok){
+			var _data = response.body;
+			if(!response.ok){
 					throw new Error("error");
 			}
-			res.send({data : _data.length });
+			res.send({count : _data.length });
 	}).fail(function(err){
-			res.send({'error_msg': 'error'});
+			res.status(404).send({'error_msg': 'error'});
 	});
 
 };
@@ -56,7 +200,7 @@ exports.getContainer = function(req, res){
 			if(!response.ok){
 					throw new Error("error");
 			}
-			res.send(_data);
+			res.send(formatData(_data));
 	}).fail(function(err){
 			res.send({'error_msg': 'error'});
 	});
