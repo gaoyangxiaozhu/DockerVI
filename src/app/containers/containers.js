@@ -10,9 +10,9 @@
         controller: 'ContainerListCtrl'
       })
       .state('containerDeatil', {
-        url: '/containers/:id/Deatil/',
-        templateUrl: 'app/containerDeatil/containerDeatil.html',
-        controller: 'containerDeatilCtrl'
+        url: '/containers/:id/Detail/',
+        templateUrl: 'app/containerDetail/containerDetail.html',
+        controller: 'containerDetailCtrl'
       })
       .state('containerCreate', {
         url: '/containers/create/',
