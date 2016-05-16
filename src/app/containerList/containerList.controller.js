@@ -4,7 +4,7 @@
     .controller('ContainerListCtrl', ['$scope', '$location', 'Container', function($scope, $location, Container){
         $scope.containerList = [];
 
-        $scope.option = {
+        $scope.options = {
             currentPage: 1,
             itemPerPage : 10
         };
