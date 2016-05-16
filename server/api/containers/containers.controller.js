@@ -22,7 +22,7 @@ function formatBindPorts(ports){
     var portList=[];
     for(var exposePort in ports){
         var bindPortList = ports[exposePort];
-        if(bindPortList){
+        if(bindPortList && bindPortList.length > 0){
             for(var index in bindPortList){
                 var bindPort = bindPortList[index];
                 var item = {};
@@ -62,19 +62,24 @@ function formatEnv(env){
 // format link
 function formatLinks(links){
     var linkList =[];
-    for(var index in links){
-        var item = {};
-        item.server = links[index].split(':')[0].slice(1);
-        item.alias = links[index].split(':')[1].slice(1);
+    if(links){
+        for(var index in links){
+            var item = {};
+            item.server = links[index].split(':')[0].slice(1);
+            item.alias = links[index].split(':')[1].slice(1);
 
-        linkList.push(item);
+            linkList.push(item);
+        }
     }
-
     return linkList;
 }
     // format name
 function formatContainerName(name){
     name = name.slice(1); //去掉首字符'/'
+    //如果不包括'/' 则直接返回容器名称
+    if(a.indexOf('/') < 0){
+        return name;
+    }
     var names = name.split('/');
     var node = names[0];
     name = names[1];
@@ -90,7 +95,7 @@ function formatContainerName(name){
 // format APT function
 function formatData(data){
     // get state
-    data.Status= formatContainerState(data.States);
+    data.Status= formatContainerState(data.State);
 
     // get portList
     data.portList = formatBindPorts(data.NetworkSettings.Ports);
@@ -105,9 +110,7 @@ function formatData(data){
     data.linkList = formatLinks(data.HostConfig.Links);
 
     // get name  && node
-    var names = formatContainerName(data.Name);
-    data.node = names[0];
-    data.name = names[1];
+    data.name = formatContainerName(data.Name);
 
     return data;
 }
@@ -193,18 +196,33 @@ exports.getContainer = function(req, res){
 
 	var id = req.params.id;
 	var url = endpoint + '/containers/' + id + '/json';
-
 	request.get(url)
 	.then(function(response){
 			var _data = response.body;
 			if(!response.ok){
 					throw new Error("error");
 			}
-			res.send(formatData(_data));
+            _data = formatData(_data);
+			res.send(_data);
 	}).fail(function(err){
-			res.send({'error_msg': 'error'});
+			res.status(404).send({'error_msg': err.message});
 	});
 };
+
+exports.createContainer = function(req, res){
+
+    var data = req.body.data;
+    request.post(url)
+    .then(function(response){
+        if(!response.ok){
+                throw new Error("error");
+        }
+        res.send({'msg': 'ok'});
+    }).fail(function(err){
+			res.status(404).send({'error_msg': err.message});
+	});
+};
+
 exports.deleteContainer = function(req, res){
 	var id = req.params.id;
 	var action = 'delete';
