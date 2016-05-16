@@ -77,7 +77,7 @@ function formatLinks(links){
 function formatContainerName(name){
     name = name.slice(1); //去掉首字符'/'
     //如果不包括'/' 则直接返回容器名称
-    if(a.indexOf('/') < 0){
+    if(name.indexOf('/') < 0){
         return name;
     }
     var names = name.split('/');
@@ -94,25 +94,24 @@ function formatContainerName(name){
 
 // format APT function
 function formatData(data){
+    var formatData = {};
     // get state
-    data.Status= formatContainerState(data.State);
-
+    formatData.Status= formatContainerState(data.State);
     // get portList
-    data.portList = formatBindPorts(data.NetworkSettings.Ports);
-
+    formatData.portList = formatBindPorts(data.NetworkSettings.Ports);
     // gett volumeList
-	data.volumesList = formatVolumes(data.HostConfig.Binds);
+	formatData.volumesList = formatVolumes(data.HostConfig.Binds);
 
     // get envList
-    data.envList = formatEnv(data.Config.Env);
-
+    formatData.envList = formatEnv(data.Config.Env);
     // get linkLis
-    data.linkList = formatLinks(data.HostConfig.Links);
+    formatData.linkList = formatLinks(data.HostConfig.Links);
 
     // get name  && node
-    data.name = formatContainerName(data.Name);
-
-    return data;
+    formatData.name = formatContainerName(data.Name);
+    //node name
+    formatData.node = data.Node.Name;
+    return formatData;
 }
 //aysnc map中用于获取容器状态的迭代器
 function getContainerStatus(data, cb){
@@ -192,6 +191,7 @@ exports.getContainerCount = function(req, res){
 	});
 
 };
+//container detail msg
 exports.getContainer = function(req, res){
 
 	var id = req.params.id;
@@ -208,7 +208,6 @@ exports.getContainer = function(req, res){
 			res.status(404).send({'error_msg': err.message});
 	});
 };
-
 exports.createContainer = function(req, res){
 
     var data = req.body.data;
