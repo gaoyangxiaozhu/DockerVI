@@ -8,3 +8,4 @@ server/session
 bower_components/
 src/app/**/*.html
 src/*.html
+./tmp
