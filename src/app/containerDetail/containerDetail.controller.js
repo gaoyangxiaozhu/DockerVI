@@ -1,6 +1,6 @@
 (function(){
     angular.module("dockerApp.containers")
-    .controller('containerDetailCtrl', ['$scope', '$routeParams', 'container', function($scope, $routeParams, container){
+    .controller('containerDetailCtrl', ['$scope', '$routeParams', 'Container', function($scope, $routeParams, Container){
 
     }]);
 })();
