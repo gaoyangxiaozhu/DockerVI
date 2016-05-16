@@ -1,6 +1,6 @@
 (function(){
     // container details page controller
-    angular.module("dockerApp.containerCreate")
+    angular.module("dockerApp.containers")
     .controller('containerCreateCtrl', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
         $scope.imageFullSourceName = $routeParams.fullSourceName;
         console.log($scope.imageFullSourceName);
@@ -202,7 +202,7 @@
                 scopeArrayList.pop();
         }
     }]);
-    angular.module('dockerApp.containerCreate')
+    angular.module('dockerApp.containers')
     .controller('portFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
         $scope.addPort=function(){
             $scope.portSt.newPortRegex = false;
@@ -245,7 +245,7 @@
         }
 
     }]);
-    angular.module('dockerApp.containerCreate')
+    angular.module('dockerApp.containers')
     .controller('envFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
         $scope.addEnv=function(){
             if($scope.addEnvForm.$invalid){
@@ -269,7 +269,7 @@
         };
 
     }]);
-    angular.module('dockerApp.containerCreate')
+    angular.module('dockerApp.containers')
     .controller('volumeFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
          $scope.addVolume=function(){
              if($scope.addVolumeForm.$invalid){
@@ -292,7 +292,7 @@
                  $scope.delItem(volume, $scope.volume.volumeList);
              };
     }]);
-    angular.module('dockerApp.containerCreate')
+    angular.module('dockerApp.containers')
     .controller('containerLinkController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
         $scope.addLink=function(){
             if($scope.notChoosedLink){

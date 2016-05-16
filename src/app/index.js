@@ -19,10 +19,9 @@
            'dockerApp.resources',
            'dockerApp.service',
            'dockerApp.directives',
+           'dockerApp.containers',
            'dockerApp.imageList',
-           'dockerApp.containerList',
-           'dockerApp.containerCreate',
-           'dockerApp.containerDetail',
+           'dockerApp.cluster'
        ])
    .config(function ($logProvider, $stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, IsDebug) {
 
