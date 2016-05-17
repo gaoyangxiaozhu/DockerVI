@@ -1,27 +1,146 @@
-.content-body{
-    position:relative;
-    .detail-panel{
-        position:absolute;
-        width:0;
-        height:500px;
-        max-height:500px;
-        overflow:hidden;
-        top:0;
-        right:-100px;
-        z-index:9999;
-        transition:width ease .5s;
-        -webkit-transition:width ease .5s;
-        background:#fff;
-        border:1px solid #fff;
-        box-shadow:0 0 5px #000;
-        -webkit-box-shadow:0 0 5px  #000;
-        visibility:hidden;
-        &.show{
-            visibility:visible;
-            width:1000px;
-            right:0;
-            overflow:auto;
-            border:1px solid rgba(0,0,0,0.2);
+@import "compass/css3";
+@import "compass/utilities/sprites";
+// $icons: sprite-map("sort/*.png",$new-position: 100%, $new-spacing: 55px, $new-repeat: no-repeat);
+// .icon-sort-desc { background: sprite($icons, desc); }
+
+$baseFontColor : #aab2bd;     //默认段落字体颜色
+$titleFontColor : #656d78;    //默认标题字体颜色
+$defaultFontSize : 16px;    //默认字体大小
+$baseBorderColor : #d9d9d9;    //边框颜色
+$baseBgColor : #ecf0f1;        //网站背景颜色
+$basePanelBgColor : white;     //默认面板背景颜色
+$linkBaseColor : #999;        //链接颜色
+$linkBaseHoverColor : #717171; //链接悬浮颜色
+$linkTitleColor : #555;        //标题链接颜色
+$linkTitleHoverColor : black;  //标题链接悬浮颜色
+$linkLightColor : #4094c7;     //高亮链接颜色
+$linkLightHoverColor : #075b8d;//高亮链接悬浮颜色
+
+//navbar
+$navbarSize:110px;
+$navBgColor: #3e474e;
+$navBdColor: #f49484;
+
+$navHoverBgColor: #f49484;
+$navActiveColor:#e78170;
+$navTextShadowColor: #de533a;
+$navShadowColor: #eee;
+
+
+ $formColor: #999;
+ $formBdColor:#2f2f2f;
+ $formBgColor: #555;
+ .input-group-addon,.form-control{
+    color: $formColor;
+    background-color: $formBgColor;
+    border:1px solid $formBdColor;
+ }
+ .input-group-addon{
+    border-right: 0;
+ }
+
+$table-bg:                      white;
+$table-bg-accent:               #444;
+$table-bg-hover:                rgba(245,247,250, .8);
+$table-bg-active:               $table-bg-hover;
+$table-border-color:            white;
+$table-font-color:              #595f69;
+$pagination-bg: #555;
+$pagination-border: #2f2f2f;
+$pagination-active-bg: #337ab7;
+$pagination-active-border: #337ab7;
+table {
+background-color: $table-bg;
+}
+.table-striped {
+    tbody > tr:nth-of-type(odd) {
+      background-color: $table-bg-accent;
+    }
+}
+.table{
+    > thead,
+    > tbody,
+    > tfoot {
+      > tr {
+         > th {
+            font-size: 14px;
+            padding: 10px;
+            font-weight: 400;
+            border:1px solid transparent;
+        }
+         > td {
+            border: 1px solid transparent;
+            color: $table-font-color;
+            white-space: nowrap;
+            word-break: break-all;
+            padding: 20px 10px;
+            vertical-align: middle;
+        }
+      }
+    }
+}
+.table-bordered, .table-responsive{
+    border-color: $table-border-color;
+}
+.table,
+.table-hover {
+    > tbody > tr{
+        border-bottom: 1px solid #f1f3f6;
+        &:hover{
+            background-color: $table-bg-hover;
         }
     }
+}
+.pagination {
+    > li {
+      > a,
+      > span {
+        background-color: $pagination-bg;
+        border-color: $pagination-border;
+      }
+
+    }
+    > .active > a,
+    > .active > span {
+      &,
+      &:hover,
+      &:focus {
+        background-color: $pagination-active-bg;
+        border-color: $pagination-active-border;
+      }
+    }
+    > .disabled {
+      > span,
+      > span:hover,
+      > span:focus,
+      > a,
+      > a:hover,
+      > a:focus {
+        background-color: $pagination-bg;
+        border-color: $pagination-border;
+      }
+    }
+}
+
+//垂直居中容器
+.flex-vertical-box{
+  @include display-flex;
+  @include flex-wrap(wrap);
+  @include justify-content(center);
+  @include align-items(center);
+  height: 100%;
+  width:100%;
+}
+
+//返回顶部
+.gotop{
+  position:fixed;right:2%;bottom:5px;
+  width:40px;height:40px;background:rgba(0,0,0,0.5);
+  text-align: center;
+  cursor: pointer;
+  @include transition(all .1s);
+  i{font-size:2em;color:#fff;margin-top:3px;}
+  &:hover{
+    background:rgba(0,0,0,0.8);
+  }
 }
