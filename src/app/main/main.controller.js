@@ -1,5 +1,5 @@
 (function(){
     angular.module("dockerApp")
-    .controller('MainCtrl', ['$scope', '$location', function($scope, $location){
+    .controller('MainCtrl', ['$rootScope', '$scope', '$location', function($rootScope, $scope, $location){
     }]);
 })();

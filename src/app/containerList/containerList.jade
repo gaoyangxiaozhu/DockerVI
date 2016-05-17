@@ -1,7 +1,7 @@
 
-<!-- page contnt begins-->
-.content-body
-    section#docker
+//- page contnt begins
+.content-body.panel
+    section.panel-body
         table.table.table-bordered
             tr 
                 th.text-center 名称
@@ -16,7 +16,7 @@
                 td.text-center 
                     span {{ container.node }} 
                 td.text-center
-                    span.state-label.play(ng-if="container.status == 'running'")
+                    span.state-label.play.item-success(ng-if="container.status == 'running'")
                         | 运行中
                     span.state-label(ng-if="container.status =='stop'") 
                         | 停止

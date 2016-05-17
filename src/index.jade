@@ -16,6 +16,8 @@ html(ng-app="dockerApp")
     body.ui
         .row
             .col-xs-12
+                div(ng-if="pageClass != 'dashboard'")
+                    include  ./app/components/slidebar/slidebar.jade
                 div(ui-view)
         //- bower:js
         //- run `gulp inject` to automatically populate bower script dependencies -->
