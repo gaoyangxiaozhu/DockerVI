@@ -1,12 +1,11 @@
 (function(){
     // container details page controller
     angular.module("dockerApp.containers")
-    .controller('containerCreateCtrl', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
-        $scope.imageFullSourceName = $routeParams.fullSourceName;
-        console.log($scope.imageFullSourceName);
-        $scope.imageName = $routeParams.imageName;
-        $scope.imageTag = $routeParams.imageTag;
-        // todo 先这样定义三种容器大小选项 以后明白cup部分 以及对angular有进一步了解后进行改进
+    .controller('containerCreateCtrl', ['$scope', '$state', '$stateParams', 'Container', 'Image',  function($scope, $state, $stateParams, Container, Image){
+
+        console.log($state);
+        $scope.imageName = $state.params.name;
+        $scope.imageTag = $state.params.tag;
 
         $scope.containerSize=[
             {
@@ -68,7 +67,6 @@
         $scope.volumeDest="";
 
         // link 相关
-
         $scope.link ={};
         $scope.link.linkInstanceList=[];
         $scope.linkName="";
@@ -76,11 +74,11 @@
 
 
          // TODO cmd相关
-         $scope.container.cmd=null; //默认 可为空
+         $scope.container.cmd = null; //默认 可为空
 
         // 用于判断是否正在通过表单数据创建数据
 
-        $scope.waitForCreated= false;
+        $scope.waitForCreated = false;
 
         $scope.getStatusError = function(form, inputFileName){
 
@@ -88,7 +86,7 @@
                 return form[inputFileName].$invalid;
             }
             return false;
-        }
+        };
         $scope.createConteiner = function(){
             $scope.containerForm.$submitted = true;
             $scope.waitForCreated = false;
@@ -99,7 +97,7 @@
                     // 生成create container 所需要的参数
                     function get_cpu_shares(cpu){
                         cpuShares = cpu;
-                        cpuShares = cpuShares> 32 ? 32: cpuShares
+                        cpuShares = cpuShares > 32 ? 32: cpuShares
                         return cpuShares
                     }
                     function get_volume_format(volumeList){
@@ -178,7 +176,7 @@
                         }
                     }
                     container.new(option, callBack);
-                }
+                };
                 // 执行ajax函数 根据表单数据生成container
 
                 var postData = get_post_data_format($scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
@@ -203,7 +201,7 @@
         }
     }]);
     angular.module('dockerApp.containers')
-    .controller('portFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
+    .controller('portFieldController', ['$scope', '$stateParams', 'Container', 'Image', function($scope, $stateParams, Container, Image){
         $scope.addPort=function(){
             $scope.portSt.newPortRegex = false;
             $scope.portSt.hostPortRegex = false;
@@ -246,7 +244,7 @@
 
     }]);
     angular.module('dockerApp.containers')
-    .controller('envFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
+    .controller('envFieldController', ['$scope', '$stateParams', 'Container', 'Image', function($scope, $stateParams, Container, Image){
         $scope.addEnv=function(){
             if($scope.addEnvForm.$invalid){
                 $scope.addEnvForm.$submitted = true;
@@ -270,7 +268,7 @@
 
     }]);
     angular.module('dockerApp.containers')
-    .controller('volumeFieldController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
+    .controller('volumeFieldController', ['$scope', '$stateParams', 'Container', 'Image', function($scope, $stateParams, Container, Image){
          $scope.addVolume=function(){
              if($scope.addVolumeForm.$invalid){
                  $scope.addVolumeForm.$submitted = true;
@@ -293,7 +291,7 @@
              };
     }]);
     angular.module('dockerApp.containers')
-    .controller('containerLinkController', ['$scope', '$routeParams', 'container', 'image', function($scope, $routeParams, container, image){
+    .controller('containerLinkController', ['$scope', '$stateParams', 'Container', 'Image', function($scope, $stateParams, Container, Image){
         $scope.addLink=function(){
             if($scope.notChoosedLink){
                 $scope.clickedAddBtn = true;
@@ -338,7 +336,7 @@
         $scope.notChoosedLink = true;
         $scope.clickedAddBtn = false;
 
-        container.getNameList(true, get_name_list);
+        
 
         $scope.deleLink =function(linkInstance){
             $scope.delItem(linkInstance, $scope.link.linkInstanceList);

@@ -1,7 +1,7 @@
 // image list page controller
 (function(){
     angular.module("dockerApp.imageList")
-    .controller('imageListCtrl', ['$scope', '$location', 'Image', function($scope, $location, Image){
+    .controller('imageListCtrl', ['$scope', '$location', 'Image', '$state', function($scope, $location, Image, $state){
 
         $scope.imageList = [];
 
@@ -42,6 +42,16 @@
             doPaging($scope.currentPage);
             }
             Image.deleteImage({_id: currentImage.name }, updateImages);
+        };
+
+        $scope.createContainerInstance = function(image){
+            $state.go(
+                'containerCreate',{
+                    repo: /docker.io.com/.test(image.repo) ? null : image.repo,
+                    username: image.username,
+                    name: image.name,
+                    tag: image.tag
+                });
         };
 
     }]);
