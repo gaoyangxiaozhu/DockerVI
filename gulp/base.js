@@ -94,7 +94,6 @@ gulp.task('styles:sass',['inject_sass'],function () {
 });
 
 /*****************inject(css,js注入index.jade) start***************************/
-//sass编译和compass编译二选一
 gulp.task('inject', ['scripts', 'styles:sass'], function () {
   var injectStyles = gulp.src([
     path.join(config.paths.tmp, '/serve/app/**/*.css'),
@@ -109,7 +108,7 @@ gulp.task('inject', ['scripts', 'styles:sass'], function () {
   ]).pipe($.angularFilesort());
 
   var injectOptions = {
-     ignorePath: [config.paths.src],
+     ignorePath: [config.paths.src, path.join(config.paths.tmp, '/serve')],
      addRootSlash: false
   };
 	return gulp.src(path.join(config.paths.src, '/*.jade'))
