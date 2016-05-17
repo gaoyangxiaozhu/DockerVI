@@ -23,14 +23,16 @@ gulp.task('watch', function () {
 		], ['jade']);
 
 		//监控index.jade, 和bower.json文件
-		gulp.watch([path.join(config.paths.src,'/*.jade'),'bower.json'],['inject']);
+		gulp.watch([
+			path.join(config.paths.src, '/index.jade'),
+			path.join(config.paths.src, '/app/**/*.jade'),
+			'bower.json'],['inject']);
 		//监控CSS文件
-		gulp.watch([path.join(config.paths.src,'/app/**/*.scss')],function (event) {
-			if(event.type === 'changed'){
-				gulp.start('styles:compass');
-			}else{
+		gulp.watch([
+			path.join(config.paths.src, '/app/**/*.scss'),
+			path.join(config.paths.src, '/app/*.scss')],
+			function (event) {
 				gulp.start('inject');
-			}
 		});
 		//监控JS文件
 		gulp.watch([path.join(config.paths.src,'/app/**/*.js')],function (event) {

@@ -92,9 +92,28 @@ gulp.task('styles:sass',['inject_sass'],function () {
 		//css改变时无刷新改变页面
 		.pipe(browserSync.reload({ stream: true }));
 });
+/*****************CSS(SASS编译) end*********************************************/
+
+/*****************CSS(COMPASS编译) start*********************************************/
+gulp.task('styles:compass',['inject_sass'],function () {
+	return gulp.src(path.join(config.paths.src,'app/index.scss'))
+		.pipe($.plumber(config.errorHandler()))
+		.pipe($.compass({
+			config_file: path.join(__dirname, '/../config.rb'),
+		  css: path.join(config.paths.tmp, '/serve/app/'),
+		  sass: path.join(config.paths.src, '/app/'),
+		  //其余项都在config.rb中配置
+		}))
+		//sprite图片路径修复
+		.pipe($.replace('../../../src/assets/images/', '../assets/images/'))
+		.pipe(gulp.dest(path.join(config.paths.tmp,'/serve/app/')))
+		//css改变时无刷新改变页面
+		.pipe(browserSync.reload({ stream: true }));
+});
+/*****************CSS(COMPASS编译) end*********************************************/
 
 /*****************inject(css,js注入index.jade) start***************************/
-gulp.task('inject', ['scripts', 'styles:sass'], function () {
+gulp.task('inject', ['scripts', 'styles:compass'], function () {
   var injectStyles = gulp.src([
     path.join(config.paths.tmp, '/serve/app/**/*.css'),
     path.join('!' + config.paths.tmp, '/serve/app/vendor.css')
