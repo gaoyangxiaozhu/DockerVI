@@ -15,7 +15,6 @@ var router = express.Router();
 
 
 /**
-*[formatData description]
 *格式化数据
 *@param {Array} data
 *@return {Object} ret
