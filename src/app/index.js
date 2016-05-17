@@ -38,14 +38,21 @@
            //加载进度
            $rootScope.progressbar = ngProgressFactory.createInstance();
 
-           $rootScope.$on('$stateChangeStart', function (event, toState) {
+           $rootScope.$on('$stateChangeStart', function (event, toState){
+
                $rootScope.progressbar.setColor('green');
                    $rootScope.progressbar.reset(); // Required to handle all edge cases.
                    $rootScope.progressbar.start();
            });
 
            // When route successfully changed.
-           $rootScope.$on('$stateChangeSuccess', function(ev,toState,toParams,fromState,fromParams) {
+           $rootScope.$on('$stateChangeSuccess', function(ev, toState,toParams,fromState,fromParams) {
+               //只有home/main页面不显示侧边栏
+               if(toState.name == 'home'){
+                   $rootScope.pageClass = "dashboard";
+               }else{
+                   $rootScope.pageClass = "";
+               }
                $rootScope.progressbar.complete();
                $rootScope.previousState = fromState;
                $rootScope.previousParams = fromParams;
