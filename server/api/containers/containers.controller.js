@@ -152,8 +152,12 @@ exports.getContainerList = function(req, res){
 			}
 			//返回当前需要的数据
 			data = data.slice((currentPage-1)*10, (currentPage-1)*10 + itemsPerPage);
-            return data;
-
+            //获取每个容器的镜像标签
+            return data.map(function(item, index){
+                var tag = item.Image.split(':')[1];
+                item.imageTag = tag ? tag : 'latest';
+                return item;
+            });
 	})
     .then(function(data){
         //获取容器列表中每个容器的名字和主机名
@@ -170,6 +174,7 @@ exports.getContainerList = function(req, res){
             if(err){
                 res.status(404).send({'error_msg': err.message});
             }
+            console.log(results);
             res.send(results);
         });
     }).fail(function(err){
