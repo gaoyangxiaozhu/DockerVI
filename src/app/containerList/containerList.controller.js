@@ -6,7 +6,7 @@
 
         $scope.options = {
             currentPage: 1,
-            itemPerPage : 10
+            itemsPerPage : 10
         };
 
         function doPaging(options){
@@ -15,13 +15,13 @@
              Container.getContainerCount(options).then(function(result){
 
                 $scope.containerCount = result.count;
-                $scope.numPages = Math.ceil($scope.containerCount / $scope.options.itemPerPage);
+                $scope.numPages = Math.ceil($scope.containerCount / $scope.options.itemsPerPage);
+
              });
             //获取列表
             Container.getContainerList(options).then(function(result){
                 $scope.isLoading = false;
                 $scope.containerList = result;
-                console.log(result);
             }).catch(function(){
                $scope.isLoading = false;
                 $scope.containerList = [];
