@@ -15,7 +15,6 @@ var all = {
       }
     }
   },
-  seedDB: false,
   secrets: {
     session: 'docker-secret'
   },
