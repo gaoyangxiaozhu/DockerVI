@@ -1,28 +1,46 @@
 
 //- page contnt begins
-.content-body.panel
-    section.panel-body
-        table.table.table-bordered
-            tr 
-                th.text-center 名称
-                th.text-center 运行节点
-                th.text-center 状态
-                th.text-center 所属镜像
-                th.text-center 创建时间
-                th.text-center 动作
-            tr(ng-repeat="container in containerList | orderBy: 'Created'")
-                td.text-center 
-                    span {{ container.name }}
-                td.text-center 
-                    span {{ container.node }} 
-                td.text-center
-                    span.state-label.play.item-success(ng-if="container.status == 'running'")
-                        | 运行中
-                    span.state-label(ng-if="container.status =='stop'") 
-                        | 停止
-                    span.state-label.error(ng-if="container.status== 'error'") 应用异常
-                td.text-center {{ container.Image }}
-                td.text-center {{ container.Created*1000 | date:'yyyy-MM-dd HH:mm' }}
-                td.text-center
-                    a(ui-sref="containerDeatil({id: container.name })") 查看详情
-                //- paging(page="options.currentPage" page-size="options.itemsPerPage" total="containerCount" hide-if-empty="true" show-prev-next="true"  paging-action="loadMore(page)")
+.content-body
+    .panel.panel-default.panel-page-header
+        .panel-body
+            .primary-section
+                h2  应用管理
+                p 这里以表格的形式显示出SWARM集群中部已经部署的所有的容器应用
+            .secondary-section
+                .row
+                    .col-xs-12.col-sm-12
+                        h4 如何在SRARM集群中部署您的容器应用?
+                        p 您可以从镜像仓库中t挑选镜像(目前只支持swarm集群中已有的镜像)并生成容器应用
+                            a(ui-sref="imageList") 镜像列表
+    .panel
+        section.panel-body
+            table.table.table-bordered
+                tr 
+                    th.text-center 名称
+                    th.text-center 运行节点
+                    th.text-center 状态
+                    th.text-center 所属镜像
+                    th.text-center 创建时间
+                    th.text-center 动作
+                tr(ng-repeat="container in containerList | orderBy: 'Created'")
+                    td.text-center 
+                        span {{ container.name }}
+                    td.text-center 
+                        span {{ container.node }} 
+                    td.text-center
+                        span.state-label.play.item-success(ng-if="container.status == 'running'")
+                            | 运行中
+                        span.state-label(ng-if="container.status =='stop'") 
+                            | 停止
+                        span.state-label.error(ng-if="container.status== 'error'") 应用异常
+                    td.text-center 
+                        span{{ container.Image }}
+                        br
+                        span.item-tag
+                            i.fa.fa-tag 
+                            | &nbsp;{{container.imageTag }}
+                        
+                    td.text-center {{ container.Created*1000 | date:'yyyy-MM-dd HH:mm' }}
+                    td.text-center
+                        a(ui-sref="containerDeatil({id: container.name })") 查看详情
+            paging(page="options.currentPage" page-size="options.itemsPerPage" total="containerCount"  dots="......" hide-if-empty="true" show-prev-next="true"  paging-action="loadMore(page)")

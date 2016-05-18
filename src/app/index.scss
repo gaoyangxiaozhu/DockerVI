@@ -31,6 +31,7 @@ body.ui{
     background-color:$baseBgColor;
     font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
 }
+
 body,
 body.ui,
 p{
@@ -38,10 +39,10 @@ p{
     font-size: 16px;
     margin-bottom: 20px;
 }
-.h1,
-.h2,
-.h3,
-.h4{
+h1,
+h2,
+h3,
+h4{
     color:$titleFontColor;
 }
 h1,
@@ -49,8 +50,10 @@ h2{
     font-size: 24px;
     font-weight: 500;
 }
-h3{
+h3,
+h4{
     font-size: 18px;
+    font-weight: 500px;
 }
 .content-body{
     position:relative;
@@ -63,6 +66,15 @@ h3{
     background-color: $basePanelBgColor;
     border: 1px solid transparent;
     border-radius: 2px;
+    .panel-body{
+        padding: 15px;
+    }
+    .panel-page-header,
+    .primary-section {
+        padding-bottom: 20px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid $defaultBorderColor;
+    }
 }
 
 .navbar{
@@ -87,5 +99,10 @@ h3{
                 }
             }
         }
+    }
+    .item-tag{
+        color: $baseFontColor;
+        font-size: 13px;
+        margin-top: 4px;
     }
 }
