@@ -16,6 +16,7 @@
            'toaster',
            'ngFileUpload',
            'bw.paging',
+           'oitozero.ngSweetAlert',
            'dockerApp.resources',
            'dockerApp.service',
            'dockerApp.directives',

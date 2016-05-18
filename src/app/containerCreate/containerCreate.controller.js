@@ -3,7 +3,6 @@
     angular.module("dockerApp.containers")
     .controller('containerCreateCtrl', ['$scope', '$state', '$stateParams', 'Container', 'Image',  function($scope, $state, $stateParams, Container, Image){
 
-        console.log($state);
         $scope.imageName = $state.params.name;
         $scope.imageTag = $state.params.tag;
 
@@ -336,7 +335,7 @@
         $scope.notChoosedLink = true;
         $scope.clickedAddBtn = false;
 
-        
+
 
         $scope.deleLink =function(linkInstance){
             $scope.delItem(linkInstance, $scope.link.linkInstanceList);

@@ -76,7 +76,9 @@ h4{
         border-bottom: 1px solid $defaultBorderColor;
     }
 }
-
+.table-toolbar{
+    height: 60px;
+}
 .navbar{
     @include border-radius(0px);
     overflow: auto;
@@ -94,12 +96,29 @@ h4{
     > tbody{
         > tr{
             > td{
+                &:first-child{
+                    padding-left: 40px;
+                }
+                &.checkbox{
+                    min-width: 50px;
+                    width: 50px;
+                    display: table-cell;
+                    margin: 0;
+                    div{
+                        height: 100%;
+                    }
+                    input[type="checkbox"]{
+                        position: relative;
+                        margin:0;
+                    }
+                }
                 .item-success{
                     color : #22c36a;
                 }
             }
         }
     }
+    //for image tag
     .item-tag{
         color: $baseFontColor;
         font-size: 13px;

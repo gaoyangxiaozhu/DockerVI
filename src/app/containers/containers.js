@@ -15,7 +15,7 @@
         controller: 'containerDetailCtrl'
       })
       .state('containerCreate', {
-        url: '/containers/:repo/:username/:name/:tag/create/',
+        url: '/create/:repo/:username/:name/:tag/',
         templateUrl: 'app/containerCreate/containerCreate.html',
         controller: 'containerCreateCtrl'
     });

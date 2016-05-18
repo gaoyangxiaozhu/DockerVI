@@ -1,8 +1,10 @@
 // container list page controller
 (function(){
     angular.module("dockerApp.containers")
-    .controller('ContainerListCtrl', ['$scope', '$location', 'Container', function($scope, $location, Container){
+    .controller('ContainerListCtrl', ['$scope', '$location', 'Container', 'SweetAlert', function($scope, $location, Container, SweetAlert){
+
         $scope.containerList = [];
+        $scope.waitForDeleteContainerIDList = [];
 
         $scope.options = {
             currentPage: 1,
@@ -43,6 +45,43 @@
                 doPaging($scope.currentPage);
             }
             Container.deleteContainer({_id : currentContainer.id }, updateContainers);
+        };
+
+        //点击delete按钮　删除选中的容器应用
+        $scope.deleteCheckedApp = function(){
+            SweetAlert.swal({
+                title: "你确定?",
+                text: "你将删除选中的" + $scope.waitForDeleteContainerIDList.length + '个容器!',
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "取消",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是的, 我要删除!",
+                closeOnConfirm: false},
+                function(){
+                    SweetAlert.swal("Booyah!");
+                });
+        };
+        $scope.checkItem = function(container){
+            if(container.check){
+                if($scope.waitForDeleteContainerIDList.indexOf(container.Id) < 0){
+                    $scope.waitForDeleteContainerIDList.push(container.Id);
+                }
+                if(!$scope.checkedItem){
+                    $scope.checkedItem = true;
+                }
+            }else{
+                if($scope.waitForDeleteContainerIDList.indexOf(container.Id) >= 0){
+                    var index =  $scope.waitForDeleteContainerIDList.indexOf(container.Id);
+                    $scope.waitForDeleteContainerIDList.splice(index, 1); //从待删除的列表中移除取消删除的项
+                    if($scope.waitForDeleteContainerIDList.length === 0){
+                        if($scope.checkedItem){
+                            $scope.checkedItem = false;
+                        }
+                    }
+                }
+
+            }
         };
     }]);
 })();
