@@ -4,7 +4,7 @@
 // .icon-sort-desc { background: sprite($icons, desc); }
 
 $baseFontColor : #aab2bd;     //默认段落字体颜色
-$titleFontColor : #656d78;    //默认标题字体颜色
+$titleFontColor : #656D78;    //默认标题字体颜色
 $defaultFontSize : 16px;    //默认字体大小
 $baseBorderColor : #d9d9d9;    //边框颜色
 $baseBgColor : #ecf0f1;        //网站背景颜色
@@ -26,6 +26,8 @@ $navActiveColor:#e78170;
 $navTextShadowColor: #de533a;
 $navShadowColor: #eee;
 
+//border
+$defaultBorderColor :  #e6e9ed;
 
  $formColor: #999;
  $formBdColor:#2f2f2f;
@@ -39,16 +41,17 @@ $navShadowColor: #eee;
     border-right: 0;
  }
 
-$table-bg:                      white;
-$table-bg-accent:               #444;
-$table-bg-hover:                rgba(245,247,250, .8);
-$table-bg-active:               $table-bg-hover;
-$table-border-color:            white;
-$table-font-color:              #595f69;
-$pagination-bg: #555;
-$pagination-border: #2f2f2f;
-$pagination-active-bg: #337ab7;
-$pagination-active-border: #337ab7;
+//default table
+$table-bg:  white;
+$table-bg-accent : #444;
+$table-bg-hover :  rgba(245,247,250, .8);
+$table-bg-active : $table-bg-hover;
+$table-border-color :  white;
+$table-font-color : #595f69;
+$pagination-bg : #555;
+$pagination-border : #2f2f2f;
+$pagination-active-bg : #337ab7;
+$pagination-active-border : #337ab7;
 table {
 background-color: $table-bg;
 }
@@ -91,12 +94,25 @@ background-color: $table-bg;
         }
     }
 }
+paging{
+    margin: 20px auto;
+    display: block;
+    text-align: center;
+}
 .pagination {
+    @include border-radius(0px);
     > li {
       > a,
       > span {
         background-color: $pagination-bg;
         border-color: $pagination-border;
+        @include border-radius(0px);
+      }
+      &:first-child,
+      &:last-child{
+          > span{
+              @include border-radius(0px);
+          }
       }
 
     }
@@ -107,6 +123,7 @@ background-color: $table-bg;
       &:focus {
         background-color: $pagination-active-bg;
         border-color: $pagination-active-border;
+        @include border-radius(0px);
       }
     }
     > .disabled {
