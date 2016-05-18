@@ -1,20 +1,29 @@
 
 <!-- page contnt begins-->
 .content-body
-    section#docker
-        table.table.table-bordered
-            tr 
-                th.text-center 镜像仓库
-                th.text-center 镜像用户
-                th.text-center 镜像名称
-                th.text-center 标签
-                th.text-center 创建时间
-                th.text-center 动作
-            tr(ng-repeat="image in imageList | orderBy:'name'")
-                td.text-center {{ image.repo }}
-                td.text-center {{ image.username }}
-                td.text-center {{ image.name  }}
-                td.text-center {{ image.tag }}
-                td.text-center {{ image.time | date:'yyyy-MM-dd HH:mm' }}
-                td.text-center 
-                    button.btn.btn-xs.btn-primary(ng-click='createContainerInstance(image)') 创建应用
+    .panel.panel-default.panel-page-header
+        .panel-body
+            .primary-section
+                h2  镜像仓库
+                p 这里是容器镜像的仓库,仓库里目前汇聚了代码构建产生的私有容器镜像（我们还将继续开发支持查询和下载第三方镜像的功能）
+    .panel
+        section.panel-body
+            div.table-container
+                table.table.table-bordered
+                    thead
+                        tr 
+                            th 镜像仓库
+                            th 镜像用户
+                            th 镜像名称
+                            th 标签
+                            th　创建时间
+                            th 动作
+                    tbody
+                        tr(ng-repeat="image in imageList | orderBy:'name'")
+                            td.text-center {{ image.repo }}
+                            td {{ image.username }}
+                            td {{ image.name  }}
+                            td {{ image.tag }}
+                            td {{ image.time | date:'yyyy-MM-dd HH:mm' }}
+                            td
+                                button.btn.btn-primary(ng-click='createContainerInstance(image)') 创建应用

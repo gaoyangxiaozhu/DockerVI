@@ -41,19 +41,25 @@ $defaultBorderColor :  #e6e9ed;
     border-right: 0;
  }
 
+
+
 //default table
 $table-bg:  white;
+$table-selected-bg: #fffced;
 $table-bg-accent : #444;
 $table-bg-hover :  rgba(245,247,250, .8);
 $table-bg-active : $table-bg-hover;
-$table-border-color :  white;
+$table-border-color :  #e4e7ed;
 $table-font-color : #595f69;
 $pagination-bg : #555;
 $pagination-border : #2f2f2f;
 $pagination-active-bg : #337ab7;
 $pagination-active-border : #337ab7;
+
+.table,
 table {
-background-color: $table-bg;
+    width: 100%;
+    background-color: $table-bg;
 }
 .table-striped {
     tbody > tr:nth-of-type(odd) {
@@ -66,13 +72,16 @@ background-color: $table-bg;
     > tfoot {
       > tr {
          > th {
+            text-align: left;
             font-size: 14px;
             padding: 10px;
             font-weight: 400;
-            border:1px solid transparent;
+            &.text-center{
+                text-align: center;
+            }
+
         }
          > td {
-            border: 1px solid transparent;
             color: $table-font-color;
             white-space: nowrap;
             word-break: break-all;
@@ -85,15 +94,28 @@ background-color: $table-bg;
 .table-bordered, .table-responsive{
     border-color: $table-border-color;
 }
+
 .table,
-.table-hover {
-    > tbody > tr{
-        border-bottom: 1px solid #f1f3f6;
-        &:hover{
-            background-color: $table-bg-hover;
+table{
+    > thead{
+        border: 1px solid transparent;
+    }
+    > tbody {
+        background-color: white;
+        border: 1px solid $table-border-color;
+        > tr{
+            border-bottom: 1px solid #f1f3f6;
+            &:hover{
+                background-color: $table-bg-hover;
+            }
+            &.selected{
+                background-color: $table-selected-bg;
+            }
         }
     }
 }
+
+
 paging{
     margin: 20px auto;
     display: block;
@@ -137,6 +159,20 @@ paging{
         border-color: $pagination-border;
       }
     }
+}
+
+.btn,
+.btn:active,
+.btn:focus,
+.btn:hover,
+button,
+button:active,
+button:focus,
+button:hover,
+input[type=checkbox]:focus,
+input[type=file]:focus,
+input[type=radio]:focus{
+    outline: 0 !important;
 }
 
 //垂直居中容器
