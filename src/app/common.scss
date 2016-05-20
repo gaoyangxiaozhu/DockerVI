@@ -1,0 +1,297 @@
+
+//btn
+.btn,
+.btn:active,
+.btn:focus,
+.btn:hover,
+button,
+button:active,
+button:focus,
+button:hover,
+input[type=checkbox]:focus,
+input[type=file]:focus,
+input[type=radio]:focus{
+    outline: 0 !important;
+}
+
+.input-group-addon, .form-control{
+   color: $formColor;
+   background-color: $formBgColor;
+   border:1px solid $formBdColor;
+}
+.input-group-addon{
+   border-right: 0;
+}
+
+//link
+.nav.navbar{
+    li{
+        a{
+            border:1px solid transparent;
+            &:hover,
+            &:active,
+            &:focus{
+                color: $navHoverColor;
+                border:1px solid darken($navHoverBgColor, 7%);
+                border-right-width: 0;
+            }
+            &:hover{
+                background-color: $navHoverBgColor;
+            }
+            &:focus,
+            &:active{
+                background-color: #fff;
+            }
+        }
+    }
+}
+
+//table & pagination
+.table,
+table {
+    width: 100%;
+    background-color: $table-bg;
+}
+.table-striped {
+    tbody > tr:nth-of-type(odd) {
+      background-color: $table-bg-accent;
+    }
+}
+.table{
+    > thead,
+    > tbody,
+    > tfoot {
+      > tr {
+         > th {
+            text-align: left;
+            font-size: 14px;
+            padding: 10px;
+            font-weight: 400;
+            &.text-center{
+                text-align: center;
+            }
+
+        }
+         > td {
+            color: $table-font-color;
+            white-space: nowrap;
+            word-break: break-all;
+            padding: 20px 10px;
+            vertical-align: middle;
+        }
+      }
+    }
+}
+.table-bordered, .table-responsive{
+    border-color: $table-border-color;
+}
+
+.table,
+table{
+    > thead{
+        border: 1px solid transparent;
+    }
+    > tbody {
+        background-color: white;
+        border: 1px solid $table-border-color;
+        > tr{
+            border-bottom: 1px solid #f1f3f6;
+            &:hover{
+                background-color: $table-bg-hover;
+            }
+            &.selected{
+                background-color: $table-selected-bg;
+            }
+        }
+    }
+}
+
+
+paging{
+    margin: 20px auto;
+    display: block;
+    text-align: center;
+}
+.pagination {
+    @include border-radius(0px);
+    > li {
+      > a,
+      > span {
+        background-color: $pagination-bg;
+        border-color: $pagination-border;
+        @include border-radius(0px);
+      }
+      &:first-child,
+      &:last-child{
+          > span{
+              @include border-radius(0px);
+          }
+      }
+
+    }
+    > .active > a,
+    > .active > span {
+      &,
+      &:hover,
+      &:focus {
+        background-color: $pagination-active-bg;
+        border-color: $pagination-active-border;
+        @include border-radius(0px);
+      }
+    }
+    > .disabled {
+      > span,
+      > span:hover,
+      > span:focus,
+      > a,
+      > a:hover,
+      > a:focus {
+        background-color: $pagination-bg;
+        border-color: $pagination-border;
+      }
+    }
+}.table,
+table {
+    width: 100%;
+    background-color: $table-bg;
+}
+.table-striped {
+    tbody > tr:nth-of-type(odd) {
+      background-color: $table-bg-accent;
+    }
+}
+.table{
+    > thead,
+    > tbody,
+    > tfoot {
+      > tr {
+         > th {
+            text-align: left;
+            font-size: 14px;
+            padding: 10px;
+            font-weight: 400;
+            &.text-center{
+                text-align: center;
+            }
+
+        }
+         > td {
+            color: $table-font-color;
+            white-space: nowrap;
+            word-break: break-all;
+            padding: 20px 10px;
+            vertical-align: middle;
+        }
+      }
+    }
+}
+.table-bordered, .table-responsive{
+    border-color: $table-border-color;
+}
+
+.table,
+table{
+    > thead{
+        border: 1px solid transparent;
+    }
+    > tbody {
+        background-color: white;
+        border: 1px solid $table-border-color;
+        > tr{
+            border-bottom: 1px solid #f1f3f6;
+            &:hover{
+                background-color: $table-bg-hover;
+            }
+            &.selected{
+                background-color: $table-selected-bg;
+            }
+        }
+    }
+}
+
+
+paging{
+    margin: 20px auto;
+    display: block;
+    text-align: center;
+}
+.pagination {
+    @include border-radius(0px);
+    > li {
+      > a,
+      > span {
+        background-color: $pagination-bg;
+        border-color: $pagination-border;
+        @include border-radius(0px);
+      }
+      &:first-child,
+      &:last-child{
+          > span{
+              @include border-radius(0px);
+          }
+      }
+
+    }
+    > .active > a,
+    > .active > span {
+      &,
+      &:hover,
+      &:focus {
+        background-color: $pagination-active-bg;
+        border-color: $pagination-active-border;
+        @include border-radius(0px);
+      }
+    }
+    > .disabled {
+      > span,
+      > span:hover,
+      > span:focus,
+      > a,
+      > a:hover,
+      > a:focus {
+        background-color: $pagination-bg;
+        border-color: $pagination-border;
+      }
+    }
+}
+
+//nav navbar
+.nav-tabs{
+    > li{
+        border-bottom: 2px solid transparent;
+        > a{
+            color: silver;
+            &,
+            &:hover,
+            &:focus,
+            &:active{
+                color: #666;
+                background-color: #fff;
+                border-width: 0;
+            }
+        }
+        &.active{
+            border-bottom: 2px solid #000;
+            a,
+            a:hover,
+            a:focus,
+            a:active{
+                font-weight: 700px;
+                border-width: 0;
+            }
+        }
+    }
+}
+
+//返回顶部
+.gotop{
+  position:fixed;right:2%;bottom:5px;
+  width:40px;height:40px;background:rgba(0,0,0,0.5);
+  text-align: center;
+  cursor: pointer;
+  @include transition(all .1s);
+  i{font-size:2em;color:#fff;margin-top:3px;}
+  &:hover{
+    background:rgba(0,0,0,0.8);
+  }
+}
