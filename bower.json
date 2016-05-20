@@ -25,7 +25,8 @@
     "ng-lodash": "~0.2.3",
     "ngprogress": "~1.1.1",
     "angular-paging": "~2.0.0",
-    "angular-sweetalert": "latest"
+    "angular-sweetalert": "latest",
+    "angular-ui-bootstrap": "ui-bootstrap#^1.3.2"
   },
   "devDependencies": {
     "angular-mocks": "~1.4.0"
