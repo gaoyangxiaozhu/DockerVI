@@ -1,0 +1,20 @@
+$color : #5d9cec;
+.dockerhub{
+    .input-group{
+        margin-top:15px;
+        margin-bottom: 15px;
+        .input-group-addon{
+            background-color: $color;
+            color: #fff;
+            border: 1px solid $color;
+            line-height: 1;
+            padding: 9px 17px 8px;
+            cursor: pointer;
+            @include single-transition(all, 200ms);
+            &:hover{
+                background-color: darken($color, 5%);
+                border: 1px solid darken($color, 5%);
+            }
+        }
+    }
+}

@@ -17,6 +17,7 @@ $icon-font-path: "../../bower_components/bootstrap-sass/assets/fonts/bootstrap/"
  */
 // injector
 @import "base.scss";
+@import "common.scss";
 @import "containerCreate/containerCreate.scss";
 @import "containerDetail/containerDetail.scss";
 @import "containerList/containerList.scss";
