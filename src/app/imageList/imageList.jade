@@ -8,22 +8,30 @@
                 p 这里是容器镜像的仓库,仓库里目前汇聚了代码构建产生的私有容器镜像（我们还将继续开发支持查询和下载第三方镜像的功能）
     .panel
         section.panel-body
-            div.table-container
-                table.table.table-bordered
-                    thead
-                        tr 
-                            th 镜像仓库
-                            th 镜像用户
-                            th 镜像名称
-                            th 标签
-                            th　创建时间
-                            th 动作
-                    tbody
-                        tr(ng-repeat="image in imageList | orderBy:'name'")
-                            td.text-center {{ image.repo }}
-                            td {{ image.username }}
-                            td {{ image.name  }}
-                            td {{ image.tag }}
-                            td {{ image.time | date:'yyyy-MM-dd HH:mm' }}
-                            td
-                                button.btn.btn-primary(ng-click='createContainerInstance(image)') 创建应用
+            tabset
+                tab(index="0" heading="本地镜像")
+                    div.table-container
+                        table.table.table-bordered
+                            thead
+                                tr 
+                                    th 镜像仓库
+                                    th 镜像用户
+                                    th 镜像名称
+                                    th 标签
+                                    th　创建时间
+                                    th 动作
+                            tbody
+                                tr(ng-repeat="image in imageList | orderBy:'name'")
+                                    td.text-center {{ image.repo }}
+                                    td {{ image.username }}
+                                    td {{ image.name  }}
+                                    td {{ image.tag }}
+                                    td {{ image.time | date:'yyyy-MM-dd HH:mm' }}
+                                    td
+                                        button.btn.btn-primary(ng-click='createContainerInstance(image)') 创建应用
+                tab(index="1" heading="DockerHub镜像")
+                    div.row.dockerhub
+                        h3.text-center Docker镜像
+                        div.input-group.col-xs-6.col-xs-offset-3
+                            input.form-control(placeholder="在这里搜索镜像",　ng-model="search.dockerhub.content", tabindex="0")
+                            span.input-group-addon(ng-click="searchDockerHub()" role="button" tabindex="0")搜索
