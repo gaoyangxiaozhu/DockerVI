@@ -9,9 +9,10 @@ $defaultFontSize : 16px;    //默认字体大小
 $baseBorderColor : #d9d9d9;    //边框颜色
 $baseBgColor : #ecf0f1;        //网站背景颜色
 $basePanelBgColor : white;     //默认面板背景颜色
-$linkBaseColor : #999;        //链接颜色
+$linkBaseColor : #337ab7;        //链接颜色
 $linkBaseHoverColor : #717171; //链接悬浮颜色
 $linkTitleColor : #555;        //标题链接颜色
+
 $linkTitleHoverColor : black;  //标题链接悬浮颜色
 $linkLightColor : #4094c7;     //高亮链接颜色
 $linkLightHoverColor : #075b8d;//高亮链接悬浮颜色
@@ -20,26 +21,19 @@ $linkLightHoverColor : #075b8d;//高亮链接悬浮颜色
 $navbarSize:110px;
 $navBgColor: #3e474e;
 $navBdColor: #f49484;
+$navBarLinkColor: #337ab7;
+$navHoverColor: $linkLightHoverColor;
+$navHoverBgColor: darken($navBgColor, 3%);
+$navActiveBgColor: darken($navBgColor, 7%);
 
-$navHoverBgColor: #f49484;
-$navActiveColor:#e78170;
-$navTextShadowColor: #de533a;
-$navShadowColor: #eee;
 
 //border
 $defaultBorderColor :  #e6e9ed;
 
- $formColor: #999;
- $formBdColor:#2f2f2f;
- $formBgColor: #555;
- .input-group-addon,.form-control{
-    color: $formColor;
-    background-color: $formBgColor;
-    border:1px solid $formBdColor;
- }
- .input-group-addon{
-    border-right: 0;
- }
+//form relate
+ $formColor: #555;
+ $formBdColor:#ddd;
+ $formBgColor: #fff;
 
 
 
@@ -56,124 +50,6 @@ $pagination-border : #2f2f2f;
 $pagination-active-bg : #337ab7;
 $pagination-active-border : #337ab7;
 
-.table,
-table {
-    width: 100%;
-    background-color: $table-bg;
-}
-.table-striped {
-    tbody > tr:nth-of-type(odd) {
-      background-color: $table-bg-accent;
-    }
-}
-.table{
-    > thead,
-    > tbody,
-    > tfoot {
-      > tr {
-         > th {
-            text-align: left;
-            font-size: 14px;
-            padding: 10px;
-            font-weight: 400;
-            &.text-center{
-                text-align: center;
-            }
-
-        }
-         > td {
-            color: $table-font-color;
-            white-space: nowrap;
-            word-break: break-all;
-            padding: 20px 10px;
-            vertical-align: middle;
-        }
-      }
-    }
-}
-.table-bordered, .table-responsive{
-    border-color: $table-border-color;
-}
-
-.table,
-table{
-    > thead{
-        border: 1px solid transparent;
-    }
-    > tbody {
-        background-color: white;
-        border: 1px solid $table-border-color;
-        > tr{
-            border-bottom: 1px solid #f1f3f6;
-            &:hover{
-                background-color: $table-bg-hover;
-            }
-            &.selected{
-                background-color: $table-selected-bg;
-            }
-        }
-    }
-}
-
-
-paging{
-    margin: 20px auto;
-    display: block;
-    text-align: center;
-}
-.pagination {
-    @include border-radius(0px);
-    > li {
-      > a,
-      > span {
-        background-color: $pagination-bg;
-        border-color: $pagination-border;
-        @include border-radius(0px);
-      }
-      &:first-child,
-      &:last-child{
-          > span{
-              @include border-radius(0px);
-          }
-      }
-
-    }
-    > .active > a,
-    > .active > span {
-      &,
-      &:hover,
-      &:focus {
-        background-color: $pagination-active-bg;
-        border-color: $pagination-active-border;
-        @include border-radius(0px);
-      }
-    }
-    > .disabled {
-      > span,
-      > span:hover,
-      > span:focus,
-      > a,
-      > a:hover,
-      > a:focus {
-        background-color: $pagination-bg;
-        border-color: $pagination-border;
-      }
-    }
-}
-
-.btn,
-.btn:active,
-.btn:focus,
-.btn:hover,
-button,
-button:active,
-button:focus,
-button:hover,
-input[type=checkbox]:focus,
-input[type=file]:focus,
-input[type=radio]:focus{
-    outline: 0 !important;
-}
 
 //垂直居中容器
 .flex-vertical-box{
@@ -183,17 +59,4 @@ input[type=radio]:focus{
   @include align-items(center);
   height: 100%;
   width:100%;
-}
-
-//返回顶部
-.gotop{
-  position:fixed;right:2%;bottom:5px;
-  width:40px;height:40px;background:rgba(0,0,0,0.5);
-  text-align: center;
-  cursor: pointer;
-  @include transition(all .1s);
-  i{font-size:2em;color:#fff;margin-top:3px;}
-  &:hover{
-    background:rgba(0,0,0,0.8);
-  }
 }
