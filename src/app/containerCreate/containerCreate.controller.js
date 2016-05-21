@@ -3,41 +3,47 @@
     angular.module("dockerApp.containers")
     .controller('containerCreateCtrl', ['$scope', '$state', '$stateParams', 'Container', 'Image',  function($scope, $state, $stateParams, Container, Image){
 
-        $scope.imageName = $state.params.name;
-        $scope.imageTag = $state.params.tag;
+        var _imageId = $state.params.id;
+        this.name="gyy";
+        Image.getImageDetail({id : _imageId}).then(function(result){
+            $scope.imageName = result.name;
+            $scope.imageSize = result.size;
+            $scope.imageTag = result.tag;
+        });
 
+        $scope.step = 1; //默认第一步
+        //TODO 应该改为从配置文件读取或从后台读取可配置的容器大小信息
         $scope.containerSize=[
             {
-                'num': 128,
-                'unit': 'M'
+                mem: '128M',
+                cpu: '1CPU(共享)',
+                level: 'XXS',
             },
             {
-                'num': 256,
-                'unit': 'M'
+                mem: '256M',
+                cpu: '1CPU(共享)',
+                level: 'XS'
             },
             {
-                'num': 512,
-                'unit': 'M'
+                'mem': '512M',
+                'cpu': '1CPU(共享)',
+                'level': 'S',
             },
             {
-                'num': 1024,
-                'unit': 'M'
+                'mem': '512M',
+                'cpu': '2CPU(共享)',
+                'level': 'M',
             },
             {
-                'num': 2048,
-                'unit':'M'
-            },
-            {
-                'num': 4096,
-                'unit': 'M'
+                'mem': '1024M',
+                'cpu': '2CPU(共享)',
+                'level': 'M+',
             }
         ];
-
         // 定义container
-
         $scope.container={};
         $scope.container.name="";
-        $scope.container.size="128M";
+        $scope.container.size= $scope.containerSize[0];
         // cup相关
         $scope.container.cpuMin = 0;
         $scope.container.cpuMax =32;
@@ -80,12 +86,28 @@
         $scope.waitForCreated = false;
 
         $scope.getStatusError = function(form, inputFileName){
-
+            $scope.containerForm = form;
             if(!form[inputFileName].$pristine || (form[inputFileName].$pristine && form.$submitted)){
                 return form[inputFileName].$invalid;
             }
             return false;
         };
+
+        $scope.nextStep = function(step){
+            console.log(step);
+            switch (step) {
+                case 1:
+                    $scope.containerForm.$submitted = true;
+                    $scope.waitForCreated = false;
+                    break;
+                case 2:
+                    break;
+                default:
+
+            }
+        };
+
+
         $scope.createConteiner = function(){
             $scope.containerForm.$submitted = true;
             $scope.waitForCreated = false;
@@ -198,6 +220,16 @@
                 scopeArrayList[target]= scopeArrayList[instanceListLength-1];
                 scopeArrayList.pop();
         }
+    }]);
+
+    angular.module('dockerApp.containers')
+    .controller('containerFormController', ['$scope', '$stateParams', 'Container', 'Image', function($scope, $stateParams, Container, Image){
+
+        //选择容器实例大小
+        $scope.selectContainerSize = function(s){
+            $scope.container.size = s;
+        };
+
     }]);
     angular.module('dockerApp.containers')
     .controller('portFieldController', ['$scope', '$stateParams', 'Container', 'Image', function($scope, $stateParams, Container, Image){

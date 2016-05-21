@@ -1,4 +1,11 @@
 
+ul,
+ol{
+    list-style: none;
+    li{
+        list-style: none;
+    }
+}
 //btn
 .btn,
 .btn:active,
@@ -8,9 +15,13 @@ button,
 button:active,
 button:focus,
 button:hover,
-input[type=checkbox]:focus,
-input[type=file]:focus,
-input[type=radio]:focus{
+input:focus,
+select,
+select:active,
+select:focus,
+textarea,
+textarea:active,
+textarea:focus{
     outline: 0 !important;
 }
 
@@ -23,6 +34,30 @@ input[type=radio]:focus{
    border-right: 0;
 }
 
+.btn.btn-blue{
+    background-color: #3890ff;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.1);
+    @include box-shadow(0 1px 0 hsla(0, 0%, 100%, .08) inset, 0 1px 1px rgba(0, 0, 0, .08));
+    @include background-image(linear-gradient(0deg, hsla(0,0%,100%,.06) 0, hsla(0,0%,100%,.06)),linear-gradient(0deg, rgba(9,109,236,.5) 0,rgba(71,153,255,.5)));
+
+    &:hover{
+        @include background-image(linear-gradient(0deg,rgba(9,109,236,.5) 0,rgba(71,153,255,.5)));
+        color: #fff;
+        border-color: #217ef2;
+        background-color: #3890ff;
+    }
+}
+.btn-primary{
+    background-color: $primaryBtnColor;
+    border-color : $primaryBtnColor;
+    &:hover,
+    &:focus,
+    &:active,
+    &.active{
+        background-color: darken($primaryBtnColor, 5%) !important;
+        border-color: darken($primaryBtnColor, 5%) !important;
+    }
+}
 //link
 .nav.navbar{
     li{
@@ -283,6 +318,45 @@ paging{
     }
 }
 
+//form
+form{
+    .form-group{
+        input[type="text"],
+        input[type="file"],
+        textarea{
+            &:focus{
+                border: 1px solid #4882C3;
+            }
+        }
+        .state-error{
+            input,select{
+                &:not(:focus){
+                    background:#fff0f0;
+                    border: 1px solid #A90329;
+                }
+            }
+        }
+    }
+    span.error{
+        display:block;
+        margin-top:6px;
+        padding: 0 1px;
+        font-size:11px;
+        line-height:15px;
+        color:#d56161;
+    }
+
+    .range-cpu{
+        margin-left:10px;
+        width:300px;
+    }
+    .table,
+    table{
+        > thead{
+            border:1px solid $table-border-color;
+        }
+    }
+}
 //返回顶部
 .gotop{
   position:fixed;right:2%;bottom:5px;

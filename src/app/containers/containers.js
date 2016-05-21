@@ -15,9 +15,10 @@
         controller: 'containerDetailCtrl'
       })
       .state('containerCreate', {
-        url: '/create/:repo/:username/:name/:tag/',
+        url: '/create/:id',
         templateUrl: 'app/containerCreate/containerCreate.html',
-        controller: 'containerCreateCtrl'
+        controller: 'containerCreateCtrl',
+        controllerAs: 'ctrl'
     });
     });
 })();

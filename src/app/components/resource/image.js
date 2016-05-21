@@ -20,6 +20,12 @@
               params: {
                   id: 'getImagesCount'
               }
+          },
+          getImageDetail:{
+              method:'GET',
+              params:{
+                  controller: 'getImageDetail'
+              }
           }
         });
       return {
@@ -38,6 +44,14 @@
                   }, function(err) {
                           return cb(err);
                   }).$promise;
+        },
+        getImageDetail : function(data, callback){
+            var cb = callback || angular.noop;
+            return imagesResource.getImageDetail(data, function(result){
+                return cb(result);
+            }, function(err){
+                return cb(err);
+            }).$promise;
         },
         deleteImage:function(data,callback){
             var cb = callback || angular.noop;
