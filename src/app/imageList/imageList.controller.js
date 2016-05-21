@@ -47,10 +47,7 @@
         $scope.createContainerInstance = function(image){
             $state.go(
                 'containerCreate',{
-                    repo: /docker.io.com/.test(image.repo) ? null : image.repo,
-                    username: image.username,
-                    name: image.name,
-                    tag: image.tag
+                    id: image.id
                 });
         };
 

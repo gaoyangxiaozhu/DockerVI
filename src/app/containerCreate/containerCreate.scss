@@ -1,36 +1,62 @@
-.label-size{
-    padding-right:25px;
-}
-h5.head{
-    font-weight:bold;
-    width:25%;
-    text-align:right;
-    margin-bottom:0;
-    margin-top:0;
-}
-
-form{
-    .form-group{
-        .state-error{
-            input,select{
-                &:not(:focus){
-                    background:#fff0f0;
-                    border-color:#A90329;
-                }
+.content-body.create-container{
+    .image{
+        display: inline-block;
+        min-width: 300px;
+        width: 300px;
+        height: 100px;
+        .img-icon{
+            width:100px;
+            height:100%;
+            float: left;
+            margin-right: 10px;
+        }
+        .img-msg{
+            h3{
+                font-size: 21px;
+                color: #46B79E;
+            }
+            float: left;
+            height:100%;
+            .sm-text{
+                font-size: 14px;
             }
         }
     }
-    span.error{
-        display:block;
-        margin-top:6px;
-        padding: 0 1px;
-        font-size:11px;
-        line-height:15px;
-        color:#d56161;
+    h5.head{
+        font-weight:bold;
+        font-size: 14px;
+        text-align:right;
+        margin-bottom:0;
+        margin-top:0;
     }
-
-    .range-cpu{
-        margin-left:10px;
-        width:300px;
+    .type-list{
+        display: inline-block;
+        li{
+            float: left;
+            display: inline-block;
+            border: 2px solid lighten($baseBorderColor, 5%);
+            @include transform(border 200ms);
+            .panel{
+                margin-bottom: 0px;
+                border-width: 0;
+                .panel-heading{
+                    background-color: rgb(97, 149, 143);
+                    color: white;
+                    @include border-radius(0);
+                }
+                .panel-body{
+                    padding: 6px 15px 0px;
+                }
+            }
+            &:not(:first-child){
+                margin-left: 10px;
+            }
+            &.active{
+                border: 2px solid lighten(#000, 30%);
+                i{
+                    color:rgb(47, 240, 15);
+                }
+            }
+        }
     }
 }
