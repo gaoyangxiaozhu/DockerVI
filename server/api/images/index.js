@@ -7,6 +7,7 @@ var router = express.Router();
 
 router.get('/getImagesList', controller.getImagesList);
 router.get('/getImagesCount', controller.getImagesCount);
+router.get('/:id/getImageDetail', controller.getImageDetail);
 router.delete('/:id', controller.deleteImage);
 
 
