@@ -46,6 +46,7 @@ gulp.task('jade', function(){
     gulp.src([
         path.join(config.paths.src, 'app/**/*.jade')
     ])
+    .pipe($.plumber(config.errorHandler()))
     .pipe($.jade({
       pretty: true
     }))
