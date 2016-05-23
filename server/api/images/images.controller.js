@@ -148,6 +148,35 @@ exports.getImageDetail = function(req, res){
 	});
 
 };
+exports.searchImage = function(req, res){
+	var id = req.params.id;
+	var content = req.query.content;
+	var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0) ? parseInt(req.query.itemsPerPage) : 10;
+	var currentPage = (parseInt(req.query.currentPage) > 0) ? parseInt(req.query.currentPage) : 1;
+	if(id == "dockerhub"){
+		var url = endpoint + '/images/search?term=' + content;
+		request.get(url)
+		.then(function(response){
+				if(!response.ok){
+						throw new Error("error");
+				}
+				var _data = response.body;
+				try {
+					var dockerhubPAckagesList = _data.slice(0, itemsPerPage * currentPage);
+					var total = _data.length;
+					res.send({ dockerhubPAckagesList : dockerhubPAckagesList, total: total});
+				} catch (e) {
+					throw new Error(e);
+				}
+
+
+		}).fail(function(err){
+				res.send({'error_msg': err.message});
+		});
+	}
+
+
+}
 exports.deleteImage = function(req ,res){
 
 	var id = req.params.id;

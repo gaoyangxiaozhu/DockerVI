@@ -8,6 +8,7 @@ var router = express.Router();
 router.get('/getImagesList', controller.getImagesList);
 router.get('/getImagesCount', controller.getImagesCount);
 router.get('/:id/getImageDetail', controller.getImageDetail);
+router.get('/:id/searchImage', controller.searchImage);
 router.delete('/:id', controller.deleteImage);
 
 
