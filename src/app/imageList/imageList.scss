@@ -18,3 +18,43 @@ $color : #5d9cec;
         }
     }
 }
+.well {
+    @include border-radius(1px);
+}
+.well {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: lighten($baseBgColor, 5%);
+    border: 1px solid $defaultBorderColor;
+}
+.package-list {
+    .package {
+        $packageBgColor: #f2f4f7;
+        margin-bottom: 10px;
+        padding: 20px 30px;
+        background-color: $packageBgColor;
+        border: none;
+        .package-icon {
+            float: left;
+            height: 58px;
+            width: 58px;
+            border-radius: 8px;
+        }
+        .package-heading{
+            margin-top: 5px;
+            padding-left: 80px;
+            word-break: break-all;
+            h3{
+                font-size: 20px;
+                font-weight: 300;
+                margin: 0 0 5px;
+            }
+            .meta{
+                color: #aab2bd;
+            }
+        }
+
+
+    }
+}

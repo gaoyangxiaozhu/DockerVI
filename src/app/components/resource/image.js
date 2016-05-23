@@ -11,20 +11,27 @@
           getImagesList: {
               method: 'GET',
               params: {
-                  id:'getImagesList'
+                  controller:'getImagesList'
               },
                isArray: true
           },
           getImagesCount:{
               method: 'GET',
               params: {
-                  id: 'getImagesCount'
+                  controller: 'getImagesCount'
               }
           },
           getImageDetail:{
               method:'GET',
               params:{
                   controller: 'getImageDetail'
+              }
+          },
+          searchDockerImage:{
+              method:'GET',
+              params:{
+                  id: 'dockerhub',
+                  controller: 'searchImage'
               }
           }
         });
@@ -48,6 +55,14 @@
         getImageDetail : function(data, callback){
             var cb = callback || angular.noop;
             return imagesResource.getImageDetail(data, function(result){
+                return cb(result);
+            }, function(err){
+                return cb(err);
+            }).$promise;
+        },
+        searchDockerImage: function(data, callback){
+            var cb = callback || angular.noop;
+            return imagesResource.searchDockerImage(data, function(result){
                 return cb(result);
             }, function(err){
                 return cb(err);

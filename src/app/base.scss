@@ -5,9 +5,10 @@
 
 $baseFontColor : #aab2bd;     //默认段落字体颜色
 $titleFontColor : #656D78;    //默认标题字体颜色
+$textMutedColor: #777; //默认柔色字体
 $defaultFontSize : 16px;    //默认字体大小
 $baseBorderColor : #d9d9d9;    //边框颜色
-$baseBgColor : #ecf0f1;        //网站背景颜色
+$baseBgColor : #ecf0f1;        //默认网站背景颜色
 $basePanelBgColor : white;     //默认面板背景颜色
 $linkBaseColor : #337ab7;        //链接颜色
 $linkBaseHoverColor : #717171; //链接悬浮颜色
@@ -29,9 +30,10 @@ $navActiveBgColor: darken($navBgColor, 7%);
 //btn
 $defaultBtnColor: #ecf0f1;
 $primaryBtnColor: #5faee3;
+$greenBtnColor: #2ecc71;
 
 //border
-$defaultBorderColor :  #e6e9ed;
+$defaultBorderColor : #EAE9E9;// #e6e9ed;
 
 //form relate
  $formColor: #555;
@@ -60,6 +62,4 @@ $pagination-active-border : #337ab7;
   @include flex-wrap(wrap);
   @include justify-content(center);
   @include align-items(center);
-  height: 100%;
-  width:100%;
 }

@@ -22,18 +22,37 @@
                                     span.sm-text {{ imageSize }}
                         
                     
-            .panel.panel-default
-                form(name="gyyForm" )
-                    
+            .panel.panel-default    
                 .panel-body(ng-switch="step")
+                    section.setting-section
+                        div.steps-content
+                            ol.steps
+                                li(ng-class="{'current': step===1, 'done': step !== 1}")
+                                    .step-item
+                                        div 
+                                            i.fa.fa-sm.fa-edit.text-success(ng-if="step===1")
+                                            i.fa.fa-sm.fa-check.text-success(ng-if="step!==1")
+                                        span 基础设置
+                                li(ng-class="{'current': step===2, 'done': step === 3}")
+                                    .step-item
+                                        div
+                                            i.fa.fa-sm.fa-edit.text-success(ng-if="step===2")
+                                            i.fa.fa-sm.fa-check.text-success(ng-if="step===3")    
+                                        span 网络设置
+                                li.last(ng-class="{'current': step===3}")
+                                    .step-item
+                                        div
+                                            i.fa.fa-sm.fa-edit.text-success(ng-if="step===3")
+                                        span 高级设置
                     section.form-section.setting-section(ng-switch-when="1")
                         div(ng-controller="containerFormController")
                             form.form-horizontal(roel='containerForm', name='containerForm' novalidate)
                                 .form-group
                                     label.col-sm-2.control-label.no-padding-right(for="container-name")  服务名称   
                                         span.txt-color-red *
-                                    div.col-sm-10(ng-class="{'state-error': getStatusError(containerForm, 'container_name')}")
-                                        input#container-name(type="text" name="container_name" ng-model="container.name" required)
+                                    div.col-sm-10
+                                        input#container-name(type="text" name="container_name" ng-model="container.name" ng-change="checkContainerName()" ng-blur="checkContainerName()" autofocus tabindex="0" required)
+                                        span.text-danger(ng-if="!available.name") {{ available.nameErrorMsg }}
                                         
                                 .form-group
                                     label.col-sm-2.control-label.no-padding-right  容器实例大小
@@ -74,7 +93,7 @@
                                     .col-sm-1 
                                         span.btn.btn-primary(ng-click="addPort()") 增加
                                 .form-group(ng-if="portSt.portInstanceList.length")
-                                    .col-sm-7.col-sm-offset-3
+                                    .col-sm-10.col-sm-offset-1
                                         table.table.table-bordered
                                             thead
                                                 tr.text-center
@@ -104,7 +123,7 @@
                                     .col-sm-1
                                         span.btn.btn-primary(ng-click="addEnv()") 增加
                                 .form-group(ng-if="env.envInstanceList.length")
-                                    .col-sm-7.col-sm-offset-3
+                                    .col-sm-10.col-sm-offset-1
                                         table.table.table-bordered
                                             thead
                                                 tr 
@@ -133,7 +152,7 @@
                                     .col-sm-1
                                         span.btn.btn-primary(ng-click="addVolume()") 增加
                                 .form-group(ng-if="volume.volumeList.length")
-                                    .col-sm-7.col-sm-offset-3
+                                    .col-sm-10.col-sm-offset-1
                                         table.table.table-bordered
                                             thead
                                                 tr 
@@ -164,7 +183,7 @@
                                     .col-sm-1
                                         span.btn.btn-primary(ng-click="addLink()") 增加
                                 .form-group(ng-if="link.linkInstanceList.length")
-                                    .col-sm-7.col-sm-offset-3
+                                    .col-sm-10.col-sm-offset-1
                                         table.table.table-bordered
                                             thead
                                                 tr 
@@ -180,15 +199,23 @@
                     section.setting-section
                         .row
                             .col-sm-12
-                                button.btn.btn-lg.btn-primary(ng-click="nextStep(step)",　ng-if="step==1")
+                                button.btn.btn-lg.btn-primary(ng-click="nextStep(2)",　ng-if="step==1" ng-disabled="!container.name || !available.name")
                                     span
-                                        | 网络设置
-                                        i.fa.fa-angle-double-right
+                                        | 网络设置 
+                                        i.fa.fa-angle-double-right.follow-next
+                                button.btn.btn-lg.btn-default(ng-click="nextStep(1)",　ng-if="step==2")
+                                    span
+                                        i.fa.fa-angle-double-left.followed-previous
+                                        | 基础设置 
+                                button.btn.btn-lg.btn-default(ng-click="nextStep(2)",　ng-if="step==3")
+                                    span
+                                        i.fa.fa-angle-double-left.followed-previous
+                                        | 网络设置 
                                         
-                                button.btn.btn-lg.btn-primary(ng-click="nextStep(step)",　ng-if="step==2")  
+                                button.btn.btn-lg.btn-primary(ng-click="nextStep(3)",　ng-if="step==2")  
                                     span
-                                        | 高级设置
-                                        i.fa.fa-angle-double-right
+                                        | 高级设置 
+                                        i.fa.fa-angle-double-right.follow-next
                                     
-                                button.btn.btn-lg.btn-success.pull-right(ng-disabled="waitForCreated" ng-click="createConteiner()") 创建
+                                button.btn.btn-lg.btn-success.pull-right(ng-disabled="waitForCreated" ng-click="createConteiner()" style="padding-left:60px; padding-right:60px;") 创建
         
