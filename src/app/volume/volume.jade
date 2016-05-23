@@ -24,7 +24,7 @@
                             li 容器数据的备份、恢复和迁移都可以通过 Volume 实现
                             li 通过 Volume 实现多容器共享数据，从而实现应用的横向扩展
                 tab(index="1" heading="我的Volume")
-                    .alert(ng-if="volumes.length === 0 ")您还没有创建过volume
+                    .alert(ng-if="!volume || volumes.length === 0 ")您还没有创建过volume
                                     
                                 
                             

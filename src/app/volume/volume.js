@@ -8,6 +8,11 @@
 	        url: '/volumes/',
 	        templateUrl: 'app/volume/volume.html',
 	        controller: 'volumeCtrl'
+	      })
+		  .state('volumeCreate', {
+	        url: '/volumes/new',
+	        templateUrl: 'app/volume/newVolume.html',
+	        controller: 'volumeCreateCtrl'
 	      });
 	  });
 })();

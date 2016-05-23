@@ -22,6 +22,7 @@
            'dockerApp.directives',
            'dockerApp.containers',
            'dockerApp.imageList',
+           'dockerApp.volume',
            'dockerApp.cluster'
        ])
    .config(function ($logProvider, $stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, IsDebug) {
