@@ -1,0 +1,30 @@
+
+<!-- page contnt begins-->
+.content-body
+    .panel.panel-default.panel-page-header
+        .panel-body
+            div.img-container
+                img.img-responsive(ng-src="/assets/images/volume.svg")
+            div.img-msg
+                div.img-title
+                    h2 Volume
+                    div.sub-title.text-muted 容器持久化数据、共享数据的存储空间
+                    button.btn.btn-primary(ng-click="createVolume()" tabindex="0") 创建数据卷
+
+            
+    .panel
+        section.panel-body
+            tabset
+                tab(index="0" heading="概览")
+                    div.markdown-body
+                        p 一个 Volume 就是在一个或者多个容器里有特殊用途的目录。它绕过了容器内部的文件系统为持久化数据、共享数据提供了下面这些有用的特性：
+                        ul
+                            li 容器可以通过把数据写在 Volume 上来实现数据持久化
+                            li Volume 可以在不同的容器之间共享和重用数据
+                            li 容器数据的备份、恢复和迁移都可以通过 Volume 实现
+                            li 通过 Volume 实现多容器共享数据，从而实现应用的横向扩展
+                tab(index="1" heading="我的Volume")
+                    .alert(ng-if="volumes.length === 0 ")您还没有创建过volume
+                                    
+                                
+                            
