@@ -590,6 +590,18 @@ form{
         border-bottom: 1px solid $defaultBorderColor;
     }
 }
+//image container
+.img-container{
+    float:left;
+    width:120px;
+    margin-left: 12px;
+}
+.img-msg{
+    h2{
+        color: #000;
+        margin: 0;
+    }
+}
 .text-muted{
     color: $textMutedColor;
 }
