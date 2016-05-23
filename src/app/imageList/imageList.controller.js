@@ -63,12 +63,11 @@
         $scope.createContainerInstance = function(image){
             $state.go(
                 'containerCreate',{
-                    id: image.id
+                    id: image.id || image.name
                 });
         };
         //私有函数
         function _searchDocker(){
-            console.log(_search.dockerhub.content);
             var data = {
                 content : _search.dockerhub.content,
                 itemsPerPage : $scope.options.itemPerPageForDockerhub,

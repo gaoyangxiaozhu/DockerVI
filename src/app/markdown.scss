@@ -1,0 +1,37 @@
+$markBaseFontColor: #333;
+$markDefaultFontSize: 16px;
+.markdown-body{
+
+    font-family: "Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;
+    color: $markBaseFontColor;
+    overflow: hidden;
+    font-size: $markDefaultFontSize;
+    line-height: 1.6;
+    word-wrap: break-word;
+
+    padding: 0 16px;
+    *{
+        @include box-sizing(border-box);
+    }
+    blockquote,
+    dl,
+    ol,
+    p,
+    pre,
+    table,
+    ul{
+        margin-top: 0px;
+        margin-bottom: 16px;
+    }
+    ul{
+        padding-left: 2em;
+        list-style: circle;
+        li{
+            list-style: initial;
+        }
+    }
+    p{
+        margin: 0 0 10px;
+        color: $markBaseFontColor;
+    }
+}

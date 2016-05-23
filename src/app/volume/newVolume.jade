@@ -1,0 +1,26 @@
+
+<!-- page contnt begins-->
+.content-body
+    .panel.panel-default.panel-page-header
+        .panel-body
+            .primary-section
+                h3 创建Volume
+                p 容器持久化数据、共享数据的存储空间
+                
+
+            
+    .panel
+        section.panel-body
+            .setting-section
+                .row
+                    div.col-md-9.col-lg-9
+                        form.form-horizontal(roel='volumeForm', name='volumeForm' novalidate)
+                            .form-group
+                                label.col-sm-2.control-label.no-padding-right(for="container-name")  Volume名称   
+                                    span.txt-color-red *
+                                div.col-sm-10
+                                    input#container-name(type="text" name="volume_name" ng-model="volume.name" autofocus tabindex="0" required)
+                            
+                                    
+                                
+                            
