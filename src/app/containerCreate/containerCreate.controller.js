@@ -4,7 +4,6 @@
     .controller('containerCreateCtrl', ['$scope', '$state', '$stateParams', 'Container', 'Image',  function($scope, $state, $stateParams, Container, Image){
 
         var _imageId = $state.params.id;
-        this.name="gyy";
         Image.getImageDetail({id : _imageId}).then(function(result){
             $scope.imageName = result.name;
             $scope.imageSize = result.size;
@@ -44,13 +43,10 @@
         $scope.container={};
         $scope.container.name="";
         $scope.container.size= $scope.containerSize[0];
-        // cup相关
-        $scope.container.cpuMin = 0;
-        $scope.container.cpuMax =32;
-        $scope.container.cpuFrom = $scope.container.cpuMin;
-        $scope.container.cpuTo = $scope.container.cpuMax;
-        // 端口相关
 
+        $scope.available={};
+        $scope.available.name = true;
+        // 端口相关
         $scope.portSt={};
         $scope.portSt.portInstanceList=[];
         $scope.portSt.newPort="";
@@ -59,7 +55,6 @@
         $scope.portSt.hostPortRegex = false;
 
         // 环境变量相关
-
         $scope.env={};
         $scope.env.envInstanceList=[];
         $scope.envKey ="";
@@ -86,7 +81,7 @@
         $scope.waitForCreated = false;
 
         $scope.getStatusError = function(form, inputFileName){
-            $scope.containerForm = form;
+
             if(!form[inputFileName].$pristine || (form[inputFileName].$pristine && form.$submitted)){
                 return form[inputFileName].$invalid;
             }
@@ -94,119 +89,117 @@
         };
 
         $scope.nextStep = function(step){
-            console.log(step);
             switch (step) {
                 case 1:
-                    $scope.containerForm.$submitted = true;
-                    $scope.waitForCreated = false;
+                    $scope.step = 1;
                     break;
                 case 2:
+                    //如果需要到第二步　当前在第三步的话　直接返回
+                    if($scope.step === 3){
+                        $scope.step = 2;
+                        return;
+                    }
+                    //如果当前在第一步　并且containerName符合条件　就进入下一步
+                    if($scope.available.name){
+                        $scope.step = 2;
+                    }
+                    break;
+                case 3:
+                    $scope.step = 3;
                     break;
                 default:
 
             }
         };
 
-
         $scope.createConteiner = function(){
-            $scope.containerForm.$submitted = true;
-            $scope.waitForCreated = false;
-            if($scope.containerForm.$valid){
-                $scope.waitForCreated = true;
-
-                var get_post_data_format = function(containerName, containerSize, portList, envList, linkList, volumeList){
-                    // 生成create container 所需要的参数
-                    function get_cpu_shares(cpu){
-                        cpuShares = cpu;
-                        cpuShares = cpuShares > 32 ? 32: cpuShares
-                        return cpuShares
-                    }
-                    function get_volume_format(volumeList){
-                         var bindsArray = [];
-                         for(var index in volumeList){
-                             var volume = volumeList[index];
-                             var item = [volume.volumeHost, volume.volumeDest].join(':');
-                             bindsArray.push(item);
-                         }
-                         return bindsArray;
+            $scope.waitForCreated = true;
+            var get_post_data_format = function(containerName, containerSize, portList, envList, linkList, volumeList){
+                function get_volume_format(volumeList){
+                     var bindsArray = [];
+                     for(var index in volumeList){
+                         var volume = volumeList[index];
+                         var item = [volume.volumeHost, volume.volumeDest].join(':');
+                         bindsArray.push(item);
                      }
-                    function get_env_format(envList){
-                        var env = [];
-                        for(index in envList){
-                            var item = [envList[index]['envKey'], envList[index]['envValue']].join('=');
-                            env.push(item);
-                        }
-                        return env;
+                     return bindsArray;
+                 }
+                function get_env_format(envList){
+                    var env = [];
+                    for(index in envList){
+                        var item = [envList[index]['envKey'], envList[index]['envValue']].join('=');
+                        env.push(item);
                     }
-                    function get_links_format(linkList){
-                        var links = [];
-                        for(index in linkList){
-                            var item = [linkList[index]['name'], linkList[index]['alias']].join(':');
-                            links.push(item);
-                        }
-                        return links;
+                    return env;
+                }
+                function get_links_format(linkList){
+                    var links = [];
+                    for(index in linkList){
+                        var item = [linkList[index]['name'], linkList[index]['alias']].join(':');
+                        links.push(item);
                     }
-                    function get_port_format(portList){
-                        var ports = {};
-                        console.log(portList);
-                        for(index in portList){
-                            if(ports[portList[index]['containerPort']]){
-                                ports[portList[index]['containerPort']].push({'HostPort': portList[index]['hostPort']});
-                            }else{
-                                ports[portList[index]['containerPort']] = [{'HostPort': portList[index]['hostPort']}];
-                            }
-                        }
-                        return ports;
-                    }
-                    function get_memory_format(size){
-                        var unit = size.slice(-1);
-                        var num = size.slice(0,-1);
-                        var memory=0;
-                        switch(unit){
-                            case 'M': return num*1024*1024;
-                            case 'G': return num*1024*1024*1024;
+                    return links;
+                }
+                function get_port_format(portList){
+                    var ports = {};
+                    console.log(portList);
+                    for(index in portList){
+                        if(ports[portList[index]['containerPort']]){
+                            ports[portList[index]['containerPort']].push({'HostPort': portList[index]['hostPort']});
+                        }else{
+                            ports[portList[index]['containerPort']] = [{'HostPort': portList[index]['hostPort']}];
                         }
                     }
-                    option = {};
-
-                    option.Image= $scope.imageFullSourceName;
-                    option.Name = containerName;
-
-                    option.Env = get_env_format(envList);
-
-                    // 由于使用了Django， ajax传递到后台的只能是表单格式的数据 不能出现某一个属性为对象 因此这里不能使用HostConfig了
-                    option.HostConfig={};
-                    //TODO 先简单这样处理了
-                    if($.trim($scope.container.cmd)){
-                        option.Cmd = $scope.container.cmd.split(' ');
+                    return ports;
+                }
+                function get_memory_format(size){
+                    var unit = size.slice(-1);
+                    var num = size.slice(0,-1);
+                    var memory=0;
+                    switch(unit){
+                        case 'M': return num*1024*1024;
+                        case 'G': return num*1024*1024*1024;
                     }
-                    // TODO 这里我设置了cpushares这个变量 数值越大cpu获得的相对资源比越大
-                    option.HostConfig.Cpushares = parseInt(get_cpu_shares($scope.container.cpuTo));
-                    option.HostConfig.Links = get_links_format(linkList);
-                    option.HostConfig.PortBindings = get_port_format(portList);
-                    option.HostConfig.Memory = get_memory_format(containerSize);
-                    option.HostConfig.Binds = get_volume_format(volumeList);
+                }
+                option = {};
 
-                    // 调用创建container的服务
-                    function callBack(statusCode){
-                        if(statusCode=='409' || statusCode == '500'){
-                            // callBack函数最终是在dialog的confirm按钮点击以后调用的
-                            // 导致没有被angular的apply包裹 需要手动调用$apply方法，$apply会自动调用$digest()方法检查model的变化
-                            $scope.waitForCreated = false;
-                            $scope.$apply();
-                        }
+                option.Image= $scope.imageFullSourceName;
+                option.Name = containerName;
+
+                option.Env = get_env_format(envList);
+
+                // 由于使用了Django， ajax传递到后台的只能是表单格式的数据 不能出现某一个属性为对象 因此这里不能使用HostConfig了
+                option.HostConfig={};
+                //TODO 先简单这样处理了
+                if($.trim($scope.container.cmd)){
+                    option.Cmd = $scope.container.cmd.split(' ');
+                }
+                // TODO 这里我设置了cpushares这个变量 数值越大cpu获得的相对资源比越大
+                option.HostConfig.Cpushares = parseInt(get_cpu_shares($scope.container.cpuTo));
+                option.HostConfig.Links = get_links_format(linkList);
+                option.HostConfig.PortBindings = get_port_format(portList);
+                option.HostConfig.Memory = get_memory_format(containerSize);
+                option.HostConfig.Binds = get_volume_format(volumeList);
+
+                // 调用创建container的服务
+                function callBack(statusCode){
+                    if(statusCode=='409' || statusCode == '500'){
+                        // callBack函数最终是在dialog的confirm按钮点击以后调用的
+                        // 导致没有被angular的apply包裹 需要手动调用$apply方法，$apply会自动调用$digest()方法检查model的变化
+                        $scope.waitForCreated = false;
+                        $scope.$apply();
                     }
-                    container.new(option, callBack);
-                };
-                // 执行ajax函数 根据表单数据生成container
+                }
+                container.new(option, callBack);
+            };
+            // 执行ajax函数 根据表单数据生成container
 
-                var postData = get_post_data_format($scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
-                                                    $scope.portSt.portInstanceList, //暴露和映射的端口
-                                                    $scope.env.envInstanceList, //自定义环境变量
-                                                    $scope.link.linkInstanceList, //链接服务
-                                                    $scope.volume.volumeList) //挂载卷
+            var postData = get_post_data_format($scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
+                                                $scope.portSt.portInstanceList, //暴露和映射的端口
+                                                $scope.env.envInstanceList, //自定义环境变量
+                                                $scope.link.linkInstanceList, //链接服务
+                                                $scope.volume.volumeList) //挂载卷
 
-            }
 
         }
         $scope.delItem =function(instance, scopeArrayList){
@@ -228,6 +221,31 @@
         //选择容器实例大小
         $scope.selectContainerSize = function(s){
             $scope.container.size = s;
+        };
+        $scope.checkContainerName = function(){
+            var name = $scope.container.name ? $scope.container.name.trim() : "";
+            if(name){
+                if(name[0] === '_' || name[0] === '-'){
+                    $scope.available.name = false;
+                    switch (name[0]) {
+                        case '-':
+                            $scope.available.nameErrorMsg="容器名称不能以-开头";
+                            break;
+                        default:
+                            $scope.available.nameErrorMsg="容器名称不能以_开头";
+                    }
+                }else{
+                    if(!(/^[a-zA-Z0-9-_]*$/.test(name))){
+                        $scope.available.name = false;
+                        $scope.available.nameErrorMsg="容器名称只能包含英文字母，数字以及中划线 -以及下划线";
+                    }else{
+                        $scope.available.name = true;
+                    }
+                }
+            }else{
+                $scope.available.name = false;
+                $scope.available.nameErrorMsg="服务名称不能为空";
+            }
         };
 
     }]);

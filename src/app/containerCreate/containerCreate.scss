@@ -11,15 +11,19 @@
             margin-right: 10px;
         }
         .img-msg{
+            float: left;
+            height:100%;
             h3{
                 font-size: 21px;
                 color: #46B79E;
             }
-            float: left;
-            height:100%;
-            .sm-text{
-                font-size: 14px;
+            span{
+                color:$baseFontColor;
+                &.sm-text{
+                    font-size: 14px;
+                }
             }
+
         }
     }
     h5.head{

@@ -1,11 +1,43 @@
 
+body,
+body.ui{
+    background-color:$baseBgColor;
+    font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+}
+body,
+body.ui,
+p{
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+p{
+    color: $baseFontColor;
+}
+h1,
+h2,
+h3,
+h4{
+    color: $titleFontColor;
+}
+h1,
+h2{
+    font-size: 24px;
+    font-weight: 500;
+}
+h3,
+h4{
+    font-size: 18px;
+    font-weight: 500px;
+}
 ul,
 ol{
     list-style: none;
+    padding-left: 0;
     li{
         list-style: none;
     }
 }
+
 //btn
 .btn,
 .btn:active,
@@ -25,6 +57,7 @@ textarea:focus{
     outline: 0 !important;
 }
 
+input,
 .input-group-addon, .form-control{
    color: $formColor;
    background-color: $formBgColor;
@@ -58,7 +91,51 @@ textarea:focus{
         border-color: darken($primaryBtnColor, 5%) !important;
     }
 }
+.btn-default{
+    background-color: $defaultBtnColor;// #EAE9E9;
+}
+.btn-more{
+    color: $greenBtnColor;
+    font-size: 15px;
+    line-height: 1;
+    padding: 13px;
+    border: 1px solid $greenBtnColor;
+    background: 0 0;
+    @include  border-radius(2px);
+    margin: 25px -10px 0;
+    width: 100%;
+    @include transition(all 200ms);
+    &:hover:enabled{
+        color: darken($greenBtnColor, 6%);
+        border-color: darken($greenBtnColor, 6%);
+    }
+    &:disabled{
+        i{
+            color: $greenBtnColor;
+        }
+    }
+}
+// >> << icon
+.follow-next{
+    margin-left: 4px;
+}
+.followed-previous{
+    margin-right: 4px;
+}
 //link
+.navbar{
+    @include border-radius(0px);
+    overflow: auto;
+    height: 100%;
+    width: $navbarSize;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border: 0;
+    background-color: $navBgColor;
+}
 .nav.navbar{
     li{
         a{
@@ -138,6 +215,45 @@ table{
                 background-color: $table-selected-bg;
             }
         }
+    }
+}
+
+
+.table-toolbar{
+    height: 60px;
+}
+
+.table{
+    > tbody{
+        > tr{
+            > td{
+                &:first-child{
+                    padding-left: 40px;
+                }
+                &.checkbox{
+                    min-width: 50px;
+                    width: 50px;
+                    display: table-cell;
+                    margin: 0;
+                    div{
+                        height: 100%;
+                    }
+                    input[type="checkbox"]{
+                        position: relative;
+                        margin:0;
+                    }
+                }
+                .item-success{
+                    color : #22c36a;
+                }
+            }
+        }
+    }
+    //for image tag
+    .item-tag{
+        color: $baseFontColor;
+        font-size: 13px;
+        margin-top: 4px;
     }
 }
 
@@ -356,6 +472,126 @@ form{
             border:1px solid $table-border-color;
         }
     }
+}
+//进度条
+.steps-content{
+    width: 80%;
+    margin:0 auto;
+}
+.steps{
+    $width: 100%;
+    $color: #e5e5e5;
+    $blueColor: #7dc374;
+    position: relative;
+    padding-left: 0px;
+
+    &:before{
+        content: "";
+        display: block;
+        height: 3px;
+        width: 66%;
+        position:absolute;
+        top:20px;
+        left:32px;
+        background-color: $color;
+    }
+    &:after{
+        clear: both;
+        content: "";
+        display: table;
+    }
+    li{
+
+        width: $width/3;
+        position:relative;
+        float: left;
+
+        @include box-sizing(border-box);
+        .step-item{
+            display: inline-block;
+            font-weight: 700;
+            color: #999;
+            position: relative;
+            text-align: center;
+            > div{
+                border: 3px solid $color;
+                height: 40px;
+                width: 40px;
+                margin:auto;
+                @include border-radius(50%);
+                @include display-flex;
+                @include justify-content(center);
+                @include align-items(center);
+                background-color: white;
+            }
+        }
+        &.current:before,
+        &.done:after,
+        &.done:before{
+            background-color: $blueColor;
+
+        }
+        &.current,
+        &.done{
+            .step-item{
+                color:$blueColor;
+                div{
+                    border: 3px solid $blueColor;
+                }
+            }
+        }
+        &.last{
+            width:auto;
+        }
+        &:not(.last):after,
+        &:not(.last):before{
+            content:"";
+            display: block;
+            height: 3px;
+            width: 50%;
+            position: absolute;
+            top:20px;
+        }
+        &:not(.last):before{
+            left:32px;
+        }
+        &:not(.last):after{
+            right:-32px;
+        }
+
+    }
+}
+
+
+.setting-section{
+    padding: 20px;
+    width: 100%;
+    border-bottom: 1px solid $baseBorderColor;
+    font-size: 14px
+}
+.content-body{
+    position:relative;
+    max-width: 1360px;
+    min-width: 360px;
+    margin: 30px 30px 0 150px;
+}
+.panel{
+    margin-bottom: 20px;
+    background-color: $basePanelBgColor;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    .panel-body{
+        padding: 15px;
+    }
+    .panel-page-header,
+    .primary-section {
+        padding-bottom: 20px;
+        margin-bottom: 10px;
+        border-bottom: 1px solid $defaultBorderColor;
+    }
+}
+.text-muted{
+    color: $textMutedColor;
 }
 //返回顶部
 .gotop{

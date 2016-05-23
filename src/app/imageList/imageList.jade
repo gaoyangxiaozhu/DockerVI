@@ -5,7 +5,7 @@
         .panel-body
             .primary-section
                 h2  镜像仓库
-                p 这里是容器镜像的仓库,仓库里目前汇聚了代码构建产生的私有容器镜像（我们还将继续开发支持查询和下载第三方镜像的功能）
+                p 这里是容器镜像的仓库,仓库里目前汇聚了集群已经下载和部署的镜像文件（并支持搜寻dockerhub上的镜像并下载）
     .panel
         section.panel-body
             tabset
@@ -14,14 +14,14 @@
                         table.table.table-bordered
                             thead
                                 tr 
-                                    th 镜像仓库
+                                    th.text-center 镜像仓库
                                     th 镜像用户
                                     th 镜像名称
                                     th 标签
                                     th　创建时间
                                     th 动作
                             tbody
-                                tr(ng-repeat="image in imageList | orderBy:'name'")
+                                tr(ng-repeat="image in imagePackages.results | orderBy:'name'")
                                     td.text-center {{ image.repo }}
                                     td {{ image.username }}
                                     td {{ image.name  }}
@@ -33,5 +33,34 @@
                     div.row.dockerhub
                         h3.text-center Docker镜像
                         div.input-group.col-xs-6.col-xs-offset-3
-                            input.form-control(placeholder="在这里搜索镜像",　ng-model="search.dockerhub.content", tabindex="0")
+                            input.form-control(placeholder="在这里搜索镜像",　ng-model="search.dockerhub.content", ng-keypress="keypressEvent($event)", tabindex="0")
                             span.input-group-addon(ng-click="searchDockerHub()" role="button" tabindex="0")搜索
+                    div.well(ng-if="loading.dockerhub")
+                        span
+                            i.fa.fa-spinner.fa-pulse
+                            | &nbsp; Loading...
+                            span.sr-only | Loading...
+                    div.well(ng-if="!loading.dockerhub && dockerhubPackages && dockerhubPackages.results.length  === 0 ")没有匹配的 DockerHub 镜像
+                    div(ng-if="!loading.dockerhub && dockerhubPackages.results.length > 0")
+                        div.package-list.container-fluid
+                            div.row.package(ng-repeat="package in dockerhubPackages.results")
+                                div.col-sm-4 
+                                    img.package-icon(ng-src="/assets/images/container.svg")
+                                    div.package-heading
+                                        h3 {{ package.name }}
+                                        div.meta 
+                                            span
+                                                i.fa.fa-star-o
+                                                {{ package.star_count }}
+                                div.col-sm-4
+                                    span.text.text-muted {{ package.description }}
+                                div.col-sm-4.text-right
+                                    button.btn.btn-primary(ng-click='createContainerInstance(package)' ng-disabled="package.loading") 创建应用
+                                    
+                            button.btn-more.btn(ng-click="loadMoreDockerhub()" ng-if="options.currentPageForDockerhub < dockerhubPackages.pagesNum" ng-disabled="loading.dockerhubMore" tabindex="0")
+                                span(ng-if="!loading.dockerhubMore")　加载更多
+                                span(ng-if="loading.dockerhubMore")
+                                    i.fa.fa-spinner.fa-pulse
+                                    
+                                
+                            
