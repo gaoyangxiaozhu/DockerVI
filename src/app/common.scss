@@ -10,9 +10,7 @@ p{
     font-size: 16px;
     margin-bottom: 20px;
 }
-p{
-    color: $baseFontColor;
-}
+
 h1,
 h2,
 h3,
@@ -579,7 +577,7 @@ form{
     margin-bottom: 20px;
     background-color: $basePanelBgColor;
     border: 1px solid transparent;
-    border-radius: 2px;
+    @include border-radius(2px);
     .panel-body{
         padding: 15px;
     }
@@ -588,18 +586,44 @@ form{
         padding-bottom: 20px;
         margin-bottom: 10px;
         border-bottom: 1px solid $defaultBorderColor;
+
+    }
+    .primary-section,
+    .secondary-section{
+        p{
+            color: $baseFontColor;
+        }
+    }
+}
+//tab-content tab-panel
+.tab-content{
+    .tab-pane{
+        padding-top: 20px;
+        padding-bottom: 20px;
     }
 }
 //image container
+$imgContainerHeight: 120px;
 .img-container{
     float:left;
-    width:120px;
-    margin-left: 12px;
+    width:$imgContainerHeight;
+    height: $imgContainerHeight;
+    margin-right: 12px;
+    img{
+        @include border-radius(8px);
+    }
+
 }
 .img-msg{
+    position: relative;
+    height: $imgContainerHeight;
     h2{
         color: #000;
         margin: 0;
+    }
+    button{
+        position: absolute;
+        bottom: 0px;
     }
 }
 .text-muted{
@@ -616,4 +640,13 @@ form{
   &:hover{
     background:rgba(0,0,0,0.8);
   }
+}
+
+//media
+@media (min-width: 768px){
+    .form-horizontal{
+        .control-label{
+            padding-top: 4px;
+        }
+    }
 }
