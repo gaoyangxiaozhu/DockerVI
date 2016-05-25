@@ -10,3 +10,4 @@ src/app/**/*.html
 src/*.html
 .tmp/
 /src/assets/
+.sass-cache/
