@@ -1,60 +1,75 @@
-$color : #5d9cec;
-.dockerhub{
-    .input-group{
-        margin-top:15px;
-        margin-bottom: 15px;
-        .input-group-addon{
-            background-color: $color;
-            color: #fff;
-            border: 1px solid $color;
-            line-height: 1;
-            padding: 9px 17px 8px;
-            cursor: pointer;
-            @include single-transition(all, 200ms);
-            &:hover{
-                background-color: darken($color, 5%);
-                border: 1px solid darken($color, 5%);
-            }
+.volume-toolbar{
+    margin-bottom: 10px;
+}
+.volumes-list {
+    .volume-heading{
+        margin-top: 5px;
+        text-align: center;
+        word-break: break-all;
+        h3{
+            font-size: 20px;
+            font-weight: 300;
+            margin: 0 0 5px;
+        }
+        .meta{
+            color: #aab2bd;
         }
     }
-}
-.well {
-    @include border-radius(1px);
-}
-.well {
-    min-height: 20px;
-    padding: 19px;
-    margin-bottom: 20px;
-    background-color: lighten($baseBgColor, 5%);
-    border: 1px solid $defaultBorderColor;
-}
-.package-list {
-    .package {
-        $packageBgColor: #f2f4f7;
+    .volumes{
+        $volumeBgColor: #f2f4f7;
         margin-bottom: 10px;
-        padding: 20px 30px;
-        background-color: $packageBgColor;
-        border: none;
-        .package-icon {
-            float: left;
-            height: 58px;
-            width: 58px;
-            border-radius: 8px;
+        padding: 0px;
+        .volume{
+            text-align: center;
+            min-height: 60px;
+            background-color: $volumeBgColor;
+            @include border-radius(4px 0px);
+            border: none;
         }
-        .package-heading{
-            margin-top: 5px;
-            padding-left: 80px;
-            word-break: break-all;
-            h3{
-                font-size: 20px;
-                font-weight: 300;
-                margin: 0 0 5px;
-            }
-            .meta{
-                color: #aab2bd;
-            }
-        }
+        .volume-detail{
+            padding: 15px 0 20px 40px;
+            border: 1px solid $baseBorderColor;
+            border-top:0;
+            table{
+                width: 95%;
+                tr{
+                    &:hover{
+                        background-color: white;
+                    }
+                    td{
+                        span{
+                            display: inline-block;
+                            border-width: 1px;
+                            border-color: transparent;
+                            background-color: transparent;
+                            border-style: none none dotted;
 
+                            padding: 5px;
+                            margin-bottom: 5px;
+
+                            &.value{
+                                color: #999!important;
+                                border-bottom-color:$defaultBorderColor;
+                            }
+                            &.engineK{
+                                float: right;
+                                width: 90%;
+                            }
+                        }
+                        ul{
+                            $evenColor: #f9f9f9;
+                            li{
+                                overflow: hidden;//BFC
+                            }
+                            li:nth-child(even){
+                                background-color: $evenColor;
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
 
     }
 }

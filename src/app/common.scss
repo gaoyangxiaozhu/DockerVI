@@ -64,6 +64,9 @@ input,
 .input-group-addon{
    border-right: 0;
 }
+.btn{
+    padding: 6px 18px;
+}
 
 .btn.btn-blue{
     background-color: #3890ff;
@@ -90,7 +93,16 @@ input,
     }
 }
 .btn-default{
-    background-color: $defaultBtnColor;// #EAE9E9;
+    background:none;
+    &:hover,
+    &:focus,
+    &:active,
+    &:active:hover,
+    &:active:focus{
+        background-color: rgba(204,209,217,.1);
+        box-shadow: 0 1px 0 hsla(0,0%,100%,.9);
+        border-color: $defaultBtnBdColor;
+    }
 }
 .btn-more{
     color: $greenBtnColor;
@@ -113,6 +125,51 @@ input,
         }
     }
 }
+//自定义dropdown样式
+.ui{
+    > .dropdown-toggle{
+        @include box-shadow;
+    }
+    .dropdown{
+        .dropdown-menu{
+            top:100%;
+            right: 0;
+            left: auto;
+            display: block;
+            @include transition(all .3s cubic-bezier(.34,1.61,.7,1));
+            @include scale(0);
+            @include opacity(0);
+            li{
+                a:hover{
+                    background-color: $blueBtnColor;
+                }
+            }
+        }
+
+    }
+    .open{
+        > .dropdown-toggle{
+            @include box-shadow;
+        }
+        > .btn-default.dropdown-toggle:hover,
+        > .btn-default.dropdown-toggle:focus,
+        > .btn-default.dropdown-toggle:active,
+        > .btn-default.dropdown-toggle:active:hover,
+        > .btn-default.dropdown-toggle:active:focus,
+        > .btn-default.dropdown-toggle:not(:focus),
+        > .btn-default.dropdown-toggle:not(:active){
+            border-color: $defaultBtnBdColor;
+            background-color: rgba(204,209,217,.1);
+            box-shadow: 0 1px 0 hsla(0,0%,100%,.9);
+        }
+        .dropdown-menu{
+            @include transition(all .3s cubic-bezier(.34,1.61,.7,1));
+            @include scale(1);
+            @include opacity(1);
+        }
+    }
+}
+
 // >> << icon
 .follow-next{
     margin-left: 4px;
@@ -155,7 +212,9 @@ input,
         }
     }
 }
-
+.clear{
+    clear: both;
+}
 //table & pagination
 .table,
 table {
@@ -601,6 +660,16 @@ form{
         padding-top: 20px;
         padding-bottom: 20px;
     }
+}
+.well {
+    @include border-radius(1px);
+}
+.well {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: lighten($baseBgColor, 5%);
+    border: 1px solid $defaultBorderColor;
 }
 //image container
 $imgContainerHeight: 120px;
