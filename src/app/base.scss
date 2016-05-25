@@ -6,7 +6,7 @@
 $baseFontColor : #aab2bd;     //默认段落字体颜色
 $titleFontColor : #656D78;    //默认标题字体颜色
 $textMutedColor: #777; //默认柔色字体
-$defaultFontSize : 16px;    //默认字体大小
+
 $baseBorderColor : #d9d9d9;    //边框颜色
 $baseBgColor : #ecf0f1;        //默认网站背景颜色
 $basePanelBgColor : white;     //默认面板背景颜色
@@ -19,7 +19,6 @@ $linkLightColor : #4094c7;     //高亮链接颜色
 $linkLightHoverColor : #075b8d;//高亮链接悬浮颜色
 
 //navbar
-$navbarSize:110px;
 $navBgColor: #3e474e;
 $navBdColor: #f49484;
 $navBarLinkColor: #337ab7;
@@ -27,19 +26,27 @@ $navHoverColor: $linkLightHoverColor;
 $navHoverBgColor: darken($navBgColor, 3%);
 $navActiveBgColor: darken($navBgColor, 7%);
 
+
 //btn
 $defaultBtnColor: #ecf0f1;
+$defaultBtnBdColor: #ccd1d9; //默认的btn的边框颜色
 $primaryBtnColor: #5faee3;
 $greenBtnColor: #2ecc71;
+$blueBtnColor: #4E85F3;
+
 
 //border
 $defaultBorderColor : #EAE9E9;// #e6e9ed;
+
 
 //form relate
  $formColor: #555;
  $formBdColor:#ddd;
  $formBgColor: #fff;
 
+//size
+$navbarSize:110px;
+$defaultFontSize : 16px;    //默认字体大小
 
 
 //default table

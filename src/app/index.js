@@ -35,8 +35,6 @@
 
    })
      .run(function ($rootScope, ngProgressFactory, $state, lodash, $cookies, toaster) {
-           //默认头像
-           $rootScope.default_avatar = '/assets/images/avatar.png';
            //加载进度
            $rootScope.progressbar = ngProgressFactory.createInstance();
 
