@@ -13,9 +13,7 @@ module.exports = function(app){
 
   app.use('/api/images',require('./api/images'));
 
-  app.use('/api/build', require('./api/build'));
-
-  app.use('/api/stack',require('./api/stack'));
+  app.use('/api/volumes', require('./api/volumes'));
 
   var env = app.get('env');
   if ('development' !== env) {
