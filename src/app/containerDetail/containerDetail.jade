@@ -1,130 +1,139 @@
-.content-body
-    .panel.panel-default
-        .details
-            .details-head
-                .row
-                    .col-lg-6 
-                        h1 名称: {{ container['node_name'][0] }}
-                            span.state-label.play(ng-if="container.Status == 'running'")
-                                i.icon-play
-                                | 运行中
-                            span.state-label(ng-if="container.Status =='stop'" class="state-label") 
-                                i.icon-pause
-                                | 停止
-                            span.state-label.error(ng-if="container.Status== 'error'") Error
-                    .col-lg-6
-                        .btn-group
-                            button.btn.btn-primary(ng-if="container.Status=='stop'" ng-click="startContainer(container)") 开始
-                            button.btn(ng-if="container.Status == 'running'" ng-click="stopContainer(container)")  停止
-            .details-body
-                .row
-                    .col-lg-12
-                        .tabbable.detailsTab
-                            ul.nav.nav-tabs#detailsTab
-                                li.active
-                                    a(data-toggle='tab' data-href="#network") 服务地址
-                                li
-                                    a(data-toggle='tab' data-href='#volume') 数据卷
-                                li 
-                                    a(data-toggle='tab' data-href='#env') 环境变量
-                                li
-                                    a(data-toggle='tab' data-href='#link') 链接
-                                li
-                                    a(data-toggle='tab' data-href='#log' ng-click='getLog()') 日志
-                                li.resource
-                                    a(data-toggle='tab' data-href="#resource" ng-click='getResourceStats()') 资源监控
-                            .tab-content
-                                #network.tab-pane.active 
-                                    p 服务IP:
-                                        span(ng-if="!container.NetworkSettings.IPAddress") 当前容器处于停止状态 无IP
-                                        {{ container.NetworkSettings.IPAddress }}
-                                        
-                                    div.portList
-                                        table.table.table-bordered
-                                            thead
-                                                tr 
-                                                    th 暴露端口
-                                                    th 绑定ip
-                                                    th 映射端口
-                                            tbody
-                                                tr(ng-if="!container.portList.length")
-                                                    td(colspan='3') 该实例没有服务端口
-                                                        
-                                                tr(ng-repeat="item in container.portList")
-                                                    td {{ item.exposePort }}
-                                                    td
-                                                        span(ng-if="!item.bindHostIp") 无
-                                                        {{ item.bindHostIp }}
-                                                    td
-                                                        span(ng-if="!item.bindHostPort") 无
-                                                        {{ item.bindHostPort }}
-                                        
-                                #volume.tab-pane
+.content-body.container-detail
+    .panel.panel-default.panel-page-header
+        .panel-body
+            .primary-section.clearfix
+                div.img-container
+                    img.img-responsive(ng-src="/assets/images/container.svg")
+                div.img-msg
+                    h2 {{ container.name }}
+                    div.sub-title.text-muted 部署于
+                        span.node-name
+                            strong {{ container.node }}
+                            | 节点
+                    button.btn.btn-success(ng-click="stopContainer()" ng-if="container.status == 'running' " tabindex="0") 停止
+                    button.btn.btn-primary(ng-click="startContainer()" ng-if="container.status != 'running' " tabindex="0") 开启
+                    hr
+                    div.sm-title-info.clearfix
+                        div.text-muted
+                            div
+                                span.sm-title 状态:
+                                span.sm-text.running.text-success(ng-if="container.status == 'running'") 运行中
+                                span.sm-text.stop.text-danger(ng-if="container.status == 'stop'") 已停止
+                            div
+                                span.sm-title 网络模式:
+                                span.sm-text {{ container.networkMode }}
+                            div(ng-if="container.status == 'running' && container.ip")
+                                span.sm-title 容器ip: 
+                                span.sm-text {{ container.ip }}
+                        
+                    div.sm-title-info.clearfix
+                        div.text-muted
+                            div
+                                span.sm-title 所属镜像:
+                                span.sm-text {{ container.image }}
+                                span.sm-text
+                                    i.fa.fa-tag
+                                    | {{ container.imageTag }}
+                        div.text-muted
+                            div
+                                span.sm-title 部署时间:
+                                span.sm-text {{ container.time }}
+                            
+    .panel
+        section.panel-body
+            tabset
+                tab(index="0" heading="配置")
+                    div.content-block        
+                        div.section.row
+                            .section-heading.col-sm-3.col-md-2 服务端口
+                            .section-content.col-sm-9.col-md-8
+                                div.well(ng-if="!container.portList.length") 该容器实例没有服务端口
+                                div.table-container(ng-if="container.portList.length > 0")
                                     table.table.table-bordered
                                         thead
-                                            tr
-                                                th 挂载目录
-                                                th 宿主机目录
+                                            tr 
+                                                th.text-center 容器端口
+                                                th 主机端口(映射端口)
+                                                th　协议
                                         tbody
-                                            tr(ng-if="!container.volumesList.length")
-                                                td(colspan=2)  没有挂载数据卷
-                                            tr(ng-repeat="item in container.volumesList")
-                                                td {{ item.volumeInContainer }}
-                                                td {{ item.volumeInHost }}
-                                    
-                                #env.tab-pane
+                                            tr(ng-repeat="item in container.portList")
+                                                td.text-center {{ item.exposePort }}
+                                                td 
+                                                    span(ng-if="item.bindHostPort ") {{ item.bindHostPort }}
+                                                    span(ng-if="!item.bindHostPort") 没有映射主机端口
+                                                td　{{ item.protocal }}
+                        div.section.row
+                            .section-heading.col-sm-3.col-md-2 服务绑定
+                            .section-content.col-sm-9.col-md-8
+                                div.well(ng-if="!container.serviceList.length") 该容器实例没有绑定的服务
+                                div.table-container(ng-if="container.serviceList.length > 0")
                                     table.table.table-bordered
                                         thead
-                                            tr
-                                                th 名称
+                                            tr 
+                                                th.text-center 服务
+                                                th 服务别名
+                                        tbody
+                                            tr(ng-repeat="item in container.serviceList")
+                                                td.text-center {{ item.service }}
+                                                td　{{ item.serviceAlias }}
+                        div.section.row
+                            .section-heading.col-sm-3.col-md-2 数据卷
+                            .section-content.col-sm-9.col-md-8
+                                div.well(ng-if="!container.volumesList.length") 该容器实例没有挂载数据卷
+                                div.table-container(ng-if="container.volumesList.length > 0")
+                                    table.table.table-bordered
+                                        thead
+                                            tr 
+                                                th.text-center 挂载目录(容器)
+                                                th 数据卷名称
+                                        tbody
+                                            tr(ng-repeat="item in container.volumesList")
+                                                td.text-center {{ item.destination }}
+                                                td　{{ item.volumeName }}
+                        div.section.row
+                            .section-heading.col-sm-3.col-md-2 环境变量
+                            .section-content.col-sm-9.col-md-8
+                                div.well(ng-if="!container.envList.length") 该容器实例没有自定义环境变量
+                                div.table-container(ng-if="container.envList.length > 0")
+                                    table.table.table-bordered
+                                        thead
+                                            tr 
+                                                th.text-center 键
                                                 th 值
                                         tbody
-                                            tr(ng-if="!container.envList.length")
-                                                td(colspan='2') 没有自定义环境变量        
                                             tr(ng-repeat="item in container.envList")
-                                                td {{ item.name }}
-                                                td {{ item.value }}
-                                #link.tab-pane
-                                    h6 链接到
-                                    table.table.table-bordered
-                                        thead
-                                            tr
-                                                th 服务
-                                                th 别称
-                                        tbody
-                                            tr(ng-if="!container.linkList.length")
-                                                td(colspan='2')
-                                                    | 没有依赖任何服务
-                                            tr(ng-repeat="item in container.linkList")
-                                                td {{ item.server  }}
-                                                td {{ item.alias }}
-                                            
-                                #log.tab-pane
-                                    .log-termial
-                                        pre.log(ng-bind='container.log')
-                                #resource.tab-pane
-                                    #graph
-                                        h2 CPU利用率
-                                        #cpuchart(ng-class="{'hide': isLoading}")
-                                        .loading.cpu(ng-show="isLoading")
-                                            .table-cell
-                                                .circle(ng-class="{'active': isLoading }")
-                                        h2 内存利用率
-                                        #memorychart(ng-class="{'hide': isLoading}")
-                                        .loading.mem(ng-show="isLoading")
-                                            .table-cell
-                                                .circle(ng-class="{'active': isLoading }")
-                                        h2 发送字节和接收字节
-                                        #networkchart(ng-class="{'hide': isLoading}")
-                                        .loading.network(ng-show="isLoading")
-                                            .table-cell
-                                                .circle(ng-class="{'active': isLoading }")
-                                                
-                                                    
+                                                td.text-center {{ item.name }}
+                                                td　{{ item.value }}
                         
-                    
+                tab(index="1" heading="监控")
+                    ul.nav.nav-pills
+                        li.active
+                            a(href="#J_tab_real" data-toggle="tab" mytab aria-expanded="true")实时
+                        li
+                            a(href="#J_tab_day" data-toggle="tab" mytab aria-expanded="true" ng-click="getMetrics('day')")　24小时
+                    div.tab-content
+                        div.tab-pane.clearfix.active#J_tab_real
+                            chart
+                                div#cpuReal(style="width: 1100px; height:400px;")
+                                div#memReal(style="width: 1100px; height:400px;")
+                                div#bandwidthReal(style="width: 1100px; height:400px;")
+                        div.tab-pane.clearfix#J_tab_day
+                            chart
+                                div#cpu(style="width: 1100px; height:400px;")
+                                div#mem(style="width: 1100px; height:400px;")
+                                div#bandwidth(style="width: 1100px; height:400px;")
+                                    
                         
-                    
-            <!-- page content end -->
-        <!-- ./col-->
-<!-- /.page-content-->
+                tab(index="2" heading="日志" select="logInit=true")
+                    div.log(style="position:relative")
+                        div( container-log container="container" init="logInit")
+                tab(index="3" heading="设置")
+                    div.content-block
+                        div.section.row
+                            div.section-heading.col-sm-3.col-md-2 删除应用
+                            div.section-content.col-sm-9.sol-md-8 
+                                p 请注意，删除应用将清除该应用的所有数据，且该操作不能被恢复，您确定要删除吗?
+                                button.btn.btn-danger(ng-click="delete()" tabindex="0") 删除应用
+                                    
+                                
+                            

@@ -11,14 +11,14 @@
           getContainerList: {
               method: 'GET',
               params: {
-                  id:'getContainerList'
+                  controller:'getContainerList'
               },
               isArray: true
           },
           getContainerCount:{
             method: 'GET',
             params:{
-                id: 'getContainerCount'
+                controller: 'getContainerCount'
             }
           },
           getContainer:{
@@ -38,8 +38,13 @@
               params: {
                   controller: 'updateContainer'
               }
+          },
+          getContainerStats:{
+              method:'GET',
+              params:{
+                  controller: 'getContainerStats'
+              }
           }
-
         });
       return {
         getContainerList : function(data, callback){
@@ -90,7 +95,15 @@
             }, function(err) {
                 return cb(err);
              }).$promise;
-        }
+        },
+        getContainerStats : function (data, callback) {
+              var cb = callback || angular.noop;
+              return containerResource.getContainerStats(data, function(result) {
+                  return cb(result);
+              }, function(err) {
+                  return cb(err);
+              }).$promise;
+          },
       };
 
     });
