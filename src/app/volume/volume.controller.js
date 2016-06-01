@@ -14,6 +14,11 @@
         $scope.loading = {};
 
 
+        //私有变量　保存要查询的volume的name和node值
+        var _name;
+        var _node;
+
+
         Volume.getVolumesList().then(function(results){
             if(results.volumes && results.volumes.length > 0){
                 $scope.volumes.results = results.volumes;
@@ -48,23 +53,26 @@
             $state.go('volumeCreate');
         };
 
+         function init(results){
+            //volume相关数据的初始化
+            $scope.volumes.count = results.total;
+            $scope.volumes.pagesNum = Math.ceil(results.total / $scope.options.itemPerPage);//向上取整
+            if(!$scope.volumes || $scope.volumes.length === 0){
+                $scope.volumes.results = results.volumes;
 
+            }else{
+                if($scope.options.isRest){
+                    $scope.volumes.results = results.volumes;
+                    $scope.options.isRest = false;
+                }else{
+                    $scope.volumes.results = $scope.volumes.results.concat(results.volumes);
+                }
+            }
+        }
         function doPaging(option){
             //返回$promise对象
             return Volume.getVolumesList(option).then(function(results){
-                        //当前search相关的dockhub镜像总数
-                        $scope.volumes.count = results.total;
-                        $scope.volumes.pagesNum = Math.ceil(results.total / $scope.options.itemPerPage);//向上取整
-                        if(!$scope.volumes || $scope.volumes.length === 0){
-                            $scope.volumes.results = results.volumes;
-
-                        }else{
-                            if($scope.options.isRest){
-                                $scope.volumes.results = results.volumes;
-                            }else{
-                                $scope.volumes.results = $scope.volumes.results.concat(results.volumes);
-                            }
-                        }
+                        init(results);
                     });
         }
         $scope.loadMoreVolume = function(){
@@ -75,14 +83,38 @@
             var option = {
                 name : $scope.search.volume.name,
                 node : $scope.search.volume.node,
-                itemsPerPage : $scope.options.itemPerPageForDockerhub,
-                currentPage : $scope.options.currentPageForDockerhub + 1
+                itemsPerPage : $scope.options.itemPerPage,
+                currentPage : $scope.options.currentPage + 1
             };
             doPaging(option).then(function(){
                 $scope.options.currentPage++;
                 $scope.loading.volumesMore = false;
             });
         };
+
+     $scope.searchVolume = function(){
+         var currentSNa = $scope.search.volume.name ? $scope.search.volume.name.trim() : undefined;
+         var currentSNo = $scope.search.volume.node ? $scope.search.volume.node.trim() : undefined;
+         if( currentSNa != _name || currentSNo != _node){
+             //只要有一个和之前的不同就重新检索
+             _name = currentSNa;
+             _node = currentSNo;
+             $scope.search.volume.loading = true;
+             $scope.options.currentPage = 1;
+
+             var option = {
+                 itemsPerPage : $scope.options.itemPerPage,
+                 currentPage : $scope.options.currentPage,
+                 name: _name,
+                 node: _node
+             };
+             Volume.searchVolume(option).then(function(results){
+                $scope.search.volume.loading = false;
+                $scope.options.isRest = true;
+                init(results);
+             });
+         }
+     };
 
     }])
     .controller('volumeCreateCtrl', ['$scope', '$location', 'Image', '$state', function($scope, $location, Image, $state){

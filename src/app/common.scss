@@ -685,7 +685,13 @@ $imgContainerHeight: 120px;
 }
 .img-msg{
     position: relative;
-    height: $imgContainerHeight;
+    min-height: $imgContainerHeight;
+    margin-left: 135px;
+    .sm-title-info{
+        float: left;
+        margin-right: 50px;
+    }
+
     h2{
         color: #000;
         margin: 0;
@@ -697,6 +703,28 @@ $imgContainerHeight: 120px;
 }
 .text-muted{
     color: $textMutedColor;
+}
+.sm-text,
+.sm-title{
+    font-size: 13px;
+}
+.sm-title{
+    margin-right: 10px;
+}
+.text-danger{
+    color: $dangerColor;
+}
+//content-block
+.content-block{
+    .section{
+        padding: 23px 29px;
+        border-bottom: 1px solid $defaultBorderColor;
+        margin-left:-5px;
+        margin-right: -5px;
+    }
+    .section-heading{
+        font-weight: 700;
+    }
 }
 //返回顶部
 .gotop{

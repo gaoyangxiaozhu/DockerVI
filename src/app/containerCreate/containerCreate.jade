@@ -217,5 +217,5 @@
                                         | 高级设置 
                                         i.fa.fa-angle-double-right.follow-next
                                     
-                                button.btn.btn-lg.btn-success.pull-right(ng-disabled="waitForCreated" ng-click="createConteiner()" style="padding-left:60px; padding-right:60px;") 创建
+                                button.btn.btn-lg.btn-success.pull-right(ng-click="createConteiner()" ng-disabled="!container.name || !available.name || waitForCreated" style="padding-left:60px; padding-right:60px;") 创建
         

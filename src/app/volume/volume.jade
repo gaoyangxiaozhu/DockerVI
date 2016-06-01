@@ -30,14 +30,20 @@
                                 form.form-inline
                                     .form-group
                                         label(for="volumeName") volume名称
-                                        input#volumeName.form-control(type="search" ng-model="search.volume.name" placeholder="数据卷名称" tabindex="0")
+                                        input#volumeName.form-control(type="search" ng-model="search.volume.name" ng-keyup="searchVolume()" placeholder="数据卷名称" tabindex="0")
                                     .form-group
                                         label(for="volumeNode") 所在节点(宿主)
-                                        input#volumeName.form-control(type="search" ng-model="search.volume.node" placeholder="节点名称" tabindex="0")
+                                        input#volumeName.form-control(type="search" ng-model="search.volume.node" ng-keyup="searchVolume()" placeholder="节点名称" tabindex="0")
                                     button.btn.btn-primary(type="submit" ng-click="searchVolume()") 搜索
                                         
-                    .alert(ng-if="!volumes.results || volumes.results.length === 0 ")您还没有创建过volume
-                    div(ng-if="volumes.results.length > 0")
+                    .alert(ng-if="(!volumes.results || volumes.results.length === 0) && !search.volume.loading")
+                        span Volumes为空或者没有符合条件的Volume
+                    div.well.clear(ng-if="search.volume.loading")
+                        span
+                            i.fa.fa-spinner.fa-pulse
+                            | &nbsp; Loading...
+                            span.sr-only | Loading...
+                    div(ng-if="volumes.results.length > 0 && !search.volume.loading")
                         div.volumes-list.container-fluid
                             div.row
                                 div.volume-heading.col-sm-4 名称

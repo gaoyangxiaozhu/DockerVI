@@ -1,1 +1,48 @@
-
+.content-body.container-detail{
+    .primary-section{
+        .img-msg{
+            button{
+                position: relative;
+                margin-top: 15px;
+            }
+        }
+    }
+    .content-block{
+        .section{
+            table,
+            .table{
+                > thead{
+                    background-color: #ececec;
+                }
+                > thead,
+                > tbody{
+                    > tr{
+                        > td{
+                            padding:10px 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .log{
+        pre{
+            $bgColor: #151718;
+            white-space: normal;
+            &.darken{
+                color: #fff;
+                background-color: $bgColor;
+                height: 450px;
+                overflow: auto;
+                padding-left: 25px;
+                text-indent: -14.5px;
+                .t{
+                    color: #9D6E35;
+                }
+                .c{
+                    color: #555;
+                }
+            }
+        }
+    }
+}
