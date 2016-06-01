@@ -9,9 +9,20 @@ var _ = require('lodash');
 var request = require('../../components/superagent');
 var endpoint = require('../endpoint').SWARMADDRESS;
 
+
+
+var _volumesList = []; //[{Name: node1/xxx}, ..., {Name:nodename/yyy}]
+
+
 function _formtData(volumes){
+	//volumes参数可能是_filterVList　也可能是获取的最原始的volumes列表
 	return volumes.map(function(item ,index){
-		delete item.Labels;
+		if('Labels' in item){
+			delete item.Labels;
+		}
+		if('W' in item){
+			delete item.W;
+		}
 		var nodeName = item.Name.split('/');
 		item.fullName = nodeName[1];
 		item.name = nodeName[1].slice(0, 15);
@@ -20,33 +31,84 @@ function _formtData(volumes){
 		return item;
 	});
 }
+
+function _getFilterVList(filterVList, node, name){
+	var re;
+	function _compare(a, b){
+		return a.W - b.W;
+	};
+	_volumesList.forEach(function(item, index){
+		var Name = item.Name;
+		if(node){
+			re = new RegExp(['.*', node, '.*/.*', name].join(''));
+			if(Name.match(re)){
+				var noRe = new RegExp(node);
+				var naRe = new RegExp(name);
+				var _indexForNo = Name.match(noRe).index;
+				var _indexForNa = Name.match(naRe).index;
+				var data = {
+					Name: Name,
+					W: _indexForNa + _indexForNo
+				}
+				filterVList.push(data);
+			}
+		}else{
+			re = new RegExp(['.*', name].join(''));
+			if(Name.match(re)){
+				var _index = Name.match(re).index;
+				var data = {
+					Name: Name,
+					W: _indexForNa
+				}
+				filterVList.push(data);
+			}
+		}
+	});
+	filterVList.sort(_compare);
+
+}
 exports.getVolumesList = function(req, res){
 
-	var url = endpoint + '/volumes';
+
 	var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0) ? parseInt(req.query.itemsPerPage) : 10;
 	var currentPage = (parseInt(req.query.currentPage) > 0) ? parseInt(req.query.currentPage) : 1;
+	var name = req.query.name ? req.query.name.trim() : undefined;
+	var node = req.query.node ? req.query.node.trim() : undefined;
+	var url = endpoint + '/volumes';
 
 	request.get(url)
 	.then(function(response){
-		var volumes;
-		var total;
-
-		var _data = response.body;
-		var _volumes = _data.Volumes;
 		if(!response.ok){
 			throw new Error("error");
-		}
-		//返回当前需要的数据
-		try {
+		}else{
 
-			total = _volumes.length;
-			volumes = _volumes.slice((currentPage - 1) * 10, (currentPage - 1) * 10 + itemsPerPage);
-			volumes = _formtData(_volumes);
+			var volumes;
+			var total;
+			var _data = response.body;
 
-			res.send({ volumes: volumes, total: total, msg: 'success'});
-		} catch (e) {
-			throw new Error(e);
+			_volumesList = _data.Volumes.map(function(item, index){
+				return {Name: item.Name};
+			});
+
+			var _filterVList = [];
+			//返回当前需要的数据
+			try {
+				if(node || name){
+					_getFilterVList(_filterVList, node, name);
+				}else{
+					_filterVList = _volumesList;
+				}
+
+				total = _filterVList.length;
+				volumes = _filterVList.slice((currentPage - 1) * 10, (currentPage - 1) * 10 + itemsPerPage);
+				volumes = _formtData(_filterVList);
+
+				res.send({ volumes: volumes, total: total, msg: 'success'});
+			} catch (e) {
+				throw new Error(e);
+			}
 		}
+
 
 	}).fail(function(err){
 			res.status(404).send({'error_msg': err.message});
@@ -129,10 +191,6 @@ exports.createNewVolume = function(req, res){
 	 }).fail(function(err){
 		 res.send({'error_msg': err.message});
 	 });
-};
-exports.searchVolume = function(req, res){
-	//TODO
-	res.send('todo');
 };
 exports.deleteVolume = function(req ,res){
 

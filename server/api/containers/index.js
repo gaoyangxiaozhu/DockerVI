@@ -9,6 +9,7 @@ var router = express.Router();
 router.get('/getContainerCount', controller.getContainerCount);
 router.get('/getContainerList',controller.getContainerList);
 router.get('/:id/getContainer', controller.getContainer);
+router.get('/:id/getContainerStats', controller.getContainerStats);
 router.delete('/:id', controller.deleteContainer);
 //stop or start
 router.post('/:id/updateContainer', controller.updateContainer);
