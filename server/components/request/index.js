@@ -206,7 +206,11 @@ GRequest.prototype.abort = function(){
     }
     this.response = {};
     this._abort = true;
-    globalReq.abort();
+
+    if(globalReq){
+        globalReq.abort();
+    }
+
     this.res = null;
 };
 
