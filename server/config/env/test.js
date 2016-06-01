@@ -4,7 +4,7 @@
 // ===========================
 module.exports = {
   mongo: {
-    uri: 'mongodb://localhost/docker-test'
+    suri: 'mongodb://localhost/docker-test'
   },
   port:    process.env.PORT || 8080,
   seedDB: true
