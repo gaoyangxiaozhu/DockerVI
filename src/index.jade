@@ -19,6 +19,7 @@ html(ng-app="dockerApp")
                 div(ng-if="pageClass != 'dashboard'")
                     include  ./app/components/slidebar/slidebar.jade
                 div(ui-view)
+        <script src="http://localhost:9000/socket.io/socket.io.js"></script>
         //- bower:js
         //- run `gulp inject` to automatically populate bower script dependencies -->
         //- endbower
