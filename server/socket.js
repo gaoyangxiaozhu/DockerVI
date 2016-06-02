@@ -299,8 +299,6 @@ module.exports = function(server){
                     }else{
                         //以后每时间间隔只读取最后一条记录(时间间隔要和docker_monitor存储数据的时间间隔保持一致)
                         sql = 'SELECT * FROM ' + currentLogTbName + ' order by id DESC limit 1';
-
-                        console.log(sql);
                     }
                     return promiseDB.query(sql);
                 }

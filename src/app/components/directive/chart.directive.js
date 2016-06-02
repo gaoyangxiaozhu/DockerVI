@@ -253,10 +253,6 @@
            xAxis　:　{
                type: 'category',
                boundaryGap: false,
-               smooth:true,
-               areaStyle: {
-                   normal: {}
-               },
                data　: []
            },
            yAxis　:　{
@@ -270,6 +266,10 @@
               {
                   name　:　'cpu利用率',
                   type　:　'line',
+                  smooth : true,
+                  areaStyle : {
+                      normal : {}
+                  },
                   data　:　[]
               }
           ]
@@ -293,15 +293,11 @@
                }
           },
           legend　:　{
-              data:['内存使用量(GB)']
+              data : ['内存使用量(GB)']
           },
           xAxis　:　{
               type: 'category',
               boundaryGap: false,
-              smooth:true,
-              areaStyle: {
-                  normal: {}
-              },
               data　: []
           },
           yAxis　:　{
@@ -315,6 +311,10 @@
              {
                  name　:　'内存使用量(GB)',
                  type　:　'line',
+                 smooth : true,
+                 areaStyle : {
+                     normal : {}
+                 },
                  data　:　[]
              }
          ]
@@ -338,20 +338,16 @@
               }
          },
          legend　:　{
-             data:['入带宽', '出带宽']
+             data : ['入带宽', '出带宽']
          },
          xAxis　:　{
-             type: 'category',
-             boundaryGap: false,
-             smooth:true,
-             areaStyle: {
-                 normal: {}
-             },
+             type : 'category',
+             boundaryGap : false,
              data　: []
          },
          yAxis　:　{
              type　: 'value',
-             boundaryGap: [0, '60%'],
+             boundaryGap : [0, '60%'],
              axisLabel　:　{
                  formatter　: '{value}'
              }
@@ -360,14 +356,72 @@
             {
                 name　:　'入带宽',
                 type　:　'line',
+                smooth:true,
+                areaStyle : {
+                    normal : {}
+                },
                 data　:　[]
             },
             {
                 name : '出带宽',
                 type : 'line',
+                smooth : true,
+                areaStyle : {
+                    normal : {}
+                },
                 data : []
             }
         ]
+        });
+
+        scope.$watchCollection('[realResources]', function(){
+            if(scope.realResources){
+                cpuRealChar.setOption({
+                   xAxis:{
+                       data: scope.realResources.tm
+                   },
+                   series:[
+                      {
+                          name:'cpu利用率',
+                          type:'line',
+                          data:scope.realResources.cpu
+                      }
+                  ]
+               });
+
+               memRealChar.setOption({
+                  xAxis:{
+                      data: scope.realResources.tm
+                  },
+                  series:[
+                     {
+                         name:'内存使用量(GB)',
+                         type:'line',
+                         data:scope.realResources.mem
+                     }
+                 ]
+              });
+
+              bandwidthRealChar.setOption({
+                 xAxis:{
+                     data: scope.realResources.tm
+                 },
+                 series:[
+                    {
+                        name : '入带宽',
+                        type : 'line',
+                        data : scope.realResources.rx
+                    },
+                    {
+                        name : '出带宽',
+                        type : 'line',
+                        data : scope.realResources.tx
+                    }
+                ]
+             });
+
+            }
+
         });
 
         var socket = io.connect('http://localhost:9000/resources');
@@ -383,11 +437,30 @@
         });
         socket.on('getContainerStats', function(results, init){
             if(init){
-                console.log('init');
-                console.log(results);
-                socket.emit('sendResourceData', scope.container.name);
+                scope.realResources = results;
+                scope.$apply();
+                //只有容器处于运行状态才进行后续资源数据的获取
+                if(scope.container.status == 'running'){
+                    socket.emit('sendResourceData', scope.container.name);
+                }
             }else{
-                console.log(results);
+                if(scope.realResources){
+                    //如果获取的最后一行数据的时间和之前获取的数据的最后一行的时间一样　说明没有新的资源数据到达　不进行资源数据的更新
+                    if(scope.realResources.tm[scope.realResources.tm.length - 1 ] == results.tm[0]) return;
+                    scope.realResources.cpu = scope.realResources.cpu.concat(results.cpu);
+                    scope.realResources.mem = scope.realResources.mem.concat(results.mem);
+                    scope.realResources.rx = scope.realResources.rx.concat(results.rx);
+                    scope.realResources.tx = scope.realResources.tx.concat(results.tx);
+                    scope.realResources.tm = scope.realResources.tm.concat(results.tm);
+                    scope.$apply();
+                }
+
+            }
+        });
+        //当容器由停止变为运行状态时　获取后续资源数据
+        scope.$watchCollection('[container, changeStatus]', function(){
+            if(scope.container && scope.container.status == 'running' && scope.changeStatus){
+                socket.emit('sendResourceData', scope.container.name);
             }
         });
 
