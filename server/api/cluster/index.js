@@ -13,6 +13,31 @@ var express = require('express');
 var endpoint = require('../endpoint').SWARMADDRESS;
 var router = express.Router();
 
+/**
+ * @param {string} data
+ * @param {int}
+ */
+function getUsedMemByByte(mem){
+    var usedMem = parseInt(mem);
+    var unit = mem.replace(/[0-9\s]*/, '');
+    switch (unit.trim()){
+        case 'B':
+            return usedMem;
+        case 'K':
+        case 'KB':
+        case 'Kb':
+            return usedMem * 1000;
+        case 'M':
+        case 'MB':
+        case 'Mb':
+            return usedMem * 1000 * 1000;
+        case 'G':
+        case 'GB':
+        case 'Gb':
+            return usedMem * 1000 * 1000 * 1000;
+
+    }
+}
 
 /**
 *格式化数据
@@ -22,13 +47,24 @@ var router = express.Router();
 function formatData(data){
 
   var containerNums = parseInt(data.Containers); //容器总个数
+  var containerRunningNums = parseInt(data.ContainersRunning); //运行容器个数
+  var containerPauseNums = parseInt(data.ContainersPaused); //暂停容器个数
+  var containerStopNums = parseInt(data.ContainersStopped);// 停止容器个数
   var imageNums = parseInt(data.Images); //镜像总个数
   var opSystem = data.OperatingSystem; //操作系统
 
   var systemData = data.SystemStatus;
   var nodeArray = [];
   var nodes = parseInt(systemData[3][1]) + 1; //集群节点个数
+  var healtynodes = nodes; //健康节点的个数
 
+  var totalMemByGB = (parseInt(data.MemTotal) / 1000 / 1000 /1000).toFixed(2);//(GB)
+  var totalMem = parseInt(data.MemTotal);
+  var totalCpu = parseInt(data.NCPU);
+
+  var totalUsedMem = 0;
+  var totalUsedCpu = 0;
+  var memUsedUnit = 'B';
 
   var _data = systemData.slice(4);
 
@@ -53,14 +89,31 @@ function formatData(data){
          mem_has  : mem[1]
       };
       nodeArray.push(node);
+
+      if(status.trim() != 'Healthy'){
+          healtynodes = healtynodes - 1;
+      }
+
+      totalUsedMem += getUsedMemByByte(mem[0]);
+      totalUsedCpu += parseInt(cpu[0]);
   }
   var ret = {
-        imageNums : imageNums,
-    containerNums : containerNums,
-         opSystem : opSystem,
-         strategy : strategy,
-            nodes : nodes,
-        nodeArray : nodeArray
+      opSystem : opSystem,
+      strategy : strategy,
+      nodes : nodes,
+      healtynodes : healtynodes,
+      totalCpu : totalCpu,
+      totalMem : totalMem,
+      totalUsedCpu : totalUsedCpu,
+      totalUsedMem : totalUsedMem,
+      totalMemByGB : totalMemByGB,
+      memUsedUnit : memUsedUnit, //计算使用的内存的计量标志
+      nodeArray : nodeArray,
+      imageNums : imageNums,
+      containerNums : containerNums,
+      containerStopNums : containerStopNums,
+      containerPauseNums : containerPauseNums,
+      containerRunningNums : containerRunningNums,
   };
   return ret;
 }
@@ -77,7 +130,7 @@ function cluster(req, res){
   .get(url)
   .end(function(err, response){
     if(err || !response.ok){
-      res.send({'error_msg': 'error'});
+      res.send({'error_msg': 'do you has connect internet?'});
     }
     else{
         res.send(formatData(response.body));

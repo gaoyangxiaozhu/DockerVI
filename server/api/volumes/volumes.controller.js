@@ -126,7 +126,7 @@ exports.getVolumesCount = function(req, res){
 		}
 		//返回当前需要的数据
 		try {
-			res.send(_data.length);
+			res.send({count: _data.Volumes.length});
 		} catch (e) {
 			throw new Error(e);
 		}
