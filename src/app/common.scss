@@ -35,6 +35,11 @@ ol{
         list-style: none;
     }
 }
+a{
+    &:hover{
+        text-decoration: none;
+    }
+}
 
 //btn
 .btn,
@@ -176,41 +181,6 @@ input,
 }
 .followed-previous{
     margin-right: 4px;
-}
-//link
-.navbar{
-    @include border-radius(0px);
-    overflow: auto;
-    height: 100%;
-    width: $navbarSize;
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    border: 0;
-    background-color: $navBgColor;
-}
-.nav.navbar{
-    li{
-        a{
-            border:1px solid transparent;
-            &:hover,
-            &:active,
-            &:focus{
-                color: $navHoverColor;
-                border:1px solid darken($navHoverBgColor, 7%);
-                border-right-width: 0;
-            }
-            &:hover{
-                background-color: $navHoverBgColor;
-            }
-            &:focus,
-            &:active{
-                background-color: #fff;
-            }
-        }
-    }
 }
 .clear{
     clear: both;
@@ -725,6 +695,72 @@ $imgContainerHeight: 120px;
     .section-heading{
         font-weight: 700;
     }
+}
+
+//loader 用于显示loader效果
+.pacman{
+    position:relative;
+    > div:first-of-type,
+    > div:nth-child(2){
+     width: 0;
+     height: 0;
+     border-right: 25px solid transparent;
+     border-top: 25px solid #fff;
+     border-left: 25px solid #fff;
+     border-bottom: 25px solid #fff;
+     border-radius: 25px;
+     left: -30px;
+   }
+   > div:first-of-type{
+       @include animation(rotate_pacman_half_up .5s 0s infinite);
+       position: relative;
+   }
+   > div:nth-child(2){
+      @include animation(rotate_pacman_half_down .5s 0s infinite);
+       margin-top: -50px;
+       position: relative;
+   }
+    > div:nth-child(3),
+    > div:nth-child(4),
+    > div:nth-child(5),
+    > div:nth-child(6){
+        background-color: #fff;
+        border-radius: 100%;
+        margin: 2px;
+        width: 10px;
+        height: 10px;
+        position: absolute;
+        @include transform(translate(0, -6.25px));
+        top: 25px;
+        left: 70px;
+    }
+}
+.pacman>div:nth-child(3) {
+    @include animation(pacman-balls 1s -.66s infinite linear);
+}
+.pacman>div:nth-child(4) {
+    @include animation(pacman-balls 1s -.33s infinite linear);
+}
+.pacman>div:nth-child(5) {
+    @include animation(pacman-balls 1s 0s infinite linear);
+}
+
+@include keyframes(pacman-balls){
+  0%{   @include transform(translate(0px, -6.25px)); }
+  25%{  @include transform(translate(-20px, -6.25px)); }
+  50%{  @include transform(translate(-60px, -6.25px)); }
+  60%{  @include transform(translate(-80px, -6.25px)); }
+  75%{  @include transform(translate(-100px,-6.25px)); }
+  100%{ @include transform(translate(-100px, -6.25px)); }
+}
+@include keyframes(rotate_pacman_half_up){
+    0%{ @include transform(rotate(-45deg)); }
+    100%{ @include transform(rotate(0deg));  }
+}
+
+@include keyframes(rotate_pacman_half_down){
+  0%{ @include transform(rotate(45deg)); }
+  100%{ @include transform(rotate(0deg)); }
 }
 //返回顶部
 .gotop{

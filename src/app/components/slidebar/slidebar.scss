@@ -1,1 +1,57 @@
-
+//定义svg path颜色继承自父辈
+svg path{
+    fill:inherit;
+}
+.ui.navbar{
+    @include border-radius(0px);
+    overflow: auto;
+    height: 100%;
+    width: $navbarSize;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border: 0;
+    background-color: $navBgColor;
+    .nav{
+        $azureHoverColor: #1FE66F;
+        li{
+            a{
+                border:1px solid transparent;
+                height: 65px;
+                width: 60px;
+                margin: auto;
+                text-align: center;
+                @extend .flex-vertical-box;
+                @include opacity(.6);
+                svg{
+                    height: 45px;
+                    width: 45px;
+                    use{
+                        fill:#fff;
+                    }
+                }
+                &:hover,
+                &:active,
+                &:focus{
+                    background-color: transparent;
+                    @include opacity(1);
+                }
+            }
+            &.active a{
+                background-color: #353c43;
+                @include border-radius(3px);
+                @include opacity(1)
+            }
+            &:nth-child(1){
+                margin-top: 10px;
+                a:hover{
+                    use{
+                        fill : $azureHoverColor;
+                    }
+                }
+            }
+        }
+    }
+}

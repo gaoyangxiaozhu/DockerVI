@@ -33,6 +33,18 @@
         margin-bottom:0;
         margin-top:0;
     }
+    .create-container-btn{
+        i.fa-2x{
+            font-size: 19px;
+        }
+        i.fa-1x{
+            font-size: 15px;
+            margin-left: -6px;
+        }
+        &.btn-default{
+            background-color: #cfcece;
+        }
+    }
     .type-list{
         display: inline-block;
         li{
