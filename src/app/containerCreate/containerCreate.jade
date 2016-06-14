@@ -1,5 +1,5 @@
 
-.content-body.create-container
+.content-body.create-container(ng-if="load.loaded")
     .row
         .col-lg-9
             .panel.panel-default.panel-page-header
@@ -72,7 +72,7 @@
                                     label.col-sm-2.control-label.no-padding-right(for="cmd") 自启动命令
                                         span.txt-color-red *
                                     div.col-sm-10
-                                        textarea#cmd(name="cmd" rows='3',cols="50", ng-model="container.cmd" placeholder="多个命令之间用逗号分隔如cd working,data")
+                                        input#cmd(name="cmd" type="text", ng-model="container.cmd")
                                         
                     section.setting-section(ng-switch-when="2")
                         div(ng-controller="portFieldController")
@@ -217,5 +217,7 @@
                                         | 高级设置 
                                         i.fa.fa-angle-double-right.follow-next
                                     
-                                button.btn.btn-lg.btn-success.pull-right(ng-click="createConteiner()" ng-disabled="!container.name || !available.name || waitForCreated" style="padding-left:60px; padding-right:60px;") 创建
-        
+                                button.btn.btn-lg.pull-right.create-container-btn(ng-click="createConteiner()" ng-class="{'btn-success': !waitForCreated, 'btn-default': waitForCreated}" ng-disabled="!container.name || !available.name || waitForCreated" style="padding-left:60px; padding-right:60px;")
+                                    i(ng-if="waitForCreated").fa.fa-cog.fa-spin.fa-2x.fa-fw
+                                    i(ng-if="waitForCreated").fa.fa-cog.fa-spin.fa-1x.fa-fw
+                                    | 创建

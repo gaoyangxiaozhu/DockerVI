@@ -1,15 +1,22 @@
-#sidebar
-    // #sidebar-shortcuts
-    ul.nav.navbar.navbar-default
-        li 
-            a.text-center(ui-sref="home")
-                span.menu-text 控制台
+div.ui.navbar(ng-controller="navBarCtrl")
+    ul.nav.nav-pills.nav-stacked
         li
-            a.text-center(ui-sref="cluster") 
-                span.menu-text 集群资源
-        li
-            a.text-center(ui-sref="imageList")
-                span.menu-text 镜像管理
-        li
-            a.text-center(ui-sref="containerList")
-                span.menu-text 应用列表
+            a.text-center(tooltip-placement="right" tooltip="控制台" tooltip-append-to-body="true" ui-sref="home")
+                svg(alt="控制台")
+                    use(xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#docker")
+        li(ng-class="{'active': navs[0].active}")
+            a.text-center( tooltip-placement="right" tooltip="集群状况" tooltip-append-to-body="true"  ui-sref="cluster") 
+                svg(alt="集群状况")
+                    use(xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#server")
+        li(ng-class="{'active': navs[1].active}")
+            a.text-center(tooltip-placement="right" tooltip="镜像列表" tooltip-append-to-body="true"  ui-sref="imageList")
+                svg(alt="镜像列表")
+                    use(xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#shop")
+        li(ng-class="{'active': navs[2].active}")
+            a.text-center(tooltip-placement="right" tooltip="容器列表" tooltip-append-to-body="true"  ui-sref="containerList")
+                svg(alt="容器列表")
+                    use(xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#applist")
+        li(ng-class="{'active': navs[3].active}")
+            a.text-center(tooltip-placement="right" tooltip="数据卷" tooltip-append-to-body="true" ui-sref="volume")
+                svg(alt="数据卷")
+                    use(xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#volume")

@@ -1,5 +1,5 @@
 doctype html
-html(ng-app="dockerApp")
+html.loading(ng-app="dockerApp")
     head
         meta(charset="utf-8")
         title docker集群可视化管理
@@ -13,16 +13,26 @@ html(ng-app="dockerApp")
         //- inject:css
         //- css file will be automatically insert here 
         //- endinject
-    body.ui
-        .row
-            .col-xs-12
-                div(ng-if="pageClass != 'dashboard'")
-                    include  ./app/components/slidebar/slidebar.jade
-                div(ui-view)
-        <script src="http://localhost:9000/socket.io/socket.io.js"></script>
         //- bower:js
         //- run `gulp inject` to automatically populate bower script dependencies -->
         //- endbower
+    body.ui
+        include ./assets/images/all.svg
+        .row
+            .col-xs-12
+                div(ng-if="pageClass != 'dashboard'" ng-cloak)
+                    include  ./app/components/slidebar/slidebar.jade
+                div(ui-view)
+        div.loader(style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%);", ng-hide="load.loaded" aria-hidden="true")
+            div.loader-inner.pacman
+                div(ng-style="{'border-color': (pageClass && pageClass==='dashboard')?'#fff transparent #fff #fff':'#ccc transparent #ccc #ccc'}" style="border-color: rgb(204, 204, 204) transparent rgb(204, 204, 204) rgb(204, 204, 204);")
+                div(ng-style="{'border-color': (pageClass && pageClass==='dashboard')?'#fff transparent #fff #fff':'#ccc transparent #ccc #ccc'}" style="border-color: rgb(204, 204, 204) transparent rgb(204, 204, 204) rgb(204, 204, 204);")
+                div(ng-style="{'background-color': (pageClass && pageClass==='dashboard')?'#fff':'#ccc'}" style="background-color: rgb(204, 204, 204);")
+                div(ng-style="{'background-color': (pageClass && pageClass==='dashboard')?'#fff':'#ccc'}" style="background-color: rgb(204, 204, 204);")
+                div(ng-style="{'background-color': (pageClass && pageClass==='dashboard')?'#fff':'#ccc'}" style="background-color: rgb(204, 204, 204);")        
+                    
+        script(src="http://localhost:9090/socket.io/socket.io.js")
+
 
         //- inject:js
         //-js files will be automatically insert here -->
