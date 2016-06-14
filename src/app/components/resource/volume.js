@@ -42,7 +42,7 @@
                         return cb(err);
                 }).$promise;
         },
-        getImagesCount : function(data, callback){
+        getVolumesCount : function(data, callback){
             var cb = callback || angular.noop;
             return volumesResource.getVolumesCount(function(result) {
                           return cb(result);
