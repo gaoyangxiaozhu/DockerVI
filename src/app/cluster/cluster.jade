@@ -1,3 +1,70 @@
-.content-body
-    h1 集群资源使用数据
-    
+.content-body.cluster(ng-if="load.loaded")
+    .container-fluid
+        .row
+            .col-md-6
+                .panel.container-msg
+                    section.panel-body
+                        h3
+                            i.fa.fa-cubes(aria-hidden="true")
+                            | 集群容器信息概要
+                        .chart
+                            cmchart(chart-option="swarm.container.option" style="width:600px; height:400px; position:relative; display:block")
+                            .description.container
+                                div(style="margin-left:35%")
+                                    span.has 共计 {{ swarm.container.nums }}个容器应用
+                                div(style="margin-left:5%")
+                                    span.running.used {{ swarm.container.running }}个主机处于运行状态
+                                    span.paused {{ swarm.container.paused }}个处于暂停状态
+                                    span.stop {{ swarm.container.stop }}个处于停止状态
+                                    
+            .col-md-5
+                .row
+                    .col-md-12
+                        .panel.image-msg
+                            section.panel-body
+                                h3
+                                    i.fa.fa-file(aria-hidden="true")
+                                    |镜像
+                                p
+                                    strong {{ swarm.imageNums }}
+                                    | 个本地镜像
+                .row
+                    .col-md-12
+                        .panel.volume-msg
+                            section.panel-body
+                                h3
+                                    i.fa.fa-database(aria-hidden="true")
+                                    | 存储卷
+                                p
+                                    strong {{ swarm.volumeNums }}
+                                    | 个本地存储卷
+        .row
+            .col-md-12
+                .panel.host-msg
+                    section.panel-body
+                        h3
+                            i.fa.fa-server(aria-hidden="true")
+                            | 主机概况
+                        div
+                            .chart
+                                cmchart(chart-option="swarm.host.option" style="width:400px; height:400px; position:relative; display:block")
+                                .description
+                                    span.has 共计 {{ swarm.nodes }}个主机
+                                    br
+                                    span 其中 {{ swarm.healtynodes}} 个主机处于健康状态
+                        div
+                            .chart
+                                cmchart(chart-option="swarm.cpu.option" style="width:400px; height:400px; position:relative; display:block")
+                                .description
+                                    span.has 可分配 {{ swarm.cpu.has }} core
+                                    br
+                                    span.used 已使用　{{ swarm.cpu.use }} core
+                        div
+                            .chart
+                                cmchart(chart-option="swarm.mem.option" style="width:400px; height:400px; position:relative; display:block")
+                                .description
+                                    span.has 可分配 {{ swarm.mem.has }} GB
+                                    br
+                                    span.used 已使用　{{ swarm.mem.use }} GB
+                    
+                
