@@ -32,13 +32,13 @@ function formatData(data){
 
   var _data = systemData.slice(4);
 
-  var strategy = _data[1][1]; //strategy
+  var strategy = systemData[1][1]; //strategy
 
   for(var i = 0; i < _data.length / 9 - 1; i++){
       var   name = _data[i * 9][0];
       var     ip = _data[i * 9][1];
       var status = _data[i * 9 + 1][1];
-      var  cNums = _data[i * 9 + 2][1];
+      var  cNums = _data[i * 9 + 2][1]; //部署的容器个数
       var    cpu = _data[i * 9 + 3][1].split('/');
       var    mem = _data[i * 9 + 4][1].split('/');
 
@@ -62,7 +62,6 @@ function formatData(data){
             nodes : nodes,
         nodeArray : nodeArray
   };
-
   return ret;
 }
 /**
@@ -76,11 +75,13 @@ function cluster(req, res){
   var url = endpoint + '/info';
   request
   .get(url)
-  .end(function(err, request){
-    if(err || !request.ok){
+  .end(function(err, response){
+    if(err || !response.ok){
       res.send({'error_msg': 'error'});
     }
-    res.send(formatData(request.body));
+    else{
+        res.send(formatData(response.body));
+    }
   });
 }
 module.exports = cluster;
