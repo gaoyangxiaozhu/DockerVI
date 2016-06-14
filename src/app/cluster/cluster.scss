@@ -1,0 +1,71 @@
+.content-body.cluster{
+    .panel{
+        .panel-body{
+            h3{
+                color : #454242;
+                font-weight: bolder;
+                i{
+                    font-size: inherit;
+                    padding-right: 5px;
+                }
+            }
+            p{
+                strong{
+                    font-size: 2em;
+                }
+            }
+            .chart{
+                .description{
+                    width: 60%;
+                    margin-left: 40%;
+                    span{
+                        display: inline-block;
+                        &:before{
+                            content: '';
+                            display: inline-block;
+                            width: 16px;
+                            height: 16px;
+                            background-color: transparent;
+
+                            position: relative;
+                            top: 2px;
+                            margin-right: 5px;
+                        }
+                        &.has::before{
+                            background-color: #12b668;
+                        }
+                        &.used::before{
+                            background-color: #60e5a6;
+                        }
+                    }
+                    &.container{
+                        width: 100%;
+                        margin-left: 0;
+                        span{
+                            &::before{
+                                margin-left: 10px;
+                            }
+                            &.running::before{
+                                background-color: #c23531;
+                            }
+                            &.stop::before{
+                                background-color: #61a0a8;
+                            }
+                            &.paused::before{
+                                background-color: #2f4554;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        &.host-msg{
+            .panel-body{
+                > div{
+                    float: left;
+                }
+            }
+
+        }
+    }
+}
