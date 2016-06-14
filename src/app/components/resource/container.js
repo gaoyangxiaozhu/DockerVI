@@ -30,7 +30,7 @@
           createContainer:{
               method:'POST',
               params:{
-                  id:'createContainer'
+                  controller:'createContainer'
               }
           },
           updateContainer:{

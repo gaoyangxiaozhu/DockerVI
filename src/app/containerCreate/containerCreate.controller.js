@@ -40,37 +40,37 @@
             }
         ];
         // 定义container
-        $scope.container={};
-        $scope.container.name="";
-        $scope.container.size= $scope.containerSize[0];
+        $scope.container = {};
+        $scope.container.name ="";
+        $scope.container.size = $scope.containerSize[0];
 
-        $scope.available={};
+        $scope.available = {};
         $scope.available.name = true;
         // 端口相关
-        $scope.portSt={};
-        $scope.portSt.portInstanceList=[];
-        $scope.portSt.newPort="";
-        $scope.portSt.hostPort="";
+        $scope.portSt = {};
+        $scope.portSt.portInstanceList = [];
+        $scope.portSt.newPort = "";
+        $scope.portSt.hostPort = "";
         $scope.portSt.newPortRegex = false;
         $scope.portSt.hostPortRegex = false;
 
         // 环境变量相关
-        $scope.env={};
-        $scope.env.envInstanceList=[];
-        $scope.envKey ="";
-        $scope.envValue="";
+        $scope.env = {};
+        $scope.env.envInstanceList = [];
+        $scope.envKey = "";
+        $scope.envValue = "";
 
         // volume 相关
-        $scope.volume={};
-        $scope.volume.volumeList=[];
-        $scope.volumeHost="";
-        $scope.volumeDest="";
+        $scope.volume = {};
+        $scope.volume.volumeList = [];
+        $scope.volumeHost = "";
+        $scope.volumeDest = "";
 
         // link 相关
-        $scope.link ={};
-        $scope.link.linkInstanceList=[];
-        $scope.linkName="";
-        $scope.linkAlias="";
+        $scope.link = {};
+        $scope.link.linkInstanceList = [];
+        $scope.linkName = "";
+        $scope.linkAlias = "";
 
 
          // TODO cmd相关
@@ -114,8 +114,8 @@
 
         $scope.createConteiner = function(){
             $scope.waitForCreated = true;
-            var get_post_data_format = function(containerName, containerSize, portList, envList, linkList, volumeList){
-                function get_volume_format(volumeList){
+            var getPostDataFormat = function(containerName, containerSize, portList, envList, linkList, volumeList){
+                function getVolumeFormat(volumeList){
                      var bindsArray = [];
                      for(var index in volumeList){
                          var volume = volumeList[index];
@@ -124,38 +124,38 @@
                      }
                      return bindsArray;
                  }
-                function get_env_format(envList){
+                function getEnvFormat(envList){
                     var env = [];
-                    for(index in envList){
-                        var item = [envList[index]['envKey'], envList[index]['envValue']].join('=');
+                    for(var index in envList){
+                        var item = [envList[index].envKey, envList[index].envValue].join('=');
                         env.push(item);
                     }
                     return env;
                 }
-                function get_links_format(linkList){
+                function getLinkFormat(linkList){
                     var links = [];
-                    for(index in linkList){
-                        var item = [linkList[index]['name'], linkList[index]['alias']].join(':');
+                    for(var index in linkList){
+                        linkList[index].alias = linkList[index].alias ? linkList[index].alias : linkList[index].name;
+                        var item = [linkList[index].name, linkList[index].alias].join(':');
                         links.push(item);
                     }
                     return links;
                 }
-                function get_port_format(portList){
+                function getPortFormat(portList){
                     var ports = {};
-                    console.log(portList);
-                    for(index in portList){
-                        if(ports[portList[index]['containerPort']]){
-                            ports[portList[index]['containerPort']].push({'HostPort': portList[index]['hostPort']});
+                    for(var index in portList){
+                        if(ports[portList[index].containerPort]){
+                            ports[portList[index].containerPort].push({'HostPort': portList[index].hostPort});
                         }else{
-                            ports[portList[index]['containerPort']] = [{'HostPort': portList[index]['hostPort']}];
+                            ports[portList[index].containerPort] = [{'HostPort': portList[index].hostPort}];
                         }
                     }
                     return ports;
                 }
-                function get_memory_format(size){
+                function getMemoryFormat(size){
                     var unit = size.slice(-1);
                     var num = size.slice(0,-1);
-                    var memory=0;
+                    var memory = 0;
                     switch(unit){
                         case 'M': return num*1024*1024;
                         case 'G': return num*1024*1024*1024;
@@ -163,56 +163,62 @@
                 }
                 option = {};
 
-                option.Image= $scope.imageFullSourceName;
+                option.Image = $scope.imageTag == 'latest' ? $scope.imageName : [$scope.imageName, $scope.imageTag].join(":");
                 option.Name = containerName;
 
-                option.Env = get_env_format(envList);
+                option.Env = getEnvFormat(envList);
+                if(option.Env.length === 0){
+                    delete option.Env;
+                }
 
-                // 由于使用了Django， ajax传递到后台的只能是表单格式的数据 不能出现某一个属性为对象 因此这里不能使用HostConfig了
                 option.HostConfig={};
-                //TODO 先简单这样处理了
+                //CMD
                 if($.trim($scope.container.cmd)){
                     option.Cmd = $scope.container.cmd.split(' ');
                 }
-                // TODO 这里我设置了cpushares这个变量 数值越大cpu获得的相对资源比越大
-                option.HostConfig.Cpushares = parseInt(get_cpu_shares($scope.container.cpuTo));
-                option.HostConfig.Links = get_links_format(linkList);
-                option.HostConfig.PortBindings = get_port_format(portList);
-                option.HostConfig.Memory = get_memory_format(containerSize);
-                option.HostConfig.Binds = get_volume_format(volumeList);
-
-                // 调用创建container的服务
-                function callBack(statusCode){
-                    if(statusCode=='409' || statusCode == '500'){
-                        // callBack函数最终是在dialog的confirm按钮点击以后调用的
-                        // 导致没有被angular的apply包裹 需要手动调用$apply方法，$apply会自动调用$digest()方法检查model的变化
-                        $scope.waitForCreated = false;
-                        $scope.$apply();
-                    }
+                //TODO Cpushares含义??
+                option.HostConfig.Cpushares = 1;
+                option.HostConfig.CpusetCpus = parseInt(containerSize.cpu) == 1 ? "0" : "0,1";
+                option.HostConfig.Links = getLinkFormat(linkList);
+                if(option.HostConfig.Links.length === 0){
+                    delete option.HostConfig.Links;
                 }
-                container.new(option, callBack);
+                option.HostConfig.PortBindings = getPortFormat(portList);
+                option.HostConfig.Memory = getMemoryFormat(containerSize.mem);
+                option.HostConfig.Binds = getVolumeFormat(volumeList);
+                if(option.HostConfig.Binds.length === 0){
+                    delete option.HostConfig.Binds;
+                }
+
+                return option;
             };
             // 执行ajax函数 根据表单数据生成container
 
-            var postData = get_post_data_format($scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
+            var postData = getPostDataFormat($scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
                                                 $scope.portSt.portInstanceList, //暴露和映射的端口
                                                 $scope.env.envInstanceList, //自定义环境变量
                                                 $scope.link.linkInstanceList, //链接服务
                                                 $scope.volume.volumeList) //挂载卷
 
+          Container.createContainer({ postData: postData}).then(function(result){
+              if(result.msg && result.msg == 'ok'){
+                  //如果创建成功就启动容器并在返回容器列表页面
+                  
+              }
+          });
+        };
 
-        }
         $scope.delItem =function(instance, scopeArrayList){
                 var target = null;
                 var instanceListLength = scopeArrayList.length;
                 for(index in scopeArrayList){
-                    if(scopeArrayList[index]==instance){
-                        target=index;
+                    if(scopeArrayList[index]　==　instance){
+                        target　=　index;
                     }
                 }
-                scopeArrayList[target]= scopeArrayList[instanceListLength-1];
+                scopeArrayList[target]　= scopeArrayList[instanceListLength-1];
                 scopeArrayList.pop();
-        }
+        };
     }]);
 
     angular.module('dockerApp.containers')
@@ -357,19 +363,16 @@
             $scope.addLinkForm.$setPristine();
             $scope.addLinkForm.$submitted = false;
         };
-        // 获取container的容器name列表
-        // 通过container服务的getNameList接口获得name列表后执行大的回调函数  胡子药用于给scope的containerNameList赋值
+
         $scope.containerNameList=[];
         var defaultOption = "选择一个服务";
         $scope.containerNameList.push(defaultOption);
-        var get_name_list =function(data){
-            $scope.containerNameList= $scope.containerNameList.concat(data);
-            // 设置下拉框的默认值
-        };
-        var data=[];
-        $scope.containerNameList= $scope.containerNameList.concat(data);
-        // 设置下拉框的默认值
 
+        // 获取container的容器name列表
+        Container.getContainerList({ running: true }).then(function(result){
+            $scope.containerNameList = $scope.containerNameList.concat(result);
+        });
+        // 设置下拉框的默认值
         $scope.linkName=$scope.containerNameList[0];
         $scope.$watch('linkName', function(newVal, oldVal){
             // 如果没有选择一个服务 notChoosedLink = true
@@ -384,8 +387,6 @@
 
         $scope.notChoosedLink = true;
         $scope.clickedAddBtn = false;
-
-
 
         $scope.deleLink =function(linkInstance){
             $scope.delItem(linkInstance, $scope.link.linkInstanceList);

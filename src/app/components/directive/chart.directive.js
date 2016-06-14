@@ -424,7 +424,7 @@
 
         });
 
-        var socket = io.connect('http://localhost:9000/resources');
+        var socket = io.connect('http://localhost:9090/resources');
 
         socket.on('notice', function(msg){
             if(msg == 'OK'){

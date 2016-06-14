@@ -80,7 +80,7 @@
 
 
             if(!socket){
-                socket = io.connect('http://localhost:9000/logs');
+                socket = io.connect('http://localhost:9090/logs');
             }
 
             socket.on('notice', function(msg){
