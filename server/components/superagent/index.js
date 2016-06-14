@@ -13,7 +13,7 @@ Request.prototype.get = function(url){
 //post function
 Request.prototype.post = function(url, data){
     var defer = Q.defer();
-    if(data.length){
+    if(data){
         agent
         .post(url)
         .send(data)

@@ -17,7 +17,7 @@ var server = require('http').createServer(app);
 
 require('./config/express')(app);
 require('./routes')(app);
-require('./socket')(server);
+require('./socket')(9090);
 //Start server
 server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));

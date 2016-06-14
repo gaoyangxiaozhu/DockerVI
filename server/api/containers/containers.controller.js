@@ -238,6 +238,26 @@ function operateContainer(req, res, id, action){
 /****************接口函数××××××××××××××********/
 exports.getContainerList = function(req, res){
 
+    //只获取正在运行的容器列表　用于链接服务
+    if(req.query.running && req.query.running.trim() === "true"){
+        var url = endpoint + '/containers/json';
+        request.get(url)
+    	.then(function(response){
+    			var data = response.body;
+    			if(!response.ok){
+    					throw new Error("error");
+    			}
+                //获取每个容器的镜像标签
+                return data.map(function(item, index){
+                    return item.Names[0].slice(1).split('/')[1];
+                });
+    	})
+        .then(function(data){
+            res.send(data);
+        });
+        return;
+    }
+
 	var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
 	var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
 
@@ -318,15 +338,17 @@ exports.getContainer = function(req, res){
 };
 exports.createContainer = function(req, res){
 
-    var data = req.body.data;
-    request.post(url)
+    var data = req.body.postData;
+    var url = endpoint + '/containers/create?name=' + data.Name;
+    delete data.Name;
+    request.post(url, data)
     .then(function(response){
         if(!response.ok){
                 throw new Error("error");
         }
         res.send({'msg': 'ok'});
     }).fail(function(err){
-			res.status(404).send({'error_msg': err.message});
+		res.send({'error_msg': err.message, 'status': err.status});
 	});
 };
 
