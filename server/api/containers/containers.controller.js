@@ -341,13 +341,20 @@ exports.createContainer = function(req, res){
     var data = req.body.postData;
     var url = endpoint + '/containers/create?name=' + data.Name;
     delete data.Name;
+    console.log(url);
+    console.log(data);
     request.post(url, data)
     .then(function(response){
         if(!response.ok){
-                throw new Error("error");
+                throw new Error({ message : 'error', 'status' : response.status});
         }
         res.send({'msg': 'ok'});
     }).fail(function(err){
+        if('response' in err && err.response.text && /Network timed out/.test(err.response.text)){
+            err.message += '(Network timed out)';
+        }else{
+            err.message += '(unknown error)';
+        }
 		res.send({'error_msg': err.message, 'status': err.status});
 	});
 };
