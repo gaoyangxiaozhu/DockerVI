@@ -1,0 +1,14 @@
+.content-body.container-list{
+    $newBorderColor: #17D217;
+    .panel{
+        table{
+            > tbody{
+                > tr{
+                    &.new{
+                        border-left: 4px solid $newBorderColor;
+                    }
+                }
+            }
+        }
+    }
+}
