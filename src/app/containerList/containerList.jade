@@ -1,6 +1,6 @@
 
 //- page contnt begins
-.content-body(ng-if="load.loaded")
+.content-body.container-list(ng-if="load.loaded")
     .panel.panel-default.panel-page-header
         .panel-body
             .primary-section
@@ -30,12 +30,13 @@
                                 th.text-center 创建时间
                                 th.text-center 动作
                         tbody
-                            tr(ng-repeat="container in containerList | orderBy: 'Created'" ng-class="{'selected' : container.check }")
+                            tr(ng-repeat="container in containerList | orderBy: '-Created'" ng-class="{'selected' : container.check, 'new' : newContainer && newContainer.name == container.name }")
                                 td.checkbox
                                     div
                                         input(type="checkbox" ng-model="container.check" ng-change="checkItem(container)" tabindex="0")
                                 td.left
                                     span {{ container.name }}
+                                    span(ng-if="newContainer && newContainer.name == container.name" style="color:#F6566B") (New)
                                 td.text-center 
                                     span {{ container.node }} 
                                 td.text-center
@@ -55,3 +56,5 @@
                                 td.text-center
                                     a(ui-sref="containerDeatil({id: container.name })") 查看详情
                     paging(page="options.currentPage" page-size="options.itemsPerPage" total="containerCount"  dots="......" hide-if-empty="true" show-prev-next="true"  paging-action="loadMore(page)")
+             
+                    

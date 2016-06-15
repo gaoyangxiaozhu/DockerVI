@@ -23,6 +23,7 @@ html.loading(ng-app="dockerApp")
                 div(ng-if="pageClass != 'dashboard'" ng-cloak)
                     include  ./app/components/slidebar/slidebar.jade
                 div(ui-view)
+        toaster-container
         div.loader(style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%);", ng-hide="load.loaded" aria-hidden="true")
             div.loader-inner.pacman
                 div(ng-style="{'border-color': (pageClass && pageClass==='dashboard')?'#fff transparent #fff #fff':'#ccc transparent #ccc #ccc'}" style="border-color: rgb(204, 204, 204) transparent rgb(204, 204, 204) rgb(204, 204, 204);")
