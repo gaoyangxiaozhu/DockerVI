@@ -28,7 +28,6 @@
             $scope.swarm.mem.has = results.totalMemByGB;
             $scope.swarm.mem.use = (results.totalUsedMem / 1000 / 1000 / 1000).toFixed(2);
 
-            console.log($scope.swarm.mem);
 
             $scope.swarm.cpu.has = results.totalCpu;
             $scope.swarm.cpu.use = results.totalUsedCpu;
