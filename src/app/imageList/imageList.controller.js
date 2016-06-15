@@ -1,7 +1,7 @@
 // image list page controller
 (function(){
     angular.module("dockerApp.imageList")
-    .controller('imageListCtrl', ['$scope', '$location', 'Image', '$state', function($scope, $location, Image, $state){
+    .controller('imageListCtrl', ['$scope', '$location', 'Image', '$state', 'toaster', function($scope, $location, Image, $state, toaster){
 
         $scope.imagePackages = {};
 
@@ -60,11 +60,26 @@
             Image.deleteImage({_id: currentImage.name }, updateImages);
         };
 
-        $scope.createContainerInstance = function(image){
-            $state.go(
-                'containerCreate',{
-                    id: image.id || image.name
-                });
+        $scope.createContainerInstance = function(image, remote){
+
+            if(typeof image === 'string' && remote){//说明是远程dockerhub镜像
+
+                $state.go(
+                    'containerCreate',{
+                        id: image,
+                        source: 'remote'
+                    });
+                return;
+            }
+            //否则为本地镜像
+            if(Object.prototype.toString.call(image) === '[object Object]'){
+
+                $state.go(
+                    'containerCreate',{
+                        id: image.id || image.name
+                    });
+            }
+
         };
         //私有函数
         function _searchDocker(){

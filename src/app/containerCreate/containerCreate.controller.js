@@ -1,14 +1,23 @@
 (function(){
     // container details page controller
     angular.module("dockerApp.containers")
-    .controller('containerCreateCtrl', ['$scope', '$state', '$stateParams', 'Container', 'Image',  function($scope, $state, $stateParams, Container, Image){
+    .controller('containerCreateCtrl', ['$scope', '$state', '$stateParams', 'Container', 'Image', 'SweetAlert',  function($scope, $state, $stateParams, Container, Image, SweetAlert){
 
         var _imageId = $state.params.id;
-        Image.getImageDetail({id : _imageId}).then(function(result){
-            $scope.imageName = result.name;
-            $scope.imageSize = result.size;
-            $scope.imageTag = result.tag;
-        });
+        var source = $state.params.source;
+
+        //根据镜像来源进行image相关数据的初始化工作
+        if(source ==='remote'){
+            $scope.remote = true;
+            $scope.imageName = _imageId;
+            $scope.imageTag = 'latest';
+        }else{
+            Image.getImageDetail({id : _imageId}).then(function(result){
+                $scope.imageName = result.name;
+                $scope.imageSize = result.size;
+                $scope.imageTag = result.tag;
+            });
+        }
 
         $scope.step = 1; //默认第一步
         //TODO 应该改为从配置文件读取或从后台读取可配置的容器大小信息
@@ -198,20 +207,36 @@
                                                 $scope.portSt.portInstanceList, //暴露和映射的端口
                                                 $scope.env.envInstanceList, //自定义环境变量
                                                 $scope.link.linkInstanceList, //链接服务
-                                                $scope.volume.volumeList) //挂载卷
-
+                                                $scope.volume.volumeList);//挂载卷
           Container.createContainer({ postData: postData}).then(function(result){
+              $scope.waitForCreated = true;
               if(result.msg && result.msg == 'ok'){
                   //如果创建成功就启动容器并在返回容器列表页面
-                  
+                  $state.go(
+                      'containerList',{
+                          newContainer : $scope.container.name
+                      }
+                  );
+              }else{//显示错误信息
+                  SweetAlert.swal({
+                      title: result.status + ' Error',
+                      text: result.error_msg,
+                      type: "warning",
+                      confirmButtonColor: "#DD6B55",
+                      confirmButtonText: "确定",
+                      closeOnConfirm: true },
+                      function(){
+                            $state.reload();
+                      }
+                  );
               }
           });
-        };
+      };
 
         $scope.delItem =function(instance, scopeArrayList){
                 var target = null;
                 var instanceListLength = scopeArrayList.length;
-                for(index in scopeArrayList){
+                for(var index in scopeArrayList){
                     if(scopeArrayList[index]　==　instance){
                         target　=　index;
                     }
@@ -374,6 +399,7 @@
         });
         // 设置下拉框的默认值
         $scope.linkName=$scope.containerNameList[0];
+
         $scope.$watch('linkName', function(newVal, oldVal){
             // 如果没有选择一个服务 notChoosedLink = true
 

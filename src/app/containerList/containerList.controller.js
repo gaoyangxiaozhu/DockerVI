@@ -1,7 +1,16 @@
 // container list page controller
 (function(){
     angular.module("dockerApp.containers")
-    .controller('ContainerListCtrl', ['$scope', '$location', 'Container', 'SweetAlert', function($scope, $location, Container, SweetAlert){
+    .controller('ContainerListCtrl', ['$rootScope', '$scope', '$location', 'Container', 'SweetAlert', '$state', 'toaster', function($rootScope, $scope, $location, Container, SweetAlert, $state, toaster){
+
+        //如果当前有新的容器生成　给出提示框
+        if($state.params.newContainer){
+            $scope.newContainer ={};
+            $scope.newContainer.name = $state.params.newContainer;
+            if($rootScope.load.loaded){
+                toaster.pop('success', "", "容器创建成功!");
+            }
+        }
 
         $scope.containerList = [];
         $scope.waitForDeleteContainerIDList = [];
