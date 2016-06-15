@@ -54,12 +54,12 @@
                                 div.col-sm-4
                                     span.text.text-muted {{ package.description }}
                                 div.col-sm-4.text-right
-                                    button.btn.btn-primary(ng-click='createContainerInstance(package)' ng-disabled="package.loading") 创建应用
+                                    button.btn.btn-primary(ng-click='createContainerInstance(package.name, true)' ng-disabled="package.loading") 创建应用
                                     
                             button.btn-more.btn(ng-click="loadMoreDockerhub()" ng-if="options.currentPageForDockerhub < dockerhubPackages.pagesNum" ng-disabled="loading.dockerhubMore" tabindex="0")
                                 span(ng-if="!loading.dockerhubMore")　加载更多
                                 span(ng-if="loading.dockerhubMore")
                                     i.fa.fa-spinner.fa-pulse
-                                    
+            
                                 
                             

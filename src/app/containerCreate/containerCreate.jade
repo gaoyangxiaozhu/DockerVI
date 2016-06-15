@@ -12,14 +12,18 @@
                             div.img-msg
                                 div
                                     h3 {{ imageName }}
-                                div
-                                    span.sm-title 版本号 &nbsp;
-                                    span.sm-text
-                                        i.fa-tag 
-                                        | {{ imageTag }}
-                                div
-                                    span.sm-title 镜像大小 &nbsp;
-                                    span.sm-text {{ imageSize }}
+                                div(ng-if="remote" ng-cloak)
+                                    span.sm-title 来源:
+                                    span.sm-title DockerHub镜像
+                                div(ng-if="!remote" ng-cloak)    
+                                    div
+                                        span.sm-title 版本号 &nbsp;
+                                        span.sm-text
+                                            i.fa-tag 
+                                            | {{ imageTag }}
+                                    div
+                                        span.sm-title 镜像大小 &nbsp;
+                                        span.sm-text {{ imageSize }}
                         
                     
             .panel.panel-default    
