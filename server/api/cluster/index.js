@@ -29,6 +29,7 @@ function getUsedMemByByte(mem){
             return usedMem * 1000;
         case 'M':
         case 'MB':
+        case 'MiB':
         case 'Mb':
             return usedMem * 1000 * 1000;
         case 'G':
@@ -70,7 +71,7 @@ function formatData(data){
 
   var strategy = systemData[1][1]; //strategy
 
-  for(var i = 0; i < _data.length / 9 - 1; i++){
+  for(var i = 0; i <= _data.length / 9 - 1; i++){
       var   name = _data[i * 9][0];
       var     ip = _data[i * 9][1];
       var status = _data[i * 9 + 1][1];
@@ -95,7 +96,7 @@ function formatData(data){
       }
 
       totalUsedMem += getUsedMemByByte(mem[0]);
-      totalUsedCpu += parseInt(cpu[0]);
+
   }
   var ret = {
       opSystem : opSystem,
