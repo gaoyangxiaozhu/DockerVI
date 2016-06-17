@@ -3,12 +3,19 @@
     angular.module("dockerApp.containers")
     .controller('ContainerListCtrl', ['$rootScope', '$scope', '$location', 'Container', 'SweetAlert', '$state', 'toaster', function($rootScope, $scope, $location, Container, SweetAlert, $state, toaster){
 
+        console.log('reload');
         //如果当前有新的容器生成　给出提示框
         if($state.params.newContainer){
             $scope.newContainer ={};
             $scope.newContainer.name = $state.params.newContainer;
             if($rootScope.load.loaded){
                 toaster.pop('success', "", "容器创建成功!");
+            }
+        }
+        //如果容器删除成功
+        if($state.params.removeContainer){
+            if($rootScope.load.loaded){
+                toaster.pop('success', "", "容器删除成功!");
             }
         }
 
@@ -47,14 +54,6 @@
            doPaging($scope.options, true);
        };
 
-        // 删除容器
-        $scope.delContainer= function(currentContainer){
-            // 删除成功则更新当前的containers
-            function updateContainers(){
-                doPaging($scope.currentPage);
-            }
-            Container.deleteContainer({_id : currentContainer.id }, updateContainers);
-        };
 
         //点击delete按钮　删除选中的容器应用
         $scope.deleteCheckedApp = function(){
@@ -66,9 +65,29 @@
                 cancelButtonText: "取消",
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "是的, 我要删除!",
-                closeOnConfirm: false},
-                function(){
-                    SweetAlert.swal("Booyah!");
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true },
+                function(isConfirm){
+                    if(isConfirm){
+                        var deleteContainerNameList = [];
+                        $scope.containerList.forEach(function(item, index){
+                            if(item.check){
+                                deleteContainerNameList.push(item.name);
+                            }
+                        });
+
+                        if(deleteContainerNameList.length > 0){
+                            Container.deleteContainer({data: deleteContainerNameList}).then(function(result){
+                                if(result && 'msg' in result && result.msg === 'ok'){
+                                    window.swal.close(); //关闭SweetAlert
+                                    $state.go('containerList', {
+                                        removeContainer : true
+                                    });
+                                }
+                            });
+                        }
+                    }
+
                 });
         };
         $scope.checkItem = function(container){

@@ -27,7 +27,7 @@
        ])
    .config(function ($logProvider, $stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, IsDebug) {
        $locationProvider.html5Mode(true);
-       $httpProvider.defaults.timeout = 500000;
+       $httpProvider.defaults.timeout = 600000;
        // Enable log
        $logProvider.debugEnabled(IsDebug);
        $urlRouterProvider.otherwise('/');
