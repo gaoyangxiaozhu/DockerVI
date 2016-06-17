@@ -89,6 +89,7 @@ function formatData(data){
          mem_use  : mem[0],
          mem_has  : mem[1]
       };
+
       nodeArray.push(node);
 
       if(status.trim() != 'Healthy'){
@@ -96,6 +97,7 @@ function formatData(data){
       }
 
       totalUsedMem += getUsedMemByByte(mem[0]);
+      totalUsedCpu += parseInt(cpu[0]);
 
   }
   var ret = {
