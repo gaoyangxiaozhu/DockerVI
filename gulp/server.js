@@ -101,7 +101,10 @@ function browserSyncInit (baseDir) {
 		    middleware:[
 			    proxyMiddleware(['/api/**','/auth/**'], {target: 'http://localhost:9000', changeOrigin:true})
 			  ]
-			}
+		},
+		socket: {
+      			"clients.heartbeatTimeout" : 500000
+  			}
 		});
 }
 gulp.task('serve',function () {
