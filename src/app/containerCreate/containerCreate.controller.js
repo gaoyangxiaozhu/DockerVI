@@ -1,7 +1,7 @@
 (function(){
     // container details page controller
     angular.module("dockerApp.containers")
-    .controller('containerCreateCtrl', ['$scope', '$state', '$stateParams', 'Container', 'Image', 'SweetAlert',  function($scope, $state, $stateParams, Container, Image, SweetAlert){
+    .controller('containerCreateCtrl', ['$scope', '$state', '$stateParams', 'Container', 'Image', 'SweetAlert','formatData', function($scope, $state, $stateParams, Container, Image, SweetAlert, formatData){
 
         var _imageId = $state.params.id;
         var source = $state.params.source;
@@ -123,97 +123,23 @@
 
         $scope.createConteiner = function(){
             $scope.waitForCreated = true;
-            var getPostDataFormat = function(containerName, containerSize, portList, envList, linkList, volumeList){
-                function getVolumeFormat(volumeList){
-                     var bindsArray = [];
-                     for(var index in volumeList){
-                         var volume = volumeList[index];
-                         var item = [volume.volumeHost, volume.volumeDest].join(':');
-                         bindsArray.push(item);
-                     }
-                     return bindsArray;
-                 }
-                function getEnvFormat(envList){
-                    var env = [];
-                    for(var index in envList){
-                        var item = [envList[index].envKey, envList[index].envValue].join('=');
-                        env.push(item);
-                    }
-                    return env;
-                }
-                function getLinkFormat(linkList){
-                    var links = [];
-                    for(var index in linkList){
-                        linkList[index].alias = linkList[index].alias ? linkList[index].alias : linkList[index].name;
-                        var item = [linkList[index].name, linkList[index].alias].join(':');
-                        links.push(item);
-                    }
-                    return links;
-                }
-                function getPortFormat(portList){
-                    var ports = {};
-                    for(var index in portList){
-                        if(ports[portList[index].containerPort]){
-                            ports[portList[index].containerPort].push({'HostPort': portList[index].hostPort});
-                        }else{
-                            ports[portList[index].containerPort] = [{'HostPort': portList[index].hostPort}];
-                        }
-                    }
-                    return ports;
-                }
-                function getMemoryFormat(size){
-                    var unit = size.slice(-1);
-                    var num = size.slice(0,-1);
-                    var memory = 0;
-                    switch(unit){
-                        case 'M': return num*1024*1024;
-                        case 'G': return num*1024*1024*1024;
-                    }
-                }
-                option = {};
-
-                option.Image = $scope.imageTag == 'latest' ? $scope.imageName : [$scope.imageName, $scope.imageTag].join(":");
-                option.Name = containerName;
-
-                option.Env = getEnvFormat(envList);
-                if(option.Env.length === 0){
-                    delete option.Env;
-                }
-
-                option.HostConfig={};
-                //CMD
-                if($.trim($scope.container.cmd)){
-                    option.Cmd = $scope.container.cmd.split(' ');
-                }
-                //TODO Cpushares含义??
-                option.HostConfig.Cpushares = 1;
-                option.HostConfig.CpusetCpus = parseInt(containerSize.cpu) == 1 ? "0" : "0,1";
-                option.HostConfig.Links = getLinkFormat(linkList);
-                if(option.HostConfig.Links.length === 0){
-                    delete option.HostConfig.Links;
-                }
-                option.HostConfig.PortBindings = getPortFormat(portList);
-                option.HostConfig.Memory = getMemoryFormat(containerSize.mem);
-                option.HostConfig.Binds = getVolumeFormat(volumeList);
-                if(option.HostConfig.Binds.length === 0){
-                    delete option.HostConfig.Binds;
-                }
-
-                return option;
-            };
             // 执行ajax函数 根据表单数据生成container
-
-            var postData = getPostDataFormat($scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
+            var imageName = $scope.imageTag == 'latest' ? $scope.imageName : [$scope.imageName, $scope.imageTag].join(":");
+            var postData = formatData.getPostDataFormat(imageName, //镜像名
+                                                $scope.container.name , $scope.container.size, //创建的cntainer的名字和大小
                                                 $scope.portSt.portInstanceList, //暴露和映射的端口
                                                 $scope.env.envInstanceList, //自定义环境变量
                                                 $scope.link.linkInstanceList, //链接服务
-                                                $scope.volume.volumeList);//挂载卷
-          Container.createContainer({ postData: postData}).then(function(result){
-              $scope.waitForCreated = true;
-              if(result.msg && result.msg == 'ok'){
-                  //如果创建成功就启动容器并在返回容器列表页面
-                  $state.go(
-                      'containerList',{
+                                                $scope.volume.volumeList, //挂载卷
+                                                $scope.container.cmd); //自启动命令
+
+           Container.createContainer({ postData: postData}).then(function(result){
+               console.log(result);
+               $scope.waitForCreated = true;
+               if(result.msg && result.msg == 'ok'){
+                   //如果创建成功就启动容器并在返回容器列表页面
+                   $state.go(
+                       'containerList',{
                           newContainer : $scope.container.name
                       }
                   );
@@ -233,16 +159,16 @@
           });
       };
 
-        $scope.delItem =function(instance, scopeArrayList){
-                var target = null;
-                var instanceListLength = scopeArrayList.length;
-                for(var index in scopeArrayList){
-                    if(scopeArrayList[index]　==　instance){
-                        target　=　index;
-                    }
-                }
-                scopeArrayList[target]　= scopeArrayList[instanceListLength-1];
-                scopeArrayList.pop();
+      $scope.delItem =function(instance, scopeArrayList){
+          var target = null;
+          var instanceListLength = scopeArrayList.length;
+          for(var index in scopeArrayList){
+              if(scopeArrayList[index]　==　instance){
+                  target　=　index;
+              }
+          }
+          scopeArrayList[target]　= scopeArrayList[instanceListLength-1];
+          scopeArrayList.pop();
         };
     }]);
 
@@ -282,7 +208,7 @@
     }]);
     angular.module('dockerApp.containers')
     .controller('portFieldController', ['$scope', '$stateParams', 'Container', 'Image', function($scope, $stateParams, Container, Image){
-        $scope.addPort=function(){
+        $scope.addPort = function(){
             $scope.portSt.newPortRegex = false;
             $scope.portSt.hostPortRegex = false;
             if($scope.addPortForm.$invalid){
@@ -295,13 +221,14 @@
             }
             if(/^\s*\d+\s*$/.test($scope.portSt.hostPort)){
                 $scope.portSt.hostPort=$.trim($scope.portSt.hostPort);
-                $scope.portSt.hostPort=String($scope.portSt.hostPort)+'/tcp';
+                $scope.portSt.hostPort=String($scope.portSt.hostPort);
             }
-            var m = /[1-9]\d*\/tcp/gi;
-            if(!$scope.portSt.newPort.match(m)){
+            var reg1 = /[1-9]\d*\/tcp/gi;
+            var reg2 = /[1-9]\d*/gi;
+            if(!$scope.portSt.newPort.match(reg1)){
                 $scope.portSt.newPortRegex = true;
             }
-            if(!$scope.portSt.hostPort.match(m) && $scope.portSt.hostPort){
+            if(!$scope.portSt.hostPort.match(reg2) && $scope.portSt.hostPort){
                 $scope.portSt.hostPortRegex = true;
             }
             if($scope.portSt.newPortRegex || $scope.portSt.hostPortRegex){
@@ -317,10 +244,10 @@
             $scope.addPortForm.$setPristine();
             $scope.addPortForm.$submitted = false;
 
-        }
-        $scope.delePort =function(portInstance){
+        };
+        $scope.delePort = function(portInstance){
             $scope.delItem(portInstance, $scope.portSt.portInstanceList);
-        }
+        };
 
     }]);
     angular.module('dockerApp.containers')
@@ -337,12 +264,12 @@
 
             $scope.env.envInstanceList.push(newEnvItem);
 
-            $scope.envKey="";
-            $scope.envValue="";
+            $scope.envKey = "";
+            $scope.envValue = "";
             $scope.addEnvForm.$setPristine();
             $scope.addEnvForm.$submitted = false;
         };
-        $scope.deleEnv =function(envInstance){
+        $scope.deleEnv = function(envInstance){
             $scope.delItem(envInstance, $scope.env.envInstanceList);
         };
 

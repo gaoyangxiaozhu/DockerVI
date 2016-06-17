@@ -39,6 +39,12 @@
                   controller: 'updateContainer'
               }
           },
+          deleteContainer:{
+              method: 'POST',
+              params:{
+                  controller: 'deleteContainer'
+              }
+          },
           getContainerStats:{
               method:'GET',
               params:{
@@ -81,7 +87,7 @@
         },
         deleteContainer:function(data,callback){
             var cb = callback || angular.noop;
-            return containerResource.remove(data, function(result) {
+            return containerResource.deleteContainer(data, function(result) {
                 return cb(result);
             }, function(err) {
                 return cb(err);

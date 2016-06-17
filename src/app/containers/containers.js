@@ -9,7 +9,8 @@
         templateUrl : 'app/containerList/containerList.html',
         controller : 'ContainerListCtrl',
         params:{
-            newContainer: undefined
+            newContainer: undefined,
+            removeContainer : undefined
         }
       })
       .state('containerDeatil', {
