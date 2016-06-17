@@ -17,15 +17,19 @@ var promiseDockerLogReq = {};
 var dockerLogRequest;
 var io;
 
-function formatTime(date){
-    var year = date.getFullYear();
-    var month = date.getMonth() > 9 ? date.getMonth() : '0' + date.getMonth();
-    var day = date.getDay() > 9 ? date.getDay(): '0' + date.getDay();
-    var hours = date.getHours() > 9 ? date.getHours(): '0' + date.getHours();
-    var minutes = date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes();
-    var seconds = date.getSeconds() > 0 ? date.getSeconds() : '0' + date.getSeconds();
+//格式化时间　yyyy-mm-dd
+function formatTime(date, accurate){
 
-    return [[year, month, day].join('-'), [hours, minutes, seconds].join(':')].join(' ');
+    var    year  = date.getFullYear();
+    var   month  = parseInt(date.getMonth()) + 1 < 10 ? '0' + parseInt(date.getMonth() + 1)  : parseInt(date.getMonth() + 1);
+    var     day  = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+    var   hours  = date.getHours() < 10 ? '0' + date.getHours() : date.getHours();
+    var minutes  = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
+    var  second  = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+    if(accurate){
+        return [[year, month, day].join("-"), [hours, minutes, second].join(':')].join(' ');
+    }
+    return [year, month, day].join("-");
 }
 /**
  * for parse container log
@@ -34,19 +38,22 @@ function formatTime(date){
 //TODO 主要用于格式化获取的容器日志内容用于前端显示　获取的原始的日志内容的每一行开头总是出现乱码 \u0000\u0001　以及其他一些不必要的符号等　
 //目前的处理方法只是简单的去掉\u0000或者\u0001并从第2个字母开始截取每一行内容　可能会出现把正确的需要显示的第二个字符截取掉　需要改进
 var parserRawLogText = function(rawLogText){
-
+    if(!rawLogText){
+        return [];
+    }
     var rawLogTextArray = rawLogText.split('\n'); //按行输出
     var logs = [];
     rawLogTextArray.forEach(function(item, index){
 
         var log = {};
         log.time = undefined;
-
         if(/\d{4}-\d{2}-\d{2}\w*/.test(item)){
 
-            item = item.replace(/[\u0000|\u0001]*\S*(?=\d{4}-\d{2}-\d{2}\w*)/g, '');
-            log.time = formatTime(new Date(item.match(/\d{4}-\d{2}-\d{2}[\w|:|+|\.]*\b/)[0]));
+            item = String(item).replace(/[\u0000|\u0001]*\S*(?=\d{4}-\d{2}-\d{2}\w*)/g, '');
+
+            log.time = formatTime(new Date(item.match(/\d{4}-\d{2}-\d{2}[\w|:|+|\.]*Z\b/)[0]), true);
             log.message = item;
+
         }else{
             item = item.replace(/[\u0000|\u0001]*/g, '');
             log.message = item.slice(1);
@@ -56,6 +63,9 @@ var parserRawLogText = function(rawLogText){
             if(!log.time){
                 delete log.time;
             }
+            console.log('hhhhhh');
+            console.log(log);
+            console.log('jjjjjj');
             logs.push(log);
         }
     });
@@ -70,7 +80,7 @@ function ContainerLog(socket, id){
     this.content = []; //存放当前获取的日志内容（从当前时刻之前开始 按行存储）
     this.line = 0; //当前显示的行数
     this.newContent =[]; //存放新到达的日志的内容（从当前时刻之后 按行存储）
-    this.endpoint = endpoint + '/containers/' + id + '/logs?stdout=1';
+    this.endpoint = endpoint + '/containers/' + id + '/logs?stdout=1&timestamps=1';
 }
 
 var container;
@@ -83,33 +93,46 @@ ContainerLog.prototype.initConnectBrokenFunc =  function(cb){
     dockerLogRequest.end(cb);
 };
 ContainerLog.prototype.sustainedConnectForNewLogText = function(timestamps){
-    //对于当前日志已经存在的内容默认每次只获取一百行的数据 重新请求则从当前时间点开始获取数据
-    var url = timestamps ? this.endpoint + '&follow=1&timestamps=' + timestamps : this.endpoint + '&follow=1&tail=100';
+    /**
+     * 对于新到达的数据从当前时间点开始获取
+    **/
+    var url =  this.endpoint + '&follow=1&since=' + timestamps;
     //data时间 不停地监听获取当前的request请求的日志内容， 直到当前的请求中断或者数据已经完全获取，当前请求结束。
+    console.log(url);
     var that = this;
+    //生成新的GRequest instance
+    if(dockerLogRequest){
+        dockerLogRequest = null;
+    }
+
+    dockerLogRequest = new GRequest();
 
     return dockerLogRequest.get(url)
            .data(function(err, response){
                 //TODO
                 if(err || !response.ok){
-                    socket.emit('message', {'error_msg': 'error'});
+                    console.log(err);
+                    that.socket.emit('message', { error_msg : err.message, status: err.status || response.status });
                     return false;
                 }
-                //对获取的日志数据进行格式化处理
-                var rawLogText = response.text;
 
+                var rawLogText = response.text;
+                console.log('gagagagaga');
+                console.log(rawLogText);
                 //返回格式化后的日志内容
                 var rawLogTextArray = parserRawLogText(rawLogText);
 
                 if(rawLogTextArray.length){
 
-                    if(that.firstStream){
-                        that.firstStream = false;
-                        return;
-                    }
-                    that.newContent = that.newContent.concat(that.newContent, rawLogText);
+                    that.newContent = that.newContent.concat(that.newContent, rawLogTextArray);
+                    //更新当前已经存在的日志内容的最后一条的时间戳
+                    container.timestamps = (new Date(that.newContent[that.newContent.length - 1].time).getTime() / 1000) + 1;
+
                     //数据准备好 请求前端是否准备好接收新的日志内容
                     //如果前端准备好 如鼠标位于当前最低端 则emit sendNewLogText事件
+                    console.log('new content');
+                    console.log(that.newContent);
+                    console.log('new content end');
                     that.socket.emit('getReadyForNewLogText');
 
 
@@ -130,10 +153,10 @@ ContainerLog.prototype.getLogContentByLine = function(){
                 if(!response.ok){
                     throw new Error("error");
                 }
-
                 return response.text;
 
             }).then(function(rawLogText){
+
                 //返回获取的数据集
                 return parserRawLogText(rawLogText);
             }).fail(function(err){
@@ -147,31 +170,42 @@ module.exports = function(port){
     var dockerLog = io.of('/logs')
         .on('connection', function(socket){
             // 连接成功以后通知前端连接成功
+            console.log('connection !');
             socket.emit('notice', 'OK');
 
             //前端获取连接成功的消息以后触发init事件 传递容器Id 以及容器状态 后端根据Id 和容器状态进行数据初始化工作以及开始监听
             socket.on('init', function(containerId, containerStatus){
                 //生成新的container instance
-                container = new ContainerLog(socket, containerId);
 
-                //生成新的GRequest instance
-                dockerLogRequest = new GRequest();
+                container = new ContainerLog(socket, containerId);
 
                 container.getLogContentByLine()
                 .then(function(rawLogTextArray){
                     //container 内容初始化
+                    if(rawLogTextArray.length == 0){
+                        //没有日志
+                        container.content = [];
+                        return;
+                    }
                     container.content = rawLogTextArray;
+
                     container.line = 2000;
+                    //获取当前已经存在的日志内容的最后一条的时间戳
+                    container.timestamps = (new Date(container.content[container.content.length - 1].time).getTime() / 1000) + 1;
                 })
                 .then(function(){
                     //发送最后100行日志内容到前端进行日志初始化渲染
-                    socket.emit('getContainerLogText', container.content.slice(-100), 'init');
-                    //从content中删除后100行数据
-                    container.content = container.content.slice(0, -100);
+                    if(container.content.length == 0 ){
+                        socket.emit('getContainerLogText', [], 'init');
+                    }else{
+                        socket.emit('getContainerLogText', container.content.slice(-100), 'init');
+                        //从content中删除后100行数据
+                        container.content = container.content.slice(0, -100);
+                    }
 
                     if(containerStatus == 'running'){
                         //开启监听是否有新数据到达
-                        container.sustainedConnectForNewLogText();
+                        container.sustainedConnectForNewLogText(container.timestamps);
                     }
                     //初始化当前监听中断事件
                     container.initConnectBrokenFunc(function(){
@@ -185,8 +219,8 @@ module.exports = function(port){
             });
             //前端重启服务以后触发remonitor事件 重新监听从当前时间点开始是否有新的数据到达
             socket.on('reMonitorForLogStartFromCurTime', function(){
-                var timestamps = Math.round(new Date().getTime()/1000);
-                container.sustainedConnectForNewLogText(timestamps);
+                console.log('reMonitorForLogStartFromCurTime');
+                container.sustainedConnectForNewLogText(container.timestamps);
 
             });
             socket.on('sendNewLogText', function(ready){

@@ -3,7 +3,9 @@
  * @description
  * 容器相关的操作
  */
+var      util = require('util');
 var   request = require('../../components/superagent');
+var     tools = require('../../components/tools');
 var         Q = require('q');
 var     async = require('async');
 var   express = require('express');
@@ -143,7 +145,7 @@ function formatData(data){
     }
 
     // get portList
-    formatData.portList = formatBindPorts(data.NetworkSettings.Ports);
+    formatData.portList = formatBindPorts(data.HostConfig.PortBindings);
 
     // get volumeList
 	formatData.volumesList = formatVolumes(data.Mounts);
@@ -189,50 +191,29 @@ function getContainerStatus(data, cb){
 function operateContainer(req, res, id, action){
 
 	var url = endpoint + '/containers/' + id;
+
 	switch (action){
-		case 'delete':
-				request.del(url)
-				.then(function(response){
-						var _data = request.body;
-						if(!request.ok){
-								throw new Error("error");
-						}
-						res.send({ data : 'success'});
-				}).fail(function(err){
-						res.send({'error_msg': 'error'});
-				});
-			break;
-		case 'start':
-			url = url + '/start';
-			request.post(url)
-			.then(function(request){
-				if(!request.ok){
-						throw new Error("error");
-				}
-					res.send({'data': 'success'});
-			}).fail(function(err){
-					res.send({'error_msg': 'error'});
-			});
-			break;
-		case 'stop':
-			url = url + '/stop';
-			request.post(url)
-			.then(function(err, request){
-					res.send({'data': 'success'});
-			}).fail(function(err){
-					res.send({'error_msg': 'error'});
-			});
-			break;
-		default:
-			url = url + 'restart';
-			request.post(url)
-			.then(function(request){
-				res.send({'data': 'success'});
-		 }).fail(function(err){
-				 res.send({'error_msg': 'error'});
-		 });
-		 break;
+		case 'start': url = url + '/start'; break;
+		case 'stop': url = url + '/stop'; break;
+		default: url = url + 'restart'; break;
 	}
+
+    request.post(url)
+    .then(function(response){
+        if(!response.ok){
+            throw new Error({ message : 'error', 'status' : response.status});
+        }else{
+            res.send({ msg: 'ok' });
+        }
+    }).fail(function(err){
+        if(err.status === 304){//容器早已经在停止状态　304 – container already stopped　from https://docs.docker.com/engine/reference/api/docker_remote_api_v1.21/#start-a-container
+            res.send({ msg: 'ok' });
+            return;
+        }
+        var error_msg = err.message ? err.message : 'unknown error';
+        res.send({ error_msg: error_msg, status: err.status });
+    });
+
 }
 
 /****************接口函数××××××××××××××********/
@@ -258,8 +239,8 @@ exports.getContainerList = function(req, res){
         return;
     }
 
-	var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage):1;
-	var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage):10;
+	var currentPage = (parseInt(req.query.currentPage) > 0)?parseInt(req.query.currentPage) : 1;
+	var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0)?parseInt(req.query.itemsPerPage) : 10;
 
 	var url = endpoint + '/containers/json?all=1';
 
@@ -323,7 +304,7 @@ exports.getContainer = function(req, res){
 	.then(function(response){
 			var _data = response.body;
 			if(!response.ok){
-					throw new Error("error");
+					throw new Error({message : "error", status: response.status});
 			}
             try {
                 _data = formatData(_data);
@@ -333,38 +314,83 @@ exports.getContainer = function(req, res){
             }
 
 	}).fail(function(err){
-			res.status(404).send({'error_msg': err.message});
+        res.send({'error_msg': err.message, 'status': err.status});
 	});
 };
 exports.createContainer = function(req, res){
-
+    //TODO 远程拉取创建镜像会出现bug
     var data = req.body.postData;
     var url = endpoint + '/containers/create?name=' + data.Name;
+
     delete data.Name;
-    console.log(url);
-    console.log(data);
+    if(tools.isNullObj(data.HostConfig.PortBindings)) delete data.HostConfig.PortBindings;
+    if(tools.isNullObj(data.ExposedPorts)) delete data.ExposedPorts;
+
     request.post(url, data)
     .then(function(response){
         if(!response.ok){
-                throw new Error({ message : 'error', 'status' : response.status});
+            throw new Error({ message : 'error', 'status' : response.status});
+        }else{
+            res.send({'msg': 'ok'});
         }
-        res.send({'msg': 'ok'});
     }).fail(function(err){
         if('response' in err && err.response.text && /Network timed out/.test(err.response.text)){
-            err.message += '(Network timed out)';
+            err.message ='网络连接超时';
         }else{
-            err.message += '(unknown error)';
+            if(err.status == 409 && /Conflict/.test(err.message)){
+                err.message = '容器命名冲突(Conflict)';
+            }else{
+                err.message +='(未知的错误)';
+            }
         }
 		res.send({'error_msg': err.message, 'status': err.status});
 	});
 };
 
 exports.deleteContainer = function(req, res){
-	var id = req.params.id;
-	var action = 'delete';
-	operateContainer(req, res, id, 'delete');
+
+
+    var nameList = req.body.data;
+    if(!nameList){
+        res.send({'msg':ok});
+        return;
+    }
+    if(util.isArray(nameList)){
+        var action = 'delete';
+
+        var _names = nameList;
+        async.each(_names, function(cid, callback){
+            var url = endpoint + '/containers/' + cid  + '?v=1&force=1';  //kill then remove the container also remove the volume associlated to the container
+
+            request.del(url)
+            .then(function(response){
+                    if(!response.ok){
+                        throw new Error({ status: response.status });
+                    }
+                    var index = -1;
+                    index = nameList.indexOf(cid);
+                    if(index >= 0) {
+                        nameList.splice(index, 1);
+                    }
+                    callback();
+            }).fail(function(err){
+                    callback(err);
+            });
+        }, function(err){
+            if(err){
+                error_msg = err.message ? err.message : 'unknown error';
+                res.send({ error_msg : error_msg, status : err.status, nameList: nameList });
+                return ;
+            }
+            res.send({ msg : 'ok', nameList : nameList });
+        });
+    }
+
+
 };
 exports.updateContainer = function(req, res){
+    console.log('updateContainer');
+
 	var id = req.params.id;
 	var action = req.body.action;
 	operateContainer(req, res, id, action);
@@ -418,11 +444,11 @@ exports.getContainerStats = function(req , res){
                 rx  : rxList,
                 tx  : txList,
                 tm  : tmList
-            }
+            };
             res.send(results);
             promiseDB.end();
     }).fail(function(err){
         res.status(404).send({'error_msg': err.message});
         promiseDB.end();
     }).done();
-}
+};

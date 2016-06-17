@@ -61,26 +61,31 @@ GRequest.prototype.data = function(cb){
       that.res = res;
       /**
        * [makeDataFun description]
-       * @return { function } 返回一个函数 res data事件处理器
+       * @return { function } 返回一个函数 作为res data事件处理器
        */
       function makeDataFunc(){
           var count = 0;
           function sendData(){
               //如果exit为True 说明当前http请求已经结束
               if(that.exit){
+                  that.exit = false;
                 if(that.timeHander){
+                    console.log('exit clearInterval');
                     clearInterval(that.timeHander);
+                    that.timeHander = null;
                 }
                 return false;
               }
               //如果count >=2 并且response.ok 说明当前这一部分的数据流已经完全获取 执行回调函数返回给调用者
               if(count >= 2 && that.response.ok){
+                  count = 0;
                   if(that.response.text){
                         that.send(null, cb);
                   }
               }
 
               count++;
+              console.log('current count '+ count);
               that.response.ok = true;
           }
           if(!that.timeHander){
@@ -93,7 +98,10 @@ GRequest.prototype.data = function(cb){
                 return false;
             }
             //获取新的数据并追加到response.text
+            console.log(chunk);
             that.response.text = that.response.text ? that.response.text += chunk : chunk.toString();
+            console.log(chunk.toString());
+            console.log("count = " + count);
 
             count = 0;
             that.response.ok = false;
@@ -104,8 +112,11 @@ GRequest.prototype.data = function(cb){
 
       res.on('data', makeDataFunc());
       res.on('end', function(){
+          console.log('end hahahahah');
           if(that.timeHander){
+              console.log('end clearInterval');
               clearInterval(that.timeHander);
+              that.timeHander = null;
           }
           //当前数据发送以后 当前请求就结束
           that.fin = that.response.fin = true;
@@ -120,6 +131,8 @@ GRequest.prototype.data = function(cb){
           return false;
         });
       res.on('error', function(err){
+          console.log('error happen');
+          console.log(err);
           that.fin = that.response.fin = true;
           that.exit = true;
 
@@ -148,7 +161,9 @@ GRequest.prototype.send = function(err, cb){
     if(err){
       this.exit = true;
       if(this.timeHander){
+         console.log('send clearInterval');
         clearInterval(this.timeHander);
+        that.timeHander = null;
       }
       this.response.ok = false;
       this.fin = this.response.fin = true;
@@ -203,6 +218,7 @@ GRequest.prototype.abort = function(){
     this.exit = true;
     if(this.timeHander){
       clearInterval(this.timeHander);
+      this.timeHander = null;
     }
     this.response = {};
     this._abort = true;
@@ -215,13 +231,3 @@ GRequest.prototype.abort = function(){
 };
 
 module.exports = GRequest;
-
-//test debug
-// exports.request.get('http://10.103.242.128:2377/containers/mongo-test/logs?stdout=1&follow=1')
-// .data(function(err, res){
-//   if(err){
-//     console.log(err);
-//   }else{
-//     console.log(res.text);
-//   }
-// });

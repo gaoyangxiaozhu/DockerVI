@@ -26,4 +26,17 @@ exports.extractImage = function (content) {
 		}
 	}
 	return results;
-}
+};
+//判断对象是否为空对象
+exports.isNullObj = function (obj){
+
+	if(!(obj && Object.prototype.toString.call(obj) === '[object Object]')){
+		return false;
+	}
+    for(var i in obj){
+        if(obj.hasOwnProperty(i)){
+            return false;
+        }
+    }
+    return true;
+};
