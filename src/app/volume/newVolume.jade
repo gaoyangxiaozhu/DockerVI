@@ -1,4 +1,4 @@
-.content-body(ng-if="load.loaded")
+.content-body.volume(ng-if="load.loaded")
     .panel.panel-default.panel-page-header
         .panel-body
             .primary-section
@@ -12,10 +12,17 @@
                     div.col-md-9.col-lg-9
                         form.form-horizontal(roel='volumeForm', name='volumeForm' novalidate)
                             .form-group
-                                label.col-sm-2.control-label.no-padding-right(for="container-name")  Volume名称   
+                                label.col-sm-2.control-label.no-padding-right(for="volume-name")  Volume名称   
                                     span.txt-color-red *
-                                div.col-sm-10
-                                    input#container-name(type="text" name="volume_name" ng-model="volume.name" autofocus tabindex="0" required)
+                                div.col-sm-3
+                                    input#volume-name(type="text" name="volume-name" ng-model="volume.name" ng-change="checkVolumeName()" ng-blur="checkVolumeName()" autofocus tabindex="0" required)
+                                    br
+                                    span.text-danger(ng-if="!available.name") {{ available.nameErrorMsg }}
+                                div.col-sm-5
+                                    button.btn.create-volume-btn(ng-click="createVolume()" ng-class="{'btn-success': !waitForCreated, 'btn-default': waitForCreated}" ng-disabled="!volume.name || !available.name || waitForCreated" style="padding-left:60px; padding-right:60px;") 
+                                        i(ng-if="waitForCreated").fa.fa-cog.fa-spin.fa-2x.fa-fw
+                                        i(ng-if="waitForCreated").fa.fa-cog.fa-spin.fa-1x.fa-fw
+                                        | 创建
                             
                                     
                                 
