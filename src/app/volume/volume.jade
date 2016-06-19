@@ -13,7 +13,7 @@
             
     .panel
         section.panel-body
-            tabset
+            tabset(active="1")
                 tab(index="0" heading="概览")
                     div.markdown-body
                         p 一个 Volume 就是在一个或者多个容器里有特殊用途的目录。它绕过了容器内部的文件系统为持久化数据、共享数据提供了下面这些有用的特性：
@@ -22,7 +22,7 @@
                             li Volume 可以在不同的容器之间共享和重用数据
                             li 容器数据的备份、恢复和迁移都可以通过 Volume 实现
                             li 通过 Volume 实现多容器共享数据，从而实现应用的横向扩展
-                tab(index="1" heading="集群Volume")
+                tab(index="1" heading="集群Volume" active="isFirst")
                     .volume-toolbar
                         .row
                             .col-xs-12.col-sm-12
@@ -60,7 +60,7 @@
                                             span.fa.fa-caret-up(ng-if="volume.showDetail")
                                         ul.dropdown-menu(dropdown-menu role="menu")
                                             li(role="menuitem")
-                                                a 删除
+                                                a(ng-click='removeVolume(volume)') 删除
                                 div.well.clear(ng-if="volume.loading")
                                     span
                                         i.fa.fa-spinner.fa-pulse
