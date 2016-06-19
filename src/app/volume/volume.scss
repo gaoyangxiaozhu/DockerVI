@@ -73,3 +73,16 @@
 
     }
 }
+.create-volume-btn{
+    i.fa-1x{
+        margin-left: -6px;
+    }
+    i.fa-2x{
+        font-size: 1.3em;
+    }
+
+    &.btn-default,
+    &.btn-default:hover{
+        background-color: #cfcece;
+    }
+}

@@ -65,6 +65,8 @@ input,
    color: $formColor;
    background-color: $formBgColor;
    border:1px solid $formBdColor;
+   height: $defaultInputHeight;
+   line-height: 1.42857
 }
 .input-group-addon{
    border-right: 0;
@@ -779,7 +781,7 @@ $imgContainerHeight: 120px;
 @media (min-width: 768px){
     .form-horizontal{
         .control-label{
-            padding-top: 4px;
+            padding-top: 8px;
         }
     }
 }
