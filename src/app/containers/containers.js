@@ -13,10 +13,13 @@
             removeContainer : undefined
         }
       })
-      .state('containerDeatil', {
+      .state('containerDetail', {
         url : '/containers/:id/Detail/',
         templateUrl : 'app/containerDetail/containerDetail.html',
-        controller : 'containerDetailCtrl'
+        controller : 'containerDetailCtrl',
+        params:{
+            new: undefined
+        }
       })
       .state('containerCreate', {
         url: '/create/:id/:source',
