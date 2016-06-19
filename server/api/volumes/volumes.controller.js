@@ -171,38 +171,41 @@ exports.getVolumesDetail = function(req, res){
 };
 exports.createNewVolume = function(req, res){
 
-	 var id = req.id;
+	 var id = req.body.id;
 	 var node = req.body.node;
 	 var url = endpoint + '/volumes/create';
 	 var postData = {};
 	 postData.Name = node ? node + '/' + id : id;
 
-	 request.post(url)
+
+	 request.post(url, postData)
 	 .then(function(response){
 		 if(!response.ok){
 			 throw new Error("error");
 		 }
 		 var _data = response.body;
 		 try {
-			 res.send({volume: _data, msg: 'success'});
+			 res.send({volume: _data, msg: 'ok'});
 		 } catch (e) {
 			 throw new Error(e);
 		 }
 	 }).fail(function(err){
-		 res.send({'error_msg': err.message});
+		 res.send({ error_msg : err.message , status : err.status });
 	 });
 };
 exports.deleteVolume = function(req ,res){
 
 	var id = req.params.id;
-	var url = endpoint + '/volumes/' + id;
+	var node = req.query.node;
+	var url = endpoint + '/volumes/' + node + '/' + id;
+
 	request.del(url)
 	.then(function(response){
-			if(!request.ok){
-					throw new Error("error");
+			if(!response.ok){
+					throw new Error('error');
 			}
-			res.send({ msg : 'success'});
+			res.send({ msg : 'ok'});
 	}).fail(function(err){
-			res.send({'error_msg': err.message});
+			res.send({error_msg: err.message, status: err.status});
 	});
 };
