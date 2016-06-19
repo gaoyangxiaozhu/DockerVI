@@ -185,6 +185,8 @@ module.exports = function(port){
                     if(rawLogTextArray.length == 0){
                         //没有日志
                         container.content = [];
+                        //获取当前已经存在的日志内容的最后一条的时间戳
+                        container.timestamps = (new Date().getTime() / 1000);
                         return;
                     }
                     container.content = rawLogTextArray;
