@@ -118,7 +118,10 @@
         function connectSocket(scope, el){
 
             if(!socket){
+                console.log('create socket');
                 socket = io.connect('http://localhost:9090/logs');
+            }else{
+                console.log(socket);
             }
 
             socket.on('notice', function(msg){
@@ -208,9 +211,16 @@
 
             socket.on('getNewLogText', function(data){
 
+                console.log('getNewLogText');
+                console.log(data);
                 scope.loadingPrevious = false;
                 scope.loadingNew = false;
-                scope.logs = scope.logs.concat(data);
+                if(scope.logs){
+                    scope.logs = scope.logs.concat(data);
+                }else{
+                    scope.logs = data;
+                }
+
                 scope.$apply(); //更新view
                 currentScrollHeight  =  $content[0].scrollHeight - 19; //减去padding值
                 currentScrollTop = $content[0].scrollTop;

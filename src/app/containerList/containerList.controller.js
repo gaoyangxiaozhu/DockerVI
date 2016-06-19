@@ -3,7 +3,7 @@
     angular.module("dockerApp.containers")
     .controller('ContainerListCtrl', ['$rootScope', '$scope', '$location', 'Container', 'SweetAlert', '$state', 'toaster', function($rootScope, $scope, $location, Container, SweetAlert, $state, toaster){
 
-        console.log('reload');
+        //现在默认创建成功跳转到detail页面了..
         //如果当前有新的容器生成　给出提示框
         if($state.params.newContainer){
             $scope.newContainer ={};

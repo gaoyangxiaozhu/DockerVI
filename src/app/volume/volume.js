@@ -7,7 +7,10 @@
 	      .state('volume', {
 	        url: '/volumes/',
 	        templateUrl: 'app/volume/volume.html',
-	        controller: 'volumeCtrl'
+	        controller: 'volumeCtrl',
+			params:{
+				newVolume : undefined
+			}
 	      })
 		  .state('volumeCreate', {
 	        url: '/volumes/new',

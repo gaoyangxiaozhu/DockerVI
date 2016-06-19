@@ -134,13 +134,13 @@
                                                 $scope.container.cmd); //自启动命令
 
            Container.createContainer({ postData: postData}).then(function(result){
-               console.log(result);
                $scope.waitForCreated = true;
                if(result.msg && result.msg == 'ok'){
                    //如果创建成功就启动容器并在返回容器列表页面
                    $state.go(
-                       'containerList',{
-                          newContainer : $scope.container.name
+                       'containerDetail',{
+                           id : $scope.container.name, 
+                          new : $scope.container.name
                       }
                   );
               }else{//显示错误信息

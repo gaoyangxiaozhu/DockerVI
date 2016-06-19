@@ -4,7 +4,7 @@
   angular.module('dockerApp.resources')
   .factory('Volume', function($resource){
       var volumesResource = $resource('/api/volumes/:id/:controller', {
-          id: '@_id'
+          id: '@id'
         },
         {
           //添加标签分类
@@ -74,7 +74,7 @@
                 return cb(err);
             }).$promise;
         },
-        deleteVolume: function(data,callback){
+        deleteVolume: function(data, callback){
             var cb = callback || angular.noop;
             return volumesResource.remove(data, function(result) {
                 return cb(result);
