@@ -85,7 +85,7 @@ GRequest.prototype.data = function(cb){
               }
 
               count++;
-              console.log('current count '+ count);
+             
               that.response.ok = true;
           }
           if(!that.timeHander){
