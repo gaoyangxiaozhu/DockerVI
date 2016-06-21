@@ -11,9 +11,8 @@
           getImagesList: {
               method: 'GET',
               params: {
-                  controller:'getImagesList'
-              },
-               isArray: true
+                  controller: 'getImagesList'
+              }
           },
           getImagesCount:{
               method: 'GET',
@@ -38,7 +37,7 @@
       return {
         getImagesList : function(data, callback){
           var cb = callback || angular.noop;
-          return imagesResource. getImagesList(function(result) {
+          return imagesResource. getImagesList(data ,function(result) {
                         return cb(result);
                 }, function(err) {
                         return cb(err);

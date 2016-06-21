@@ -24,9 +24,10 @@
                replace:true,
                // Assign the angular scope attribute formatting
                scope:{
-                 container: '=container',
-                 status: '=status',
-                 init:'=init'
+                 container: '=',
+                 status: '=',
+                 init:'=',
+                 loadingClass: '@' //loading 效果
                },
                 // Assign the angular directive template HTML
                template: filedTemplete,
@@ -47,7 +48,6 @@
 
                scope.$watchCollection('[container, status, init]', function(){
                    if(scope.container){
-
                        scope.container = scope.container;
                        build(scope, el, attr);
                    }
@@ -83,14 +83,17 @@
            function filedTemplete(el, attrs){
                return '<pre class="darken">' +
                             '<div ng-if="!logs || loadingPrevious">' +
-                                '<span>' +
-                                    'Loading...' +
+                                '<span ng-class="loadingClass">' +
+                                    'Loading' +
+                                    '<span class="circle one">' + '</span>' +
+                                    '<span class="circle two">' + '</span>' +
+                                    '<span class="circle three">' + '</span>' +
                                     '<span class="sr-only">' +
                                         'Loading...' +
                                         '</span>' +
                                 '</span>' +
                             '</div>' +
-                            '<div ng-if="logs && logs.length === 0">' +
+                            '<div ng-if="logs && logs.length === 0 && !loadingPrevious &&!loadingNew">' +
                                 '<span>' +
                                     '没有日志内容' +
                                 '</span>' +
@@ -103,8 +106,11 @@
                                 '{{ log.message }}' +
                             '</div>' +
                             '<div ng-if="loadingNew">' +
-                                '<span>' +
-                                    'Loading...' +
+                                '<span ng-class="loadingClass">' +
+                                    'Loading' +
+                                    '<span class="circle one">' + '</span>' +
+                                    '<span class="circle two">' + '</span>' +
+                                    '<span class="circle three">' + '</span>' +
                                     '<span class="sr-only">' +
                                         'Loading...' +
                                         '</span>' +
@@ -135,6 +141,22 @@
                 }
                 scope.$apply();
             });
+            //TODO
+            //message和　notice的功能类似　都是用于在特殊情况下进行消息通知(如出错　获取内容为空)
+            //这里通过msgObj更规范的接收数据　根据code属性判断当前通知的类型　后期需要将notice和message功能合并
+            //
+            socket.on('message', function(msgObj){
+                console.log(msgObj);
+                console.log(msgObj.code === 0);
+                console.log(msgObj.code == 0);
+                if(msgObj && msgObj.code === 0){ //说明获取的日志内容为空
+                    console.log('content is empty');
+                    scope.loadingNew = false;
+                    scope.loadingPrevious = false;
+
+                    scope.$apply();
+                }
+            });
             socket.on('getReadyForNewLogText', function(){
                 console.log('getReadyForNewLogText');
                 console.log(mouseState);
@@ -149,7 +171,7 @@
                 }
 
             });
-
+            //用于历史日志内容的获取
             socket.on('getContainerLogText', function(data, option){
                 var scrollFunc;
 
@@ -208,7 +230,7 @@
                     progress = false;
                 }
             });
-
+            //用于最新到达的日志内容的获取
             socket.on('getNewLogText', function(data){
 
                 console.log('getNewLogText');
@@ -240,6 +262,7 @@
             /******scope相关变量********/
             scope.loadingPrevious = false;
             scope.loadingNew = false;
+            scope.loadingClass = scope.loadingClass || 'log-loading';
             /***********end********/
 
             //建立socket连接

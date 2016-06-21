@@ -30,7 +30,7 @@
        $httpProvider.defaults.timeout = 600000;
        // Enable log
        $logProvider.debugEnabled(IsDebug);
-       $urlRouterProvider.otherwise('/');
+       $urlRouterProvider.otherwise('/dashboard');
    })
     .run(function ($rootScope, ngProgressFactory, $state, lodash, $cookies, toaster) {
            //加载进度
@@ -41,8 +41,13 @@
                if(!$rootScope.load || Object.prototype.toString.call($rootScope.load)!='[object Object]'){
                    $rootScope.load = {};
                }
-               if(toState.name == 'home'){
+               if(toState.name == 'dashboard' || toState.name == 'home'){
                    $rootScope.pageClass = "dashboard";
+                   if(toState.name == 'home'){
+                       $rootScope.home = true;
+                   }else{
+                       $rootScope.home = false;
+                   }
                }else{
                    $rootScope.pageClass = "";
                }
