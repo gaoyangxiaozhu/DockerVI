@@ -80,8 +80,23 @@
                             Container.deleteContainer({data: deleteContainerNameList}).then(function(result){
                                 if(result && 'msg' in result && result.msg === 'ok'){
                                     window.swal.close(); //关闭SweetAlert
-                                    $state.go('containerList', {
-                                        removeContainer : true
+                                    //获取列表
+                                    $scope.options = {
+                                        currentPage: 1,
+                                        itemsPerPage : 10
+                                    };
+                                    $rootScope.progressbar.setColor('green');
+                                    $rootScope.progressbar.reset(); // Required to handle all edge cases.
+                                    $rootScope.progressbar.start();
+                                    Container.getContainerList($scope.options).then(function(result){
+                                        $scope.containerList = result;
+                                        toaster.pop('success', "", "删除成功!");
+                                        $rootScope.progressbar.complete();
+                                    }).catch(function(){
+                                        $scope.containerList = $scope.containerList ||  [];
+                                        toaster.pop('success', "", "删除成功!");
+                                        $rootScope.progressbar.complete();
+
                                     });
                                 }
                             });

@@ -1,7 +1,7 @@
 // image list page controller
 (function(){
     angular.module("dockerApp.imageList")
-    .controller('imageListCtrl', ['$scope', '$location', 'Image', '$state', 'toaster', function($scope, $location, Image, $state, toaster){
+    .controller('imageListCtrl', ['$rootScope', '$scope', '$location', 'Image', '$state', 'toaster', 'SweetAlert', function($rootScope, $scope, $location, Image, $state, toaster, SweetAlert){
 
         $scope.imagePackages = {};
 
@@ -16,6 +16,7 @@
         $scope.options = {
             currentPage: 1,
             itemPerPage : 10,
+            isRest: false,
             currentPageForDockerhub: 1,
             itemPerPageForDockerhub: 10,
             isRestForDockerhub: false
@@ -26,38 +27,110 @@
         var _search = {};
         _search.dockerhub = {};
 
-        function doPaging(options){
-            $scope.isLoading = true;
+        //isInit 表示是否是初始化调用doPaing函数　还是翻页调用
+        function doPaging(options, isInit){
+            $scope.imagePackages.isLoading = true;
              //数量需要过滤
-             Image.getImagesCount(options).then(function(result){
-                $scope.imagePackages.count = result.count;
-                $scope.imagePackages.numPages = Math.ceil($scope.imagePackages.count/$scope.options.itemPerPage);
-             });
-            //获取列表
-            Image.getImagesList(options).then(function(results){
-                $scope.isLoading = false;
-                $scope.imagePackages.results = results;
-            }).catch(function(){
-               $scope.isLoading = false;
-               $scope.imagePackages.results = [];
+            return Image.getImagesCount().then(function(result){
+                if(result && result.msg === 'ok'){
+                    $scope.imagePackages.count = result.count;
+                    $scope.imagePackages.numPages = Math.ceil($scope.imagePackages.count/$scope.options.itemPerPage);
+
+                    //获取列表
+                    return Image.getImagesList(options).then(function(data){
+                        $scope.imagePackages.isLoading = false;
+                        if(data && data.msg === 'ok'){
+                            //如果是初始化列表
+                            if(isInit){
+                                $scope.imagePackages.results = data.results;
+                                return;
+                            }
+                            //否则为翻页
+                            if($scope.imagePackages.results){
+                                if(!$scope.options.isRest){
+                                    $scope.imagePackages.results = $scope.imagePackages.results.concat(data.results);
+                                }else{
+                                    $scope.imagePackages.results = data.results;
+                                }
+                            }else{
+                                $scope.imagePackages.results = data.results;
+                            }
+                            //如果是翻页导致　则更新currentPage
+                            $scope.options.currentPage ++;
+
+                        }else{
+                            toaster.pop('error', "", "获取镜像列表出错!");
+                            $state.reload();
+                        }
+
+                    }).catch(function(){
+                       $scope.imagePackages.isLoading = false;
+                       $scope.imagePackages.results = [];
+                    });
+                }else{
+                    toaster.pop('error', "", "获取镜像总数出错!");
+                    $state.reload();
+                }
             });
         }
         //初始化列表
-        doPaging($scope.options);
+        doPaging($scope.options, true);
 
         //加载更多
-       $scope.loadMore = function(page){
-           $scope.options.currentPage = page;
-           doPaging($scope.options, true);
+       $scope.loadMore = function(){
+           var options = {
+               itemsPerPage :  $scope.options.itemPerPage,
+               currentPage :  $scope.options.currentPage + 1
+           };
+           doPaging(options);
        };
 
         // 删除镜像
-        $scope.delImage= function(currentImage){
-            // 如果删除成功， 更新当前images
-            function updateImages(){
-            doPaging($scope.currentPage);
-            }
-            Image.deleteImage({_id: currentImage.name }, updateImages);
+        $scope.delImage = function(currentImage){
+
+            SweetAlert.swal({
+                title: "你确定删除当前镜像?",
+                text: 'id:' + currentImage.id,
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "取消",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "是的, 我要删除!",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true },
+                function(isConfirm){
+                    if(isConfirm){
+                        // 如果删除成功， 更新当前images
+                        Image.deleteImage({ id: currentImage.fullId }).then(function(result){
+                            if(result && 'msg' in result && result.msg === 'ok'){
+                                window.swal.close(); //关闭SweetAlert
+                                $rootScope.progressbar.setColor('green');
+                                $rootScope.progressbar.reset(); // Required to handle all edge cases.
+                                $rootScope.progressbar.start();
+                                toaster.pop('success', "", "删除成功!");
+
+                                $scope.options.currentPage = 1;
+                                //重新获取镜像列表
+                                doPaging($scope.options, true).then(function(){
+                                    $rootScope.progressbar.complete();
+                                });
+
+                            }else{
+                                SweetAlert.swal({
+                                    title: result.status + ' Error',
+                                    text: result.error_msg,
+                                    type: "warning",
+                                    confirmButtonColor: "#DD6B55",
+                                    confirmButtonText: "确定",
+                                    closeOnConfirm: true },
+                                    function(){
+                                          $state.reload();
+                                    }
+                                );
+                            }
+                        });
+                    }
+                });
         };
 
         $scope.createContainerInstance = function(image, remote){
