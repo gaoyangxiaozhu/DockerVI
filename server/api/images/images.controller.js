@@ -80,6 +80,7 @@ var formatData =function(data){
 	  	var item = data[index];
 		image = formatRepoTag(item.RepoTags[0]);
 		image.id = item.Id.split(':')[1].slice(0, 10);
+		image.fullId = item.Id.split(':')[1];
 		image.time = item.Created * 1000;
 		image.size = formatSize(item.VirtualSize);
 		if(image.isPrivate) continue;
@@ -89,7 +90,16 @@ var formatData =function(data){
  };
 exports.getImagesList = function(req, res){
 
+
+	//根据时间大小排序存储
+	function cmp(a, b){
+		if(a.time){
+			return a.time < b.time;
+		}
+		return a.id < b.id;
+	}
 	var url = endpoint + '/images/json';
+
 	var itemsPerPage = (parseInt(req.query.itemsPerPage) > 0) ? parseInt(req.query.itemsPerPage) : 10;
 	var currentPage = (parseInt(req.query.currentPage) > 0) ? parseInt(req.query.currentPage) : 1;
 
@@ -101,13 +111,14 @@ exports.getImagesList = function(req, res){
 		}
 
 		//返回当前需要的数据
-		_data = _data.slice((currentPage - 1) * 10, (currentPage - 1) * 10 + itemsPerPage);
 		_data = formatData(_data);
+		_data.sort(cmp);
+		_data = _data.slice((currentPage - 1) * 10, (currentPage - 1) * 10 + itemsPerPage);
 
-		res.send(_data);
+		res.send({msg: 'ok', results : _data});
 
 	}).fail(function(err){
-			res.status(404).send({'error_msg': 'error'});
+			res.send({error_msg: err.message, status: err.status});
 	}).done();
 };
 
@@ -120,10 +131,10 @@ exports.getImagesCount = function(req, res){
 			if(!response.ok){
 					throw new Error("error");
 			}
-			res.send({count : _data.length });
+			res.send({msg: 'ok', count : _data.length });
 
 	}).fail(function(err){
-			res.send({'error_msg': 'error'});
+			res.send({error_msg: err.message, status: err.status});
 	});
 };
 exports.getImageDetail = function(req, res){
@@ -176,18 +187,18 @@ exports.searchImage = function(req, res){
 	}
 
 
-}
+};
 exports.deleteImage = function(req ,res){
 
 	var id = req.params.id;
-	var url = endpoint + '/images/' + id;
+	var url = endpoint + '/images/' + id + '?force=1&noprune=1';
 	request.del(url)
 	.then(function(response){
-			if(!request.ok){
-					throw new Error("error");
+			if(!response.ok){
+				throw new Error("error");
 			}
-			res.send({ data : 'success'});
+			res.send({ msg : 'ok'});
 	}).fail(function(err){
-			res.send({'error_msg': 'error'});
+			res.send({error_msg : err.message, status : err.status});
 	});
 };

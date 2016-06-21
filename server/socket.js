@@ -63,9 +63,6 @@ var parserRawLogText = function(rawLogText){
             if(!log.time){
                 delete log.time;
             }
-            console.log('hhhhhh');
-            console.log(log);
-            console.log('jjjjjj');
             logs.push(log);
         }
     });
@@ -98,7 +95,6 @@ ContainerLog.prototype.sustainedConnectForNewLogText = function(timestamps){
     **/
     var url =  this.endpoint + '&follow=1&since=' + timestamps;
     //data时间 不停地监听获取当前的request请求的日志内容， 直到当前的请求中断或者数据已经完全获取，当前请求结束。
-    console.log(url);
     var that = this;
     //生成新的GRequest instance
     if(dockerLogRequest){
@@ -111,18 +107,17 @@ ContainerLog.prototype.sustainedConnectForNewLogText = function(timestamps){
            .data(function(err, response){
                 //TODO
                 if(err || !response.ok){
-                    console.log(err);
-                    that.socket.emit('message', { error_msg : err.message, status: err.status || response.status });
+                    //code 为通知码　１表示出错　０表示获取内容为空
+                    that.socket.emit('message', { code: 1, msg: err.message, rror_msg : err.message, status: err.status || response.status });
                     return false;
                 }
 
                 var rawLogText = response.text;
-                console.log('gagagagaga');
-                console.log(rawLogText);
+
                 //返回格式化后的日志内容
                 var rawLogTextArray = parserRawLogText(rawLogText);
 
-                if(rawLogTextArray.length){
+                if(rawLogTextArray.length){//如果获取的数据不为空
 
                     that.newContent = that.newContent.concat(that.newContent, rawLogTextArray);
                     //更新当前已经存在的日志内容的最后一条的时间戳
@@ -130,12 +125,11 @@ ContainerLog.prototype.sustainedConnectForNewLogText = function(timestamps){
 
                     //数据准备好 请求前端是否准备好接收新的日志内容
                     //如果前端准备好 如鼠标位于当前最低端 则emit sendNewLogText事件
-                    console.log('new content');
-                    console.log(that.newContent);
-                    console.log('new content end');
                     that.socket.emit('getReadyForNewLogText');
 
-
+                }else{//如果获取内容为空
+                    console.log('content is empty');
+                    that.socket.emit('message', {code: 0, msg: 'content is emptry.'});
                 }
             });
 };
@@ -176,7 +170,8 @@ module.exports = function(port){
             //前端获取连接成功的消息以后触发init事件 传递容器Id 以及容器状态 后端根据Id 和容器状态进行数据初始化工作以及开始监听
             socket.on('init', function(containerId, containerStatus){
                 //生成新的container instance
-
+                console.log(containerId);
+                console.log('init');
                 container = new ContainerLog(socket, containerId);
 
                 container.getLogContentByLine()
@@ -187,6 +182,7 @@ module.exports = function(port){
                         container.content = [];
                         //获取当前已经存在的日志内容的最后一条的时间戳
                         container.timestamps = (new Date().getTime() / 1000);
+
                         return;
                     }
                     container.content = rawLogTextArray;
@@ -221,7 +217,6 @@ module.exports = function(port){
             });
             //前端重启服务以后触发remonitor事件 重新监听从当前时间点开始是否有新的数据到达
             socket.on('reMonitorForLogStartFromCurTime', function(){
-                console.log('reMonitorForLogStartFromCurTime');
                 container.sustainedConnectForNewLogText(container.timestamps);
 
             });

@@ -14,6 +14,8 @@ var    config = require('../../config/env');
 var PromiseDB = require('../../components/mysql').PromiseDB;
 var endpoint = require('../endpoint').SWARMADDRESS;
 
+
+
 //格式化时间　yyyy-mm-dd
 function formatTime(date, accurate){
 
@@ -319,6 +321,7 @@ exports.getContainer = function(req, res){
 };
 exports.createContainer = function(req, res){
     //TODO 远程拉取创建镜像会出现bug
+    console.log('create');
     var data = req.body.postData;
     var url = endpoint + '/containers/create?name=' + data.Name;
 
@@ -328,17 +331,21 @@ exports.createContainer = function(req, res){
 
     request.post(url, data)
     .then(function(response){
+
         if(!response.ok){
             throw new Error({ message : 'error', 'status' : response.status});
         }else{
+            console.log('ok');
             res.send({'msg': 'ok'});
         }
     }).fail(function(err){
+        console.log(err);
         if('response' in err && err.response.text && /Network timed out/.test(err.response.text)){
             err.message ='网络连接超时';
         }else{
             if(err.status == 409 && /Conflict/.test(err.message)){
-                err.message = '容器命名冲突(Conflict)';
+                //TODO bug
+                err.message = '容器命名冲突或者请求时间过长(Conflict)';
             }else{
                 err.message +='(未知的错误)';
             }
