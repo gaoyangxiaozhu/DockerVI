@@ -4,9 +4,6 @@
 // =================================
 module.exports = {
     port:     process.env.PORT || 8100,
-    mongo: {
-        suri: 'mongodb://0.0.0.0:32777/session-dev'
-    },
     mysql: {
         host: '0.0.0.0',
         port: '3333',
