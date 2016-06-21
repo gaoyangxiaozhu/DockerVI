@@ -6,7 +6,7 @@ var config = require('./config');
 var _ = require('lodash');
 var wiredep = require('wiredep').stream;
 var $ = require('gulp-load-plugins')({
-  pattern: ['gulp-*', 'event-stream', 'main-bower-files', 'uglify-save-license', 'del']
+  pattern: ['gulp-*', 'event-stream', 'main-bower-files', 'uglify-save-license', 'del', 'imagemin-pngquant']
 });
 var browserSync = require('browser-sync');
 var gulpNgConfig = require('gulp-ng-config');
@@ -22,7 +22,15 @@ gulp.task('dev-config',function () {
         }))
         .pipe(gulp.dest(path.join(config.paths.src,'/app')));
 });
-
+gulp.task('prod-config',function () {
+  return gulp.src('app.conf.json')
+        .pipe(gulpNgConfig('dockerApp',{
+          environment: 'production',
+          createModule: false,
+          wrap: "(function(){\n 'use strict'; \n <%= module %> \n })();"
+        }))
+        .pipe(gulp.dest(path.join(config.paths.src,'/app')));
+});
 /*****************代码检查 start*********************************************/
 gulp.task('scripts',function () {
 	return gulp.src(path.join(config.paths.src,'app/**/*.js'))
@@ -44,13 +52,13 @@ gulp.task('clean', function () {
 /************编译jade******************/
 gulp.task('jade', function(){
     gulp.src([
-        path.join(config.paths.src, 'app/**/*.jade')
+        path.join(config.paths.src, '/**/*.jade')
     ])
     .pipe($.plumber(config.errorHandler()))
     .pipe($.jade({
       pretty: true
     }))
-    .pipe(gulp.dest(path.join(config.paths.src, 'app')));
+    .pipe(gulp.dest(config.paths.src));
 });
 /************ jade end **********************/
 
@@ -113,8 +121,8 @@ gulp.task('styles:compass',['inject_sass'],function () {
 });
 /*****************CSS(COMPASS编译) end*********************************************/
 
-/*****************inject(css,js注入index.jade) start***************************/
-gulp.task('inject', ['scripts', 'styles:compass'], function () {
+/*****************inject(css,js注入index.html) start***************************/
+gulp.task('inject', ['jade', 'scripts', 'styles:compass'], function () {
   var injectStyles = gulp.src([
     path.join(config.paths.tmp, '/serve/app/**/*.css'),
     path.join('!' + config.paths.tmp, '/serve/app/vendor.css')
@@ -131,16 +139,13 @@ gulp.task('inject', ['scripts', 'styles:compass'], function () {
      ignorePath: [config.paths.src, path.join(config.paths.tmp, '/serve')],
      addRootSlash: false
   };
-	return gulp.src(path.join(config.paths.src, '/*.jade'))
+	return gulp.src(path.join(config.paths.src, '/*.html'))
 		.pipe($.plumber(config.errorHandler()))
 		.pipe($.inject($.eventStream.merge(
 		  injectStyles,
 		  injectScripts
 		),injectOptions))
 		.pipe(wiredep(_.extend({}, config.wiredep)))
-        .pipe($.jade({
-          pretty: true
-        }))
         .pipe(gulp.dest(config.paths.src))
 	    .pipe(gulp.dest(path.join(config.paths.tmp, '/serve')));
 

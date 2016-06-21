@@ -6,9 +6,8 @@ var path = require('path');
 var browserSync = require('browser-sync');
 var proxyMiddleware = require('http-proxy-middleware');
 var browserSyncSpa = require('browser-sync-spa');
-//var bs = browserSync.create();
 var nodemon = require('gulp-nodemon');
-var gulpSequence = require('gulp-sequence');
+	var gulpSequence = require('gulp-sequence');
 
 
 
@@ -60,7 +59,7 @@ gulp.task('nodemon',function () {
 	  watch: [
 	    path.join(config.paths.server,'/')
 	  ]
-	})
+  });
 });
 
 gulp.task('nodemon:dist',function () {
@@ -70,7 +69,7 @@ gulp.task('nodemon:dist',function () {
 	  watch: [
 	    path.join(config.paths.server,'/')
 	  ]
-	})
+  });
 });
 
 gulp.task('nodemon:production',function () {
@@ -81,7 +80,7 @@ gulp.task('nodemon:production',function () {
 	    path.join(config.paths.server,'/')
 	  ],
 	  env: { 'NODE_ENV': 'production' }
-	})
+  });
 });
 
 function browserSyncInit (baseDir) {
