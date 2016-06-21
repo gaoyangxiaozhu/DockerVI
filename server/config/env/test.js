@@ -3,9 +3,12 @@
 // 测试环境配置
 // ===========================
 module.exports = {
-  mongo: {
-    suri: 'mongodb://localhost/docker-test'
-  },
-  port:    process.env.PORT || 8080,
-  seedDB: true
+    mysql: {
+        host: '0.0.0.0',
+        port: '3333',
+        user: 'root',
+        password: '123123',
+        database:'docker'
+    },
+   port:  process.env.PORT || 8080
 };
