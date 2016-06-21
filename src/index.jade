@@ -7,22 +7,39 @@ html.loading(ng-app="dockerApp")
         meta(name="description" content="this is docker swarm manager")
         meta(name="keyword" content="docker visual node angular swarm")
         meta(name="viewport" content="width=device-width")
+        link(rel="shortcut icon" href="favicon.ico")
         //- Place favicon.ico and apple-touch-icon.png in the root directory 
-        //- bower:css 
-        //- endbower
-        //- inject:css
-        //- css file will be automatically insert here 
-        //- endinject
-        //- bower:js
-        //- run `gulp inject` to automatically populate bower script dependencies -->
-        //- endbower
-    body.ui
+
+        
+        // build:css({.tmp/serve,src}) styles/vendor.css
+        // bower:css
+        // run `gulp inject` to automatically populate bower styles dependencies
+        // endbower
+        // endbuild
+
+        // build:css({.tmp/serve,src}) styles/app.css
+        // inject:css
+        // css files will be automatically insert here
+        // endinject
+        // endbuild
+        
+        
+        // build:js(src) scripts/vendor.js
+        // bower:js
+        // run `gulp inject` to automatically populate bower script dependencies
+        // endbower
+        // endbuild
+
+
+    body.ui(ng-class="{ 'main': home }")
         include ./assets/images/all.svg
         .row
             .col-xs-12
                 div(ng-if="pageClass != 'dashboard'" ng-cloak)
                     include  ./app/components/slidebar/slidebar.jade
                 div(ui-view)
+        div.home(ui-view="home")
+            
         toaster-container
         div.loader(style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%);", ng-hide="load.loaded" aria-hidden="true")
             div.loader-inner.pacman
@@ -33,8 +50,14 @@ html.loading(ng-app="dockerApp")
                 div(ng-style="{'background-color': (pageClass && pageClass==='dashboard')?'#fff':'#ccc'}" style="background-color: rgb(204, 204, 204);")        
                     
         script(src="http://localhost:9090/socket.io/socket.io.js")
+        
+        
+        // build:js({.tmp/serve,.tmp/partials,src}) scripts/app.js
+        // inject:js
+        // js files will be automatically insert here
+        // endinject
 
-
-        //- inject:js
-        //-js files will be automatically insert here -->
-        //- endinject
+        // inject:partials
+        // angular templates will be automatically converted in js and inserted here
+        // endinject
+        // endbuild

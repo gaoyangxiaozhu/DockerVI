@@ -1,7 +1,7 @@
 div.ui.navbar(ng-controller="navBarCtrl")
     ul.nav.nav-pills.nav-stacked
         li
-            a.text-center(tooltip-placement="right" tooltip="控制台" tooltip-append-to-body="true" ui-sref="home")
+            a.text-center(tooltip-placement="right" tooltip="控制台" tooltip-append-to-body="true" ui-sref="dashboard")
                 svg(alt="控制台")
                     use(xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#docker")
         li(ng-class="{'active': navs[0].active}")

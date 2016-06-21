@@ -1,85 +1,124 @@
-.app-list{
-    margin:auto;
-    width: 70%;
-    position: relative;
-    top: 100px;
-    @include transition(opacity 200ms ease, transform 100ms ease);
-    @include animation(animate-fade-zoom-in 600ms);
-    //清楚浮动
-    &:after{
-        clear: both;
-        content: "";
-        display: table;
-    }
+body.ui.main{
+    //  background-color: #163040;
+     background-color:  #292B36;
+     font-family : 'Droid Sans Mono', monospace;
+     background-image:  url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle opacity="0.5" fill="%23FFFFFF" cx="28.75" cy="22.338" r="0.713"/><circle opacity="0.2" fill="%23FFFFFF" cx="26.75" cy="79.443" r="0.307"/><circle opacity="0.5" fill="%23FFFFFF" cx="50" cy="41.884" r="0.308"/><circle fill="%23FFFFFF" cx="12.883" cy="42.25" r="0.367"/><circle opacity="0.4" fill="%23FFFFFF" cx="80" cy="72.818" r="0.307"/><circle opacity="0.5" fill="%23FFFFFF" cx="55.625" cy="12.375" r="0.308"/><circle opacity="0.2" fill="%23FFFFFF" cx="73.307" cy="89.375" r="0.308"/><circle opacity="0.5" fill="%23FFFFFF" cx="73" cy="53.884" r="0.308"/><circle opacity="0.5" fill="%23FFFFFF" cx="38.875" cy="89.432" r="0.385"/></svg>');
+     background-size: 20rem 20rem;
+     background-position: center 0;
+     @include animation(bg 20s linear infinite);
 }
-.icon-view{
-    width: 50%;
-    padding-right: 20px;
-    padding-left: 20px;
-    margin-top: 20px;
-    margin-bottom: 40px;
-    float: left;
-    display: block;
-    @include box-sizing(border-box);
-    .icon-wrapper{
-        background-color: rgba(116,140,222,.2);
-        &:hover{
-            background-color: rgba(40, 127, 227, 0.4);
-        }
-        @include border-radius(25px);
-        @include box-shadow(0 5px 20px rgba(0,0,0,.1));
-        @include transition(background-color 200ms ease-in, box-shadow 200ms ease);
-        .icon-img{
-            height:100px;
-            @extend .flex-vertical-box;
-            img{
-                height: 85px;
-                width: 85px;
-            }
-        }
-        .icon-name{
-            padding: 8px 5px;
-            border-top: 1px solid rgba(0,0,0,.055);
-            border-radius: 0 0 25px 25px;
-            background-color: rgba(0,0,0,.1);
-            color: rgba(255,255,255,.85);
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-align: center;
-            text-shadow: 0 7px 15px rgba(0,0,0,.25);
-        }
-    }
-}
-.wallpaper{
-    height: 100%;
+.home{
     width: 100%;
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-    overflow: hidden;
-    &:after{
-        content: "";
-        display: block;
-        height: 110%;
-        width: 110%;
-        position: absolute;
-        top: -10px;
-        right: -10px;
-        bottom: -10px;
-        left: -10px;
-        background-image: url(/assets/images/dashboard.jpg);
-        background-repeat: no-repeat;
-        background-size: cover;
-        -webkit-filter: blur(4px) grayscale(70%);
-    }
-}
+     .code{
+         position : absolute;
+         top : 40%;
+         left : 50%;
+         @include transform(translate(-50%,-50%));
+         text-align : center;
+         .planet-wraper {
+             display: inline-block;
+             width: 4rem;
+             height: 4rem;
+             margin: auto;
+             @include border-radius(50%);
+         }
+         .planet-shadow {
+             background-image: linear-gradient(top left, #24b88b 20%, #21776f);
+             background-image: -moz-linear-gradient(top left, #24b88b 20%, #21776f);
+             @include box-shadow(inset 0 -5px 10px rgba(22, 48, 64, 0.5), 0 0 1.5rem rgba(170, 194, 194, 0.3));
+         }
+         .planet {
+           position: relative;
+           width: 100%;
+           height: 100%;
+           border-radius: 50%;
+           @include animation(rotate 15s linear infinite);
+           overflow: hidden;
+           > * {
+             position: relative;
+             border-radius: 50%;
+             background-color: #209b85;
+             box-shadow: inset 1px 1px 5px #163040, 0 0 7px #63eed2 ;
+             opacity: 0.3;
+           }
+         }
+         .crater-1 {
+           top: 2rem;
+           left: 1.5rem;
+           width: 0.75rem;
+           height: 0.75rem;
+         }
+         .crater-2 {
+           top: -0.75rem;
+           left: 0rem;
+           width: 1.5rem;
+           height: 1.5rem;
+         }
+         .crater-3 {
+           top: 0.5rem;
+           left: 2rem;
+           width: 1.25rem;
+           height: 1.25rem;
+         }
+         .crater-4 {
+           top: -1.5rem;
+           left: 3.5rem;
+           width: 0.5rem;
+           height: 0.5rem;
+         }
+         .crater-5 {
+           top: -1.7rem;
+           left: -0.8rem;
+           width: 2rem;
+           height: 1.5rem;
+         }
+     }
 
-@include keyframes(animate-fade-zoom-in){
-  0%{   @include transform(scale(0)); }
-  25%{  @include transform(scale(0.4)); }
-  50%{  @include transform(scale(0.75)); }
-  100%{ @include transform(scale(1)); }
-}
+     h1{
+         position : relative;
+         font-size  : 3vw;
+         color : white;
+         &:after{
+             content : '';
+             height : 140%;
+             width : 1px;
+             background : transparent;
+             position : absolute;
+             display : block;
+             right : 1vw;
+             top : -20%;
+             @include animation(blink 1.2s linear infinite);
+         }
+     }
+
+     h2{
+         margin-top : 10%;
+         font-size : 2vw;
+         color : #59B75C;
+     }
+     .btn-group{
+         margin-top: 30px;
+     }
+    .btn-ghost-light,
+    .btn-ghost-light:focus{
+        border: 1px solid #fff;
+        background-color: rgba(155,163,175,0);
+        color: #fff;
+    }
+    .btn-ghost-light:hover{
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+     @include keyframes(bg){
+       100%{ background-position: center 20rem; }
+     }
+     @include keyframes(rotate){
+       100% { @include transform(rotate(360deg)); }
+     }
+     @include keyframes(blink){
+       49%{background :  transparent;}
+       50%{background : white;}
+      100%{background : white;}
+
+     }
+ }
