@@ -81,7 +81,7 @@
                 case 'day':
                     //当点击24小时时，显示loading效果
                     $scope.dayLoading = true;
-                    Container.getContainerStats({id : containerId}).then(function(resluts){
+                    Container.getContainerStats({id : containerId, node: $scope.container.node }).then(function(resluts){
                         $scope.dayResources = resluts;
                     });
                     break;
