@@ -1,8 +1,10 @@
+
 /**
  * @description 实现服务器端推送事件 主要用于Docker Container内部日志的实时显示
  * @author gaoyangyang
  */
-'use strict'
+'use strict';
+
 
 var                Q = require('q');
 var            async = require('async');
@@ -358,6 +360,8 @@ module.exports = function(port){
 
                 promiseDB.end();
         }).fail(function(err){
+            console.log('can not connect mysql');
+            console.log(err);
             socket.emit('notice', err.message);
             promiseDB.end();
         }).done();
@@ -370,7 +374,7 @@ module.exports = function(port){
                 //前端获取连接成功的消息以后触发init事件 传递容器Id 以及容器状态 后端根据Id 和容器状态进行数据初始化工作以及开始监听
                 socket.on('init', function(containerId){
                     _sendContainerStats(containerId, socket, true);
-                })
+                });
                 socket.on('sendResourceData', function(containerId){
                     async.forever(function (next) {
                         _sendContainerStats(containerId, socket);
