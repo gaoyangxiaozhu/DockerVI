@@ -18,11 +18,9 @@ function GRequest(){
   //循环监听是否有新的数据到来的事件监听器的句柄
   this.timeHander = null;
   this.response = {}; //存储获取的数据
-  //是否退出监听当前的数据流
-  this.exit = false;
+  this.exit = false;　  //是否退出监听当前的数据流
   this._abort = false; //是否强制中断请求 用于离开页面时
-  //当前是否是最后的数据流 即当前数据发送以后请求就会结束
-  this.fin = false;
+  this.fin = false;　 //当前是否是最后的数据流 即当前数据发送以后请求就会结束
   EventEmitter.call(this);
 
   return this;
@@ -47,6 +45,7 @@ GRequest.prototype.get = function(url){
     this.options = parseURL(url);
     this.options.method = 'GET';
 
+
     //解析url以后返回this用于链式调用
     return this;
 };
@@ -54,11 +53,11 @@ GRequest.prototype.get = function(url){
 GRequest.prototype.data = function(cb){
 
   var that = this;
-
   // http.request方法 返回一个clientRequest对象
   globalReq = http.request(this.options, function(res){
       var err = false; // http请求是否出错
       that.res = res;
+      that.timeHander = null;
       /**
        * [makeDataFun description]
        * @return { function } 返回一个函数 作为res data事件处理器
@@ -70,28 +69,33 @@ GRequest.prototype.data = function(cb){
               if(that.exit){
                   that.exit = false;
                 if(that.timeHander){
-                    console.log('exit clearInterval');
                     clearInterval(that.timeHander);
                     that.timeHander = null;
                 }
                 return false;
               }
-              //如果count >=2 并且response.ok 说明当前这一部分的数据流已经完全获取 执行回调函数返回给调用者
+              //如果count >=2 并且response.ok 说明当前这一部分的数据流已经完全获取
               if(count >= 2 && that.response.ok){
-                  count = 0;
-                  if(that.response.text){
-                        that.send(null, cb);
+                  if(!that.response.text){
+                      if(count >= 10){
+                          count = 0;
+                          that.send(null, cb); //如果连续10次为空　直接发送空内容
+                      }
+                  }else{
+                      count = 0;
+                      that.send(null, cb);
                   }
-              }
 
+              }
               count++;
-             
+
               that.response.ok = true;
           }
-          if(!that.timeHander){
-              that.timeHander = setInterval(sendData, 500);
-          }
 
+          //轮询监听函数　如果连续两次data获取的数据为空
+          that.timeHander = setInterval(sendData, 500);
+
+          //返回的用于绑定在res.data的事件处理函数　用于实时获取数据流
           return function(chunk){
             if(err){//如果出错 停止循环调用
                 that.send(err, cb);
@@ -112,7 +116,6 @@ GRequest.prototype.data = function(cb){
 
       res.on('data', makeDataFunc());
       res.on('end', function(){
-          console.log('end hahahahah');
           if(that.timeHander){
               console.log('end clearInterval');
               clearInterval(that.timeHander);
@@ -131,10 +134,9 @@ GRequest.prototype.data = function(cb){
           return false;
         });
       res.on('error', function(err){
-          console.log('error happen');
-          console.log(err);
-          that.fin = that.response.fin = true;
+
           that.exit = true;
+          that.fin = that.response.fin = true;
 
           that.send(err.message, cb);
       });
@@ -142,6 +144,7 @@ GRequest.prototype.data = function(cb){
 
 
   globalReq.on('error', function(err){
+      console.log(err);
       that.fin = that.response.fin = true;
       that.send(err.message, cb);
       return false;
@@ -151,39 +154,39 @@ GRequest.prototype.data = function(cb){
   //返回this
   return this;
 };
-
+//send函数　只有在需要数据发送时　或者当前数据流结束时(end事件触发)　或者发生err时调用
 GRequest.prototype.send = function(err, cb){
     //TODO
-    var option; //end or abort
+    var option; //　value = end or abort
     if(arguments.length > 2){
         option = arguments[2];
     }
-    if(err){
+    if(err){//如果发生err
       this.exit = true;
+      this.response.ok = false;
+      this.fin = this.response.fin = true;
+
       if(this.timeHander){
-         console.log('send clearInterval');
+
         clearInterval(this.timeHander);
         that.timeHander = null;
       }
-      this.response.ok = false;
-      this.fin = this.response.fin = true;
+
       cb(err, this.response);
       this.response = {};
-    }else{
-      if(this.exit){
-        this.fin = this.response.fin = true;
-      }
-      if(this.response.text){
-          //ok可能为false 因此在这里给重新赋值为true
-          this.response.ok = true;
-
-          cb(null, this.response);
-      }
-      this.response = {};
+      return;
+    }
+    if(this.exit && !this.fin){
+        this.fin = this.response.fin = true; //fin　为结束标志符
     }
 
+    //ok可能为false 因此在这里给重新赋值为true
+    this.response.ok = true;
+    cb(null, this.response);
+    this.response = {};
+
     //请求结束 执行end回调
-    if(err || option || this.exit || this.fin ){
+    if(option || this.exit || this.fin){
         //TODO 可以对end事件传递参数
         if(option && option == 'abort'){
             this.end(true);
@@ -206,10 +209,10 @@ GRequest.prototype.end = function(cb){
       }
       if(option){
         //如果为true 说明触发源 为 abort 事件
-        cb(null, {type: 'abort'});
+        cb(null, {});
       }else{
         //否则为 res.end事件
-        cb(null, {type: 'end'});
+        cb(null, {});
       }
     };
 };
