@@ -1,0 +1,85 @@
+.app-list{
+    margin:auto;
+    width: 70%;
+    position: relative;
+    top: 100px;
+    @include transition(opacity 200ms ease, transform 100ms ease);
+    @include animation(animate-fade-zoom-in 600ms);
+    //清楚浮动
+    &:after{
+        clear: both;
+        content: "";
+        display: table;
+    }
+}
+.icon-view{
+    width: 50%;
+    padding-right: 20px;
+    padding-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    float: left;
+    display: block;
+    @include box-sizing(border-box);
+    .icon-wrapper{
+        background-color: rgba(116,140,222,.2);
+        &:hover{
+            background-color: rgba(40, 127, 227, 0.4);
+        }
+        @include border-radius(25px);
+        @include box-shadow(0 5px 20px rgba(0,0,0,.1));
+        @include transition(background-color 200ms ease-in, box-shadow 200ms ease);
+        .icon-img{
+            height:100px;
+            @extend .flex-vertical-box;
+            img{
+                height: 85px;
+                width: 85px;
+            }
+        }
+        .icon-name{
+            padding: 8px 5px;
+            border-top: 1px solid rgba(0,0,0,.055);
+            border-radius: 0 0 25px 25px;
+            background-color: rgba(0,0,0,.1);
+            color: rgba(255,255,255,.85);
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-align: center;
+            text-shadow: 0 7px 15px rgba(0,0,0,.25);
+        }
+    }
+}
+.wallpaper{
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    overflow: hidden;
+    &:after{
+        content: "";
+        display: block;
+        height: 110%;
+        width: 110%;
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        bottom: -10px;
+        left: -10px;
+        background-image: url(/assets/images/dashboard.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        -webkit-filter: blur(4px) grayscale(70%);
+    }
+}
+
+@include keyframes(animate-fade-zoom-in){
+  0%{   @include transform(scale(0)); }
+  25%{  @include transform(scale(0.4)); }
+  50%{  @include transform(scale(0.75)); }
+  100%{ @include transform(scale(1)); }
+}
