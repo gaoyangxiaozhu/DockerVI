@@ -48,3 +48,20 @@ $color : #5d9cec;
 
     }
 }
+.btn.delete-image-btn{
+    padding: 0px 13px;
+    &:focus,
+    &:active{
+        background-color: transparent;
+        @include box-shadow(0 0);
+    }
+    i{
+        color: rgb(201, 84, 84);
+    }
+    &:hover{
+        i{
+            color: darken(rgb(201, 84, 84), 5%)
+        }
+    }
+
+}

@@ -45,4 +45,35 @@
             }
         }
     }
+    //log loading 效果
+    .loading-log{
+        span.circle{
+           display: inline-block;
+            height: 6px;
+            width: 6px;
+            @include border-radius(20px);
+            background-color: white;
+            @include box-shadow(0 2px  2px  rgba(255, 255, 255, 0.5));
+            &.one{
+                margin-left: 5px;
+                @include animation(ld .8s -.6s infinite linear);
+            }
+            &.two{
+                 @include animation(ld .8s  0s infinite linear);
+            }
+            &.three{
+                  @include animation(ld .8s .6s infinite linear);
+            }
+        }
+    }
+
+    @include keyframes(ld){
+        0%{ @include transform(scale(1)); }
+        25%{ @include transform(scale(0.5)); }
+        50%{ @include transform(scale(0.1)); }
+        75%{ @include transform(scale(0.5)); }
+        80%{ @include transform(scale(0.8)); }
+        90%{ @include transform(scale(1));}
+        100%{ @include transform(scale(1)); }
+    }
 }

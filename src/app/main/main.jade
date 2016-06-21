@@ -1,33 +1,22 @@
-.main
-    .container
-        .app-list
-            a.icon-view#cluster(ui-sref="cluster" title="集群资源使用情况") 
-                .icon-wrapper
-                    .icon-img
-                        img(ng-src="/assets/images/server.svg" alt="集群状况")
-                    .icon-name 集群状况
-                        
-            a.icon-view#containerList(ui-sref="containerList" title="集群容器应用列表")
-                .icon-wrapper
-                    .icon-img
-                        img(ng-src="/assets/images/applist.svg" alt="容器列表")
-                    .icon-name 应用列表
-                        
-            a.icon-view#imageList(ui-sref="imageList" title="集群容器镜像列表") 
-                .icon-wrapper
-                    .icon-img
-                        img(ng-src="/assets/images/shop.svg" alt="镜像列表")
-                    .icon-name 镜像列表
-                        
-            a.icon-view#volume(ui-sref="volume" title="数据卷")
-                .icon-wrapper
-                    .icon-img
-                        img(ng-src="/assets/images/volume.svg" alt="数据卷")
-                    .icon-name 数据卷
-        .wallpaper
-            
-                    
+div(ng-if="load.loaded" ng-cloak)
+    .code
+        h1
+            span(style="color:#97C774;") H
+            span(style="color: #B63E98;") E
+            span(style="color: #D18E62;") L
+            span(style="color: #DB3E41;") L
+            span(style="color: #1BABA5;") O
+            span , D
+            span.planet-wraper.planet-shadow
+                .planet
+                    .crater-1
+                    .crater-2
+                    .crater-3
+                    .crater-4
+                    .crater-5
+            | cker
+            h2 /*Docker Swarm 可视化解决方案*/
+            .btn-group
+                a.btn.dashboard-btn.btn-ghost-light(ui-sref="dashboard") 进入控制台
         
-
-    
-            
+        
