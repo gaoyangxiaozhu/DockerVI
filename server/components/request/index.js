@@ -102,10 +102,7 @@ GRequest.prototype.data = function(cb){
                 return false;
             }
             //获取新的数据并追加到response.text
-            console.log(chunk);
             that.response.text = that.response.text ? that.response.text += chunk : chunk.toString();
-            console.log(chunk.toString());
-            console.log("count = " + count);
 
             count = 0;
             that.response.ok = false;
