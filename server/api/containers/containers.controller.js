@@ -404,11 +404,13 @@ exports.updateContainer = function(req, res){
 };
 exports.getContainerStats = function(req , res){
     var id = req.params.id;
+    var node = req.query.node;
     var currentTime = formatTime(new Date());
-    var currentLogTbName = [id, currentTime].join("_").replace(/-/g, '_');
+    var currentLogTbName = [node, id, currentTime].join("_").replace(/-/g, '_');
+    console.log(currentLogTbName);
 
     //TODO　用于测试　记得删除
-    currentLogTbName = 'node5_mongo_test_2016_05_07';
+    // currentLogTbName = 'node5_mongo_test_2016_05_07';
 
     var promiseDB = new  PromiseDB();
 
@@ -424,18 +426,19 @@ exports.getContainerStats = function(req , res){
     }).then(function(count){
            //当前容器当天没有对应的资源数据库表
             if(parseInt(count) === 0){
-                res.send([]);
+                res.send({isEmpty : true });
                 promiseDB.end();
             }else{
                 return promiseDB.use(config.mysql.database);
             }
 
     }).then(function(result){
-            if(Object.prototype.toString.call(result) == '[object Array]' && 'serverStatus' in result[0]){
-                var sql = 'SELECT * FROM ' + currentLogTbName;
-                return promiseDB.query(sql);
-            }
+        if(Object.prototype.toString.call(result) == '[object Array]' && 'serverStatus' in result[0]){
+            var sql = 'SELECT * FROM ' + currentLogTbName;
+            return promiseDB.query(sql);
+        }
     }).then(function(results){
+        if(results && Object.prototype.toString.call(results) == '[object Array]') {
             var data = results[0];
             var cpuList = [], memList = [], rxList = [], txList = [], tmList = [];
             data.forEach(function(item, index){
@@ -445,17 +448,18 @@ exports.getContainerStats = function(req , res){
                 txList.push(item.tx_bytes);
                 tmList.push(formatTime(new Date(item.read_time), true));
             });
-            var results = {
+            var resources = {
                 cpu : cpuList,
                 mem : memList,
                 rx  : rxList,
                 tx  : txList,
                 tm  : tmList
             };
-            res.send(results);
+            res.send(resources);
             promiseDB.end();
+        }
     }).fail(function(err){
-        res.status(404).send({'error_msg': err.message});
+        res.send({error_msg : err.message, status: err.status});
         promiseDB.end();
     }).done();
 };
