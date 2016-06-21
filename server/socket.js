@@ -172,7 +172,6 @@ module.exports = function(port){
             //前端获取连接成功的消息以后触发init事件 传递容器Id 以及容器状态 后端根据Id 和容器状态进行数据初始化工作以及开始监听
             socket.on('init', function(containerId, containerStatus){
                 //生成新的container instance
-                console.log(containerId);
                 console.log('init');
                 container = new ContainerLog(socket, containerId);
 
@@ -295,13 +294,12 @@ module.exports = function(port){
     /******* end 建立socket连接　用于容器日志的实时刷新显示　end ****/
 
     /******* start 建立socket连接　用于容器内资源使用情况的实时刷新显示　start ****/
-    function _sendContainerStats(containerId, socket, init){
-        var id = containerId;
+    function _sendContainerStats(node, id, socket, init){
         var currentTime = formatTime(new Date());
-        var currentLogTbName = [id, currentTime].join("_").replace(/-/g, '_');
+        var currentLogTbName = [node, id, currentTime].join("_").replace(/-/g, '_');
 
         //TODO　用于测试　记得删除
-        currentLogTbName = 'node5_mongo_test_2016_05_07';
+        // currentLogTbName = 'node5_mongo_test_2016_05_07';
 
         var promiseDB = new  PromiseDB();
 
@@ -324,7 +322,7 @@ module.exports = function(port){
                 }
 
         }).then(function(result){
-                if(Object.prototype.toString.call(result) == '[object Array]' && 'serverStatus' in result[0]){
+                if(result && Object.prototype.toString.call(result) == '[object Array]' && 'serverStatus' in result[0]){
                     var sql;
                     if(init){
                         //初始化用所有当天表格现有的数据
@@ -336,7 +334,9 @@ module.exports = function(port){
                     return promiseDB.query(sql);
                 }
         }).then(function(results){
+            if(results && Object.prototype.toString.call(results) == '[object Array]'){
                 var data = results[0];
+
                 var cpuList = [], memList = [], rxList = [], txList = [], tmList = [];
                 data.forEach(function(item, index){
                     cpuList.push(item.cpu_percent);
@@ -345,23 +345,22 @@ module.exports = function(port){
                     txList.push(item.tx_bytes);
                     tmList.push(formatTime(new Date(item.read_time), true));
                 });
-                var results = {
+
+                var resources = {
                     cpu : cpuList,
                     mem : memList,
                     rx  : rxList,
                     tx  : txList,
                     tm  : tmList
-                }
+                };
                 if(init){
-                    socket.emit('getContainerStats', results, true);
+                    socket.emit('getContainerStats', resources, true);
                 }else{
-                    socket.emit('getContainerStats', results);
+                    socket.emit('getContainerStats', resources);
                 }
-
-                promiseDB.end();
+            }
         }).fail(function(err){
-            console.log('can not connect mysql');
-            console.log(err);
+            console.log('Database operation error');
             socket.emit('notice', err.message);
             promiseDB.end();
         }).done();
@@ -372,21 +371,27 @@ module.exports = function(port){
                 // 连接成功以后通知前端连接成功
                 socket.emit('notice', 'OK');
                 //前端获取连接成功的消息以后触发init事件 传递容器Id 以及容器状态 后端根据Id 和容器状态进行数据初始化工作以及开始监听
-                socket.on('init', function(containerId){
-                    _sendContainerStats(containerId, socket, true);
+                socket.on('init', function(node, containerId){
+                    _sendContainerStats(node, containerId, socket, true);
                 });
-                socket.on('sendResourceData', function(containerId){
-                    async.forever(function (next) {
-                        _sendContainerStats(containerId, socket);
-                        timeHander = setTimeout(next, 6000); //５分钟插入一次数据
-                      },
-                      function(stop){
-                          if(timeHander){
-                              clearTimeout(timeHander);
+                socket.on('sendResourceData', function(node, containerId){
+                    (function(){
+                        var _id = containerId;
+                        var _node = node;
+
+                        async.forever(function (next) {
+                            _sendContainerStats(_node, _id, socket);
+                            timeHander = setTimeout(next, 6000); //５分钟插入一次数据
+                          },
+                          function(stop){
+                              if(timeHander){
+                                  clearTimeout(timeHander);
+                              }
+                              return ;
                           }
-                          return ;
-                      }
-                  );
+                      );
+                    })();
+
               });
         　　　　socket.on('disconnect', function(){
             　　});
