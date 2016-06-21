@@ -1,0 +1,33 @@
+.main(ng-if="load.loaded")
+    .container
+        .app-list
+            a.icon-view#cluster(ui-sref="cluster" title="集群资源使用情况") 
+                .icon-wrapper
+                    .icon-img
+                        img(ng-src="/assets/images/server.svg" alt="集群状况")
+                    .icon-name 集群状况
+                        
+            a.icon-view#containerList(ui-sref="containerList" title="集群容器应用列表")
+                .icon-wrapper
+                    .icon-img
+                        img(ng-src="/assets/images/applist.svg" alt="容器列表")
+                    .icon-name 应用列表
+                        
+            a.icon-view#imageList(ui-sref="imageList" title="集群容器镜像列表") 
+                .icon-wrapper
+                    .icon-img
+                        img(ng-src="/assets/images/shop.svg" alt="镜像列表")
+                    .icon-name 镜像列表
+                        
+            a.icon-view#volume(ui-sref="volume" title="数据卷")
+                .icon-wrapper
+                    .icon-img
+                        img(ng-src="/assets/images/volume.svg" alt="数据卷")
+                    .icon-name 数据卷
+        .wallpaper
+            
+                    
+        
+
+    
+            
