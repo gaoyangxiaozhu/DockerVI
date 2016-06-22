@@ -14,7 +14,7 @@ router.get('/:id/getContainerStats', controller.getContainerStats);
 //stop or start
 router.post('/deleteContainer', controller.deleteContainer); //删除容器
 router.post('/:id/updateContainer', controller.updateContainer);
-router.post('/createContainer', timeout('6000s'), controller.createContainer);
+// router.post('/createContainer', timeout('6000s'), controller.createContainer);
 
 
 module.exports = router;
