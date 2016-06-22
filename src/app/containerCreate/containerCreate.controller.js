@@ -1,7 +1,7 @@
 (function(){
     // container details page controller
     angular.module("dockerApp.containers")
-    .controller('containerCreateCtrl', ['$scope', '$state', '$stateParams', 'Container', 'Image', 'SweetAlert','formatData', function($scope, $state, $stateParams, Container, Image, SweetAlert, formatData){
+    .controller('containerCreateCtrl', ['$scope', '$state', '$stateParams', 'Container', 'Image', 'SweetAlert','formatData', 'CreateCon', function($scope, $state, $stateParams, Container, Image, SweetAlert, formatData, CreateCon){
 
         var _imageId = $state.params.id;
         var source = $state.params.source;
@@ -133,26 +133,30 @@
                                                 $scope.volume.volumeList, //挂载卷
                                                 $scope.container.cmd); //自启动命令
 
-           Container.createContainer({ postData: postData}).then(function(result){
-               $scope.waitForCreated = true;
-               if(result.msg && result.msg == 'ok'){
+         CreateCon.createContainer(postData, function(err, result){
+               if(err){
+                   //显示错误信息
+                       SweetAlert.swal({
+                           title: result.status + ' Error',
+                           text: result.error_msg,
+                           type: "warning",
+                           confirmButtonColor: "#DD6B55",
+                           confirmButtonText: "确定",
+                           closeOnConfirm: true },
+                           function(){
+                                 $state.reload();
+                           }
+                       );
+                       return;
+               }
+
+               $scope.waitForCreated = false;
+               if(result && result.msg == 'ok'){
                    //如果创建成功就启动容器并在返回容器列表页面
                    $state.go(
                        'containerDetail',{
-                           id : $scope.container.name, 
+                           id : $scope.container.name,
                           new : $scope.container.name
-                      }
-                  );
-              }else{//显示错误信息
-                  SweetAlert.swal({
-                      title: result.status + ' Error',
-                      text: result.error_msg,
-                      type: "warning",
-                      confirmButtonColor: "#DD6B55",
-                      confirmButtonText: "确定",
-                      closeOnConfirm: true },
-                      function(){
-                            $state.reload();
                       }
                   );
               }

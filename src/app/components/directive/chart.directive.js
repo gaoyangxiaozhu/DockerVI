@@ -22,6 +22,13 @@
             */
            function filedLink(scope, el, attr){
                 build(scope, el, attr);
+                scope.$on("$destroy", function() {
+                    //关闭当前socket连接并注销socket
+                    if(socket){
+                        socket.close();
+                        socket = null;
+                    }
+                });
            }
         /*
         * The main build function used to determine the logic
@@ -428,49 +435,46 @@
             }
 
         });
-
-        var socket = io.connect('http://localhost:9090/resources');
-
-        socket.on('notice', function(msg){
-            if(msg == 'OK'){
-                socket.emit('init', scope.container.node, scope.container.name);
-            }else{
-                //TODO 出错怎么友好处理
-                console.log(msg);
-            }
-            scope.$apply();
-        });
-        socket.on('getContainerStats', function(results, init){
-            console.log(results);
-            if(init){
-                scope.realResources = results;
+        if(!socket){
+            socket = io.connect('http://localhost:9090/resources');
+            socket.on('notice', function(msg){
+                if(msg == 'OK'){
+                    socket.emit('init', scope.container.node, scope.container.name);
+                }else{
+                    //TODO 出错怎么友好处理
+                    console.log(msg);
+                }
                 scope.$apply();
-                //只有容器处于运行状态才进行后续资源数据的获取
-                if(scope.container.status == 'running'){
+            });
+            socket.on('getContainerStats', function(results, init){
+                if(init){
+                    scope.realResources = results;
+                    scope.$apply();
+                    //只有容器处于运行状态才进行后续资源数据的获取
+                    if(scope.container.status == 'running'){
+                        socket.emit('sendResourceData', scope.container.node, scope.container.name);
+                    }
+                }else{
+                    if(scope.realResources){
+                        //如果获取的最后一行数据的时间和之前获取的数据的最后一行的时间一样　说明没有新的资源数据到达　不进行资源数据的更新
+                        if(results && scope.realResources && scope.realResources.tm[scope.realResources.tm.length - 1 ] == results.tm[0]) return;
+                        scope.realResources.cpu = scope.realResources.cpu.concat(results.cpu);
+                        scope.realResources.mem = scope.realResources.mem.concat(results.mem);
+                        scope.realResources.rx = scope.realResources.rx.concat(results.rx);
+                        scope.realResources.tx = scope.realResources.tx.concat(results.tx);
+                        scope.realResources.tm = scope.realResources.tm.concat(results.tm);
+                        scope.$apply();
+                    }
+
+                }
+            });
+            //当容器由停止变为运行状态时　获取后续资源数据
+            scope.$watchCollection('[container, changeStatus]', function(){
+                if(scope.container && scope.container.status == 'running' && scope.changeStatus){
                     socket.emit('sendResourceData', scope.container.node, scope.container.name);
                 }
-            }else{
-                if(scope.realResources){
-                    //如果获取的最后一行数据的时间和之前获取的数据的最后一行的时间一样　说明没有新的资源数据到达　不进行资源数据的更新
-                    if(results && scope.realResources && scope.realResources.tm[scope.realResources.tm.length - 1 ] == results.tm[0]) return;
-                    scope.realResources.cpu = scope.realResources.cpu.concat(results.cpu);
-                    scope.realResources.mem = scope.realResources.mem.concat(results.mem);
-                    scope.realResources.rx = scope.realResources.rx.concat(results.rx);
-                    scope.realResources.tx = scope.realResources.tx.concat(results.tx);
-                    scope.realResources.tm = scope.realResources.tm.concat(results.tm);
-                    scope.$apply();
-                }
-
-            }
-        });
-        //当容器由停止变为运行状态时　获取后续资源数据
-        scope.$watchCollection('[container, changeStatus]', function(){
-            if(scope.container && scope.container.status == 'running' && scope.changeStatus){
-                socket.emit('sendResourceData', scope.container.node, scope.container.name);
-            }
-        });
-
-
+            });
+        }
 
 /************************end 针对实时资源数据获取　end********************************/
     }
