@@ -175,14 +175,14 @@ exports.searchImage = function(req, res){
 				try {
 					var dockerhubPAckagesList = _data.slice(0, itemsPerPage * currentPage);
 					var total = _data.length;
-					res.send({ dockerhubPAckagesList : dockerhubPAckagesList, total: total});
+					res.send({ msg: 'ok', dockerhubPAckagesList : dockerhubPAckagesList, total: total});
 				} catch (e) {
 					throw new Error(e);
 				}
 
 
 		}).fail(function(err){
-				res.send({'error_msg': err.message});
+			res.send({error_msg : err.message, status : err.status || 500 });
 		});
 	}
 
