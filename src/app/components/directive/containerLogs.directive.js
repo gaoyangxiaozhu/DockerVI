@@ -72,6 +72,13 @@
                    }
 
                });
+               scope.$on("$destroy", function() {
+                   //关闭当前socket连接并注销socket
+                   if(socket){
+                       socket.close();
+                       socket = null;
+                   }
+               });
            }
            /**
             * Create our template html
@@ -123,12 +130,8 @@
          **/
         function connectSocket(scope, el){
 
-            if(!socket){
-                console.log('create socket');
-                socket = io.connect('http://localhost:9090/logs');
-            }else{
-                console.log(socket);
-            }
+
+            socket = io.connect('http://localhost:9090/logs');
 
             socket.on('notice', function(msg){
                 if(msg == 'OK'){
@@ -146,9 +149,6 @@
             //这里通过msgObj更规范的接收数据　根据code属性判断当前通知的类型　后期需要将notice和message功能合并
             //
             socket.on('message', function(msgObj){
-                console.log(msgObj);
-                console.log(msgObj.code === 0);
-                console.log(msgObj.code == 0);
                 if(msgObj && msgObj.code === 0){ //说明获取的日志内容为空
                     console.log('content is empty');
                     scope.loadingNew = false;
@@ -267,12 +267,6 @@
 
             //建立socket连接
             if(scope.init){
-                /**
-                 * 不知道为什么　我重新从另外一个页面进入containreDetail页面　socket竟然还存在(为上一个容器详细页面的socket实例对象)　难道之前的指令还没有没完全删除?
-                 * 所以每次都需要重新将socket手动赋值为null
-                 * TODO 还是要看源码了解下？
-                 */
-                socket = null;
                 connectSocket(scope, el);
                 scope.init = false;
             }

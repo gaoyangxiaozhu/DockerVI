@@ -169,6 +169,8 @@
         function doPagingForDockerhub(option){
             //返回$promise对象
             return Image.searchDockerImage(option).then(function(results){
+                    if(results.msg === 'ok'){
+                        $scope.showNeedNetworkMsg = false;
                         //当前search相关的dockhub镜像总数
                         $scope.dockerhubPackages.count = results.total;
                         $scope.dockerhubPackages.pagesNum = Math.ceil(results.total / $scope.options.itemPerPageForDockerhub);//向上取整
@@ -182,6 +184,11 @@
                                 $scope.dockerhubPackages.results = $scope.dockerhubPackages.results.concat(results.dockerhubPAckagesList);
                             }
                         }
+                    }else{
+                        //可能没有联网哦
+                        $scope.showNeedNetworkMsg = true;
+                    }
+
                     });
         }
         $scope.loadMoreDockerhub = function(){
