@@ -9,6 +9,7 @@
 var                Q = require('q');
 var            async = require('async');
 var         GRequest = require('./components/request');
+var            tools = require('./components/tools');
 var           config = require('./config/env');
 var        PromiseDB = require('./components/mysql').PromiseDB;
 var         endpoint = require('./api/endpoint').SWARMADDRESS;
@@ -104,12 +105,14 @@ ContainerLog.prototype.sustainedConnectForNewLogText = function(timestamps){
     }
 
     dockerLogRequest = new GRequest();
+    console.log(url);
 
     return dockerLogRequest.get(url)
            .data(function(err, response){
                 //TODO
-                if(err || !response.ok){
-                    //code 为通知码　１表示出错　０表示获取内容为空
+                console.log('dockerLogRequest data');
+                if(err){
+                    //code 为通知码　　０表示获取内容为空 １表示出错 2表示连接接连
                     that.socket.emit('message', { code: 1, msg: err.message, rror_msg : err.message, status: err.status || response.status });
                     return false;
                 }
@@ -285,115 +288,172 @@ module.exports = function(port){
             });
             socket.on('disconnect', function(){
                 container = null;
+                console.log('log socket disconnect');
                 if(dockerLogRequest instanceof GRequest){
                     dockerLogRequest.abort();
+                    console.log('log socket disconnect end');
                 }
             });
+            socket.on('error', function(err){
+                console.log(err);
+                console.log('log socket error');
+            })
 
       });
     /******* end 建立socket连接　用于容器日志的实时刷新显示　end ****/
 
     /******* start 建立socket连接　用于容器内资源使用情况的实时刷新显示　start ****/
-    function _sendContainerStats(node, id, socket, init){
-        var currentTime = formatTime(new Date());
-        var currentLogTbName = [node, id, currentTime].join("_").replace(/-/g, '_');
+    function getSendContainerStatsFunc(DB, promiseDB){
+        //通过在外部进行promiseDB.connect接连建立DB　instance 避免内部连接connect 导致的连接过多的错误
+        return function _sendContainerStats(node, id, socket, init){
+                var currentTime = formatTime(new Date());
+                var currentLogTbName = [node, id, currentTime].join("_").replace(/-/g, '_');
 
-        //TODO　用于测试　记得删除
-        // currentLogTbName = 'node5_mongo_test_2016_05_07';
+                //TODO　用于测试　记得删除
+                // currentLogTbName = 'node5_mongo_test_2016_05_07';
 
-        var promiseDB = new  PromiseDB();
-
-        promiseDB.connect().then(function(){
-            return promiseDB.use('information_schema');
-        }).then(function(){
-            var sql = 'SELECT count(*) FROM TABLES WHERE table_name="' + currentLogTbName + '";'
-            return promiseDB.query(sql);
-        }).then(function(results){
-            //用于判断数据库中是否存在当然容器当天的资源数据表
-            var count = results[0][0]['count(*)'];
-            return count;
-        }).then(function(count){
-               //当前容器当天没有对应的资源数据库表
-                if(parseInt(count) === 0){
-                    socket.emit('getContainerStats', {});
-                    promiseDB.end();
-                }else{
-                    return promiseDB.use(config.mysql.database);
-                }
-
-        }).then(function(result){
-                if(result && Object.prototype.toString.call(result) == '[object Array]' && 'serverStatus' in result[0]){
-                    var sql;
-                    if(init){
-                        //初始化用所有当天表格现有的数据
-                        sql = 'SELECT * FROM ' + currentLogTbName;
-                    }else{
-                        //以后每时间间隔只读取最后一条记录(时间间隔要和docker_monitor存储数据的时间间隔保持一致)
-                        sql = 'SELECT * FROM ' + currentLogTbName + ' order by id DESC limit 1';
-                    }
+                DB.then(function(){
+                    return promiseDB.use('information_schema');
+                }).then(function(){
+                    var sql = 'SELECT count(*) FROM TABLES WHERE table_name="' + currentLogTbName + '";'
                     return promiseDB.query(sql);
-                }
-        }).then(function(results){
-            if(results && Object.prototype.toString.call(results) == '[object Array]'){
-                var data = results[0];
+                }).then(function(results){
+                    //用于判断数据库中是否存在当然容器当天的资源数据表
+                    var count = results[0][0]['count(*)'];
+                    return count;
+                }).then(function(count){
+                   //当前容器当天没有对应的资源数据库表
+                    if(parseInt(count) === 0){
+                        socket.emit('getContainerStats', {});
+                        promiseDB.end();
+                    }else{
+                        return promiseDB.use(config.mysql.database);
+                    }
+                }).then(function(result){
+                    if(result && Object.prototype.toString.call(result) == '[object Array]' && 'serverStatus' in result[0]){
+                        var sql;
+                        if(init){
+                            //初始化用所有当天表格现有的数据
+                            sql = 'SELECT * FROM ' + currentLogTbName;
+                        }else{
+                            //以后每时间间隔只读取最后一条记录(时间间隔要和docker_monitor存储数据的时间间隔保持一致)
+                            sql = 'SELECT * FROM ' + currentLogTbName + ' order by id DESC limit 1';
+                        }
+                        return promiseDB.query(sql);
+                    }
+                }).then(function(results){
+                    if(results && Object.prototype.toString.call(results) == '[object Array]'){
+                        var data = results[0];
 
-                var cpuList = [], memList = [], rxList = [], txList = [], tmList = [];
-                data.forEach(function(item, index){
-                    cpuList.push(item.cpu_percent);
-                    memList.push(item.mem_usage.toFixed(3));
-                    rxList.push(item.rx_bytes);
-                    txList.push(item.tx_bytes);
-                    tmList.push(formatTime(new Date(item.read_time), true));
-                });
+                        var cpuList = [], memList = [], rxList = [], txList = [], tmList = [];
+                        data.forEach(function(item, index){
+                            cpuList.push(item.cpu_percent);
+                            memList.push(item.mem_usage.toFixed(3));
+                            rxList.push(item.rx_bytes);
+                            txList.push(item.tx_bytes);
+                            tmList.push(formatTime(new Date(item.read_time), true));
+                        });
 
-                var resources = {
-                    cpu : cpuList,
-                    mem : memList,
-                    rx  : rxList,
-                    tx  : txList,
-                    tm  : tmList
-                };
-                if(init){
-                    socket.emit('getContainerStats', resources, true);
-                }else{
-                    socket.emit('getContainerStats', resources);
+                        var resources = {
+                            cpu : cpuList,
+                            mem : memList,
+                            rx  : rxList,
+                            tx  : txList,
+                            tm  : tmList
+                        };
+                        if(init){
+                            socket.emit('getContainerStats', resources, true);
+                        }else{
+                            socket.emit('getContainerStats', resources);
+                        }
                 }
-            }
-        }).fail(function(err){
-            console.log('Database operation error');
-            socket.emit('notice', err.message);
-            promiseDB.end();
-        }).done();
+            }).fail(function(err){
+                console.log('Database operation error');
+                socket.emit('notice', err.message);
+                promiseDB.end();
+            }).done();
+        };
     }
+
     var dockerResource = io.of('/resources')
             .on('connection', function(socket){
                 var timeHander;
                 // 连接成功以后通知前端连接成功
+                console.log('connet resource');
                 socket.emit('notice', 'OK');
                 //前端获取连接成功的消息以后触发init事件 传递容器Id 以及容器状态 后端根据Id 和容器状态进行数据初始化工作以及开始监听
                 socket.on('init', function(node, containerId){
-                    _sendContainerStats(node, containerId, socket, true);
+                    var promiseDB = new  PromiseDB();
+                    var sendContainerStats = getSendContainerStatsFunc(promiseDB.connect(), promiseDB);
+
+                    sendContainerStats(node, containerId, socket, true);
                 });
                 socket.on('sendResourceData', function(node, containerId){
-                    (function(){
-                        var _id = containerId;
-                        var _node = node;
+                    var promiseDB = new  PromiseDB();
+                    var sendContainerStats = getSendContainerStatsFunc(promiseDB.connect(), promiseDB);
 
-                        async.forever(function (next) {
-                            _sendContainerStats(_node, _id, socket);
-                            timeHander = setTimeout(next, 6000); //５分钟插入一次数据
-                          },
-                          function(stop){
-                              if(timeHander){
-                                  clearTimeout(timeHander);
-                              }
-                              return ;
+                    async.forever(function (next) {
+                        sendContainerStats(node, containerId, socket);
+                        timeHander = setTimeout(next, 6000); //５分钟插入一次数据
+                      },
+                      function(stop){
+                          if(timeHander){
+                              clearTimeout(timeHander);
                           }
-                      );
-                    })();
+                          return ;
+                      }
+                  );
 
               });
         　　　　socket.on('disconnect', function(){
+                    console.log('resources socket disconnect');
             　　});
+              socket.on('err', function(err){
+                  console.log(err);
+              });
             });
+    /**********end 建立socket连接　用于容器内资源使用情况的实时刷新显示　end **********/
+
+    /*********start 建立socket连接　用于容器的创建　end ***************/
+    var dockerCreateContainer = io.of('/newCon')
+    .on('connection', function(socket){
+        //code 为通知码　　０表示获取内容为空 １表示出错 2表示连接接连 3 表示当前操作成功
+        socket.emit('message', { code:　2, msg: 'ok' });
+        socket.on('createContainer', function(postData){
+            if(postData && Object.prototype.toString.call(postData) === '[object Object]'){
+                var data = postData;
+                var url = endpoint + '/containers/create?name=' + data.Name;
+
+
+                delete data.Name;
+                if(tools.isNullObj(data.HostConfig.PortBindings)) delete data.HostConfig.PortBindings;
+                if(tools.isNullObj(data.ExposedPorts)) delete data.ExposedPorts;
+
+                request.post(url, data)
+                .then(function(response){
+                    if(!response.ok){
+                        throw new Error('error');
+                    }else{
+                        socket.emit('message', { code : 3, msg : 'ok'});
+                    }
+                }).fail(function(err){
+                    if('response' in err && err.response.text && /Network timed out/.test(err.response.text)){
+                        err.message ='网络连接超时';
+
+                    }else{
+                        if(err.status == 409 && /Conflict/.test(err.message)){
+                            //TODO bug
+                            err.message = '容器命名冲突(Conflict)';
+                        }else{
+                            err.message +='(未知的错误)';
+                        }
+                    }
+                    socket.emit('message', { code : 1, msg : 'error', error_msg : err.message, status: err.status || 500 });
+            	});
+            }
+
+
+        });
+    });
+    /*********end 建立socket连接　用于容器的创建　end *****************/
 };
