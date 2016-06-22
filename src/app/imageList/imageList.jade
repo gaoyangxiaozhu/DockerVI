@@ -20,7 +20,7 @@
                                     th 创建时间
                                     th 动作
                             tbody
-                                tr(ng-repeat="image in imagePackages.results | orderBy:'name'")
+                                tr(ng-repeat="image in imagePackages.results | orderBy: '-time'")
                                     td.text-center {{ image.repo }}
                                     td {{ image.username }}
                                     td {{ image.name  }}
