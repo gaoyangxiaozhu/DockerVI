@@ -699,6 +699,35 @@ $imgContainerHeight: 120px;
     }
 }
 
+//span.msg 用于消息提示
+.msg{
+    display: inline-block;
+    width: 100%;
+    background: $defaultMsgBgColor;
+    color: $defaultMsgColor;
+    font-size: 1em;
+    border:1px solid transparent;
+    @include border-radius(4px);
+    padding:10px;
+    &:after{
+        content　:　'';
+        display　: table;
+    }
+}
+.msg.ng-enter, .msg.ng-leave {
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.msg.ng-enter,
+.msg.ng-leave.ng-leave-active {
+  opacity:0;
+}
+
+.msg.ng-leave,
+.msg.ng-enter.ng-enter-active {
+  opacity:1;
+}
+
 //loader 用于显示loader效果
 .pacman{
     position:relative;
