@@ -33,7 +33,10 @@ gulp.task('prod-config',function () {
 });
 /*****************代码检查 start*********************************************/
 gulp.task('scripts',function () {
-	return gulp.src(path.join(config.paths.src,'app/**/*.js'))
+	return gulp.src([
+        path.join(config.paths.src, 'app/**/*.js'),
+        path.join('!' + config.paths.src, 'app/echarts.min.js')
+        ])
 	.pipe($.jshint())
 	.pipe($.jshint.reporter('jshint-stylish'))
 	//js文件改变时无刷新加载
