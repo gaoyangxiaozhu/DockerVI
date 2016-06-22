@@ -54,14 +54,14 @@
                                             tr 
                                                 th.text-center 容器端口
                                                 th 主机端口(映射端口)
-                                                th　协议
+                                                th 协议
                                         tbody
                                             tr(ng-repeat="item in container.portList")
                                                 td.text-center {{ item.exposePort }}
                                                 td 
                                                     span(ng-if="item.bindHostPort ") {{ item.bindHostPort }}
                                                     span(ng-if="!item.bindHostPort") 没有映射主机端口
-                                                td　{{ item.protocal }}
+                                                td {{ item.protocal }}
                         div.section.row
                             .section-heading.col-sm-3.col-md-2 服务绑定
                             .section-content.col-sm-9.col-md-8
@@ -75,7 +75,7 @@
                                         tbody
                                             tr(ng-repeat="item in container.serviceList")
                                                 td.text-center {{ item.service }}
-                                                td　{{ item.serviceAlias }}
+                                                td {{ item.serviceAlias }}
                         div.section.row
                             .section-heading.col-sm-3.col-md-2 数据卷
                             .section-content.col-sm-9.col-md-8
@@ -89,7 +89,7 @@
                                         tbody
                                             tr(ng-repeat="item in container.volumesList")
                                                 td.text-center {{ item.destination }}
-                                                td　{{ item.volumeName }}
+                                                td {{ item.volumeName }}
                         div.section.row
                             .section-heading.col-sm-3.col-md-2 环境变量
                             .section-content.col-sm-9.col-md-8
@@ -103,14 +103,14 @@
                                         tbody
                                             tr(ng-repeat="item in container.envList")
                                                 td.text-center {{ item.name }}
-                                                td　{{ item.value }}
+                                                td {{ item.value }}
                         
                 tab(index="1" heading="监控")
                     ul.nav.nav-pills
                         li.active
-                            a(href="#J_tab_real" data-toggle="tab" mytab aria-expanded="true")实时
+                            a(href="#J_tab_real" data-toggle="tab" mytab aria-expanded="true") 实时
                         li
-                            a(href="#J_tab_day" data-toggle="tab" mytab aria-expanded="true" ng-click="getMetrics('day')")　24小时
+                            a(href="#J_tab_day" data-toggle="tab" mytab aria-expanded="true" ng-click="getMetrics('day')") 24小时
                     div.tab-content
                         div.tab-pane.clearfix.active#J_tab_real
                             chart

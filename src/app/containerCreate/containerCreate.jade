@@ -121,7 +121,7 @@
                                     label.col-sm-2.control-label.no-padding-right(for="env") 变量名称
                                     .col-sm-2(ng-class="{'state-error': getStatusError(addEnvForm, 'container_env_name')}")
                                         input#env(type="text" name="container_env_name", ng-model="envKey" required)
-                                    label.col-sm-2.col-sm-offset-1.control-label.no-padding-right(for="envVal")　变量值
+                                    label.col-sm-2.col-sm-offset-1.control-label.no-padding-right(for="envVal") 变量值
                                     .col-sm-3(ng-class="{'state-error': getStatusError(addEnvForm, 'container_env_val')}")
                                         input#envVal(type="text" name="container_env_val" ng-model="envValue" required)
                                     .col-sm-1
@@ -150,7 +150,7 @@
                                     label.col-sm-2.control-label.no-padding-right(for="volumehost") 共享路径
                                     .col-sm-2(ng-class="{'state-error': getStatusError(addVolumeForm, 'container_volume_host')}")
                                         input#volumehost(type="text" name="container_volume_host", ng-model="volumeHost" required)
-                                    label.col-sm-2.col-sm-offset-1.control-label.no-padding-right(for="volumedest")　挂载路径
+                                    label.col-sm-2.col-sm-offset-1.control-label.no-padding-right(for="volumedest") 挂载路径
                                     .col-sm-3(ng-class="{'state-error': getStatusError(addVolumeForm, 'container_volume_dest')}")
                                         input#volumedest(type="text" name="container_volume_dest" ng-model="volumeDest" required)
                                     .col-sm-1
@@ -225,3 +225,7 @@
                                     i(ng-if="waitForCreated").fa.fa-cog.fa-spin.fa-2x.fa-fw
                                     i(ng-if="waitForCreated").fa.fa-cog.fa-spin.fa-1x.fa-fw
                                     | 创建
+                                div.clearfix(style="margin-top:15px;")
+                                    span.msg(ng-if="waitForCreated" ng-cloak) 由于网络带宽过小或者容器本身体积过大可能会导致创建实例过程比较缓慢，请耐心等候
+
+                                

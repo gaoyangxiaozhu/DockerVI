@@ -17,7 +17,7 @@
                                     th 镜像用户
                                     th 镜像名称
                                     th 标签
-                                    th　创建时间
+                                    th 创建时间
                                     th 动作
                             tbody
                                 tr(ng-repeat="image in imagePackages.results | orderBy:'name'")
@@ -31,7 +31,7 @@
                                         span.btn.delete-image-btn(ng-click="delImage(image)")
                                             i.fa.fa-trash.fa-2x
                         button.btn-more.btn(ng-click="loadMore()" ng-if="options.currentPage < imagePackages.numPages" ng-disabled="imagePackages.isLoading" tabindex="0")
-                            span(ng-if="!imagePackages.isLoading")　加载更多
+                            span(ng-if="!imagePackages.isLoading") 加载更多
                             span(ng-if="imagePackages.isLoading")
                                 i.fa.fa-spinner.fa-pulse
                 tab(index="1" heading="DockerHub镜像")
@@ -39,13 +39,15 @@
                         h3.text-center Docker镜像
                         div.input-group.col-xs-6.col-xs-offset-3
                             input.form-control(placeholder="在这里搜索镜像",　ng-model="search.dockerhub.content", ng-keypress="keypressEvent($event)", tabindex="0")
-                            span.input-group-addon(ng-click="searchDockerHub()" role="button" tabindex="0")搜索
+                            span.input-group-addon(ng-click="searchDockerHub()" role="button" tabindex="0") 搜索
                     div.well(ng-if="loading.dockerhub")
                         span
                             i.fa.fa-spinner.fa-pulse
                             | &nbsp; Loading...
                             span.sr-only | Loading...
-                    div.well(ng-if="!loading.dockerhub && dockerhubPackages && dockerhubPackages.results.length  === 0 ")没有匹配的 DockerHub 镜像
+                    div.well(ng-if="!loading.dockerhub && dockerhubPackages && dockerhubPackages.results.length  === 0 ") 没有匹配的 DockerHub 镜像
+                    div(ng-if="!loading.dockerhub && showNeedNetworkMsg")
+                        span.msg 在线搜索需要确保swarm集群处于联网状态
                     div(ng-if="!loading.dockerhub && dockerhubPackages.results.length > 0")
                         div.package-list.container-fluid
                             div.row.package(ng-repeat="package in dockerhubPackages.results")
@@ -56,14 +58,14 @@
                                         div.meta 
                                             span
                                                 i.fa.fa-star-o
-                                                {{ package.star_count }}
+                                                | {{ package.star_count }}
                                 div.col-sm-4
                                     span.text.text-muted {{ package.description }}
                                 div.col-sm-4.text-right
                                     button.btn.btn-primary(ng-click='createContainerInstance(package.name, true)' ng-disabled="package.loading") 创建应用
                                     
                             button.btn-more.btn(ng-click="loadMoreDockerhub()" ng-if="options.currentPageForDockerhub < dockerhubPackages.pagesNum" ng-disabled="loading.dockerhubMore" tabindex="0")
-                                span(ng-if="!loading.dockerhubMore")　加载更多
+                                span(ng-if="!loading.dockerhubMore") 加载更多
                                 span(ng-if="loading.dockerhubMore")
                                     i.fa.fa-spinner.fa-pulse
             
