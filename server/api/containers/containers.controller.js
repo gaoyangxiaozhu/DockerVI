@@ -319,6 +319,8 @@ exports.getContainer = function(req, res){
         res.send({'error_msg': err.message, 'status': err.status});
 	});
 };
+//查看socke.js for create new container
+/*
 exports.createContainer = function(req, res){
     //TODO 远程拉取创建镜像会出现bug
     console.log('create');
@@ -353,7 +355,7 @@ exports.createContainer = function(req, res){
 		res.send({'error_msg': err.message, 'status': err.status});
 	});
 };
-
+*/
 exports.deleteContainer = function(req, res){
 
 
