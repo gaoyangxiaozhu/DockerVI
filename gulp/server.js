@@ -58,7 +58,8 @@ gulp.task('nodemon',function () {
 	  ext: 'js json',
 	  watch: [
 	    path.join(config.paths.server,'/')
-	  ]
+	],
+	env: { 'NODE_ENV': 'development' }
   });
 });
 
