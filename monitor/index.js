@@ -379,7 +379,7 @@ function runingMainForever(){
       //删除过期日志
       deleteLogFile(logDir);
       main();
-      timeHander = setTimeout(next, 300000); //５分钟插入一次数据
+      timeHander = setTimeout(next, 180000); //3分钟插入一次数据
   },
   function(stop){
       if(timeHander){
