@@ -1,6 +1,6 @@
 FROM node:5.11.1
 
-MAINTAINER from BUPT by gaoyangyang (gyycoder@gmai.com)
+MAINTAINER from BUPT by gaoyangyang (gyycoder@gmail.com)
 
 COPY . /gyyzyp/docker_swarm/ui
 WORKDIR /gyyzyp/docker_swarm/ui
@@ -15,3 +15,6 @@ RUN npm install -g nodemon
 RUN npm install --production
 
 EXPOSE 8100
+EXPOSE 9090
+
+CMD ["nodemon"]
