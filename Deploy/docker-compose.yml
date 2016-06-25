@@ -4,15 +4,15 @@ services:
         build:
             context: ../
             dockerfile: Dockerfile.ui
-        command: nodemon #run app
         ports:
             - "8100:8100"
+            - "9090:9090"
         links:
             - db:db
         depends_on:
             - db
             - monitor
-        entrypoint: ./wait-for-it.sh db:3306
+        command: nodemon
     db:
         image: mysql
         volumes:
