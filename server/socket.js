@@ -391,7 +391,7 @@ module.exports = function(port){
 
                     async.forever(function (next) {
                         sendContainerStats(node, containerId, socket);
-                        timeHander = setTimeout(next, 6000); //５分钟插入一次数据
+                        timeHander = setTimeout(next, 60000*3); //monitor 3分钟插入一次数据
                       },
                       function(stop){
                           if(timeHander){
