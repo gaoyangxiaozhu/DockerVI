@@ -5,7 +5,7 @@
 module.exports = {
     port:     process.env.PORT || 8100,
     mysql: {
-        host: '0.0.0.0',
+        host: 'db',
         port: '3306',
         user: 'root',
         password: 'root',
