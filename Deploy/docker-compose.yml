@@ -2,16 +2,17 @@ version: '2'
 services:
     ui:
         build:
-            content: ../
+            context: ../
             dockerfile: Dockerfile.ui
-        command: gulp nodemon:production #run app
+        command: nodemon #run app
         ports:
-            - "8100":"8100"
-        volumes:
-            - .:/gyyzyp/docker_swarm/ui
+            - "8100:8100"
+        links:
+            - db:db
         depends_on:
             - db
             - monitor
+        entrypoint: ./wait-for-it.sh db:3306
     db:
         image: mysql
         volumes:
@@ -20,10 +21,10 @@ services:
             - MYSQL_ROOT_PASSWORD=root
     monitor:
         build:
-            content: ../monitor/
+            context: ../monitor/
         command: npm start
         volumes:
-            - .:/monitor
+            - ../monitor:/monitor
         links:
             - db:db
         depends_on:
