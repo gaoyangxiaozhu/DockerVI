@@ -2,7 +2,7 @@
 FROM node:5.11.1
 
 #作者信息
-MAINTAINER from BUPT by gaoyangyang (gyycoder@gmai.com)
+MAINTAINER from BUPT by gaoyangyang (gyycoder@gmail.com)
 
 RUN mkdir -p /monitor
 
