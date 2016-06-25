@@ -1,6 +1,6 @@
 (function(){
  'use strict'; 
  angular.module("dockerApp")
-.constant("IsDebug", true);
+.constant("IsDebug", false);
  
  })();

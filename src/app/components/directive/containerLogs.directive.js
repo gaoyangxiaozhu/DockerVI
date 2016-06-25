@@ -150,7 +150,6 @@
             //
             socket.on('message', function(msgObj){
                 if(msgObj && msgObj.code === 0){ //说明获取的日志内容为空
-                    console.log('content is empty');
                     scope.loadingNew = false;
                     scope.loadingPrevious = false;
 
@@ -158,7 +157,6 @@
                 }
             });
             socket.on('getReadyForNewLogText', function(){
-                console.log('getReadyForNewLogText');
                 console.log(mouseState);
                 if(mouseState == 'down'){
                     //如果鼠标位于最下方 接收新的数据
