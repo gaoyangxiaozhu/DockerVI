@@ -9,6 +9,6 @@ RUN mkdir -p /monitor
 ADD package.json /monitor/
 
 WORKDIR /monitor
-RUN npm install
+RUN npm install --production
 
 ADD . /monitor/
