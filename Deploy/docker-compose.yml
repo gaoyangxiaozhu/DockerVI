@@ -1,0 +1,25 @@
+version: '2'
+services:
+    ui:
+        build:
+            content: ../
+            dockerfile: Dockerfile.ui
+            command: gulp nodemon:production #run app
+        depends_on:
+            - db
+            - monitor
+    db:
+        image: mysql
+        volumes:
+            - /data/database:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=123123
+    monitor:
+        build: .
+        command: npm start
+        volumes:
+            - .:/monitor
+        links:
+            - db:db
+        depends_on:
+            - db

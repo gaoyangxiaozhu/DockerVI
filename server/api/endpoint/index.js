@@ -1,3 +1,3 @@
 'use strict';
-
-exports.SWARMADDRESS="http://10.103.242.128:2377";
+var config = require('../../Deploy/config');//加载swarm相关配置
+exports.SWARMADDRESS=config.swarm.address;
