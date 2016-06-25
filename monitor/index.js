@@ -70,20 +70,42 @@ var connection = mysql.createConnection(mysqlConfig);
 
 
 //根据配置文件创建并使用当前数据库
-function createAndConnectDB(){
-    var defer = Q.defer();
+var tryCount = 0;
 
-    connection.query("CREATE DATABASE IF NOT EXISTS " + dbname, function(err, results){
+function createAndConnectDB(){
+    connection.connect(function(err) {
         if(err){
             logger.error(err.message);
+            if(tryCount >= 30){
+                logger.error('connect database fail after 60 seconds..');
+            }else{
+                logger.info('try connect again after 2 seconds...');
+                tryCount += 1;
+                setTimeout(createAndConnectDB, 2000);
+            }
+        }else{
+            connection.query("CREATE DATABASE IF NOT EXISTS " + dbname, function(err, results){
+                if(err){
+                    logger.error(err.message);
+                    return;
+                }else{
+                    //数据库创建成功以后使用当前数据库
+                    var defer = Q.defer();
+                    connection.query('USE ' + dbname, defer.makeNodeResolver());
+                    defer.promise.then(function(){
+                        //创建成功以后运行主函数
+                        logger.info('use database %s successfully...', dbname);
+
+                        logger.info('start monitor...');
+                        runingMainForever();
+
+                    }).fail(function(err){
+                        logger.error(err.message);
+                    }).done();
+                }
+            });
         }
-        //数据库创建成功以后使用当前数据库
-        connection.query('USE ' + dbname, defer.makeNodeResolver());
-
     });
-
-    return defer.promise;
-
 }
 /*****************************主功能************************************/
 
@@ -375,14 +397,4 @@ function runingMainForever(){
  * 在返回的promise对象的fulfile方法中运行runingMainForever函数开始资源监控和存储
  * @return {promise对象}　用于数据库连接成功后的后续动作
  */
-createAndConnectDB()
-.then(function(){
-    //创建成功以后运行主函数
-    logger.info('use database %s successfully...', dbname);
-
-    logger.info('start monitor...');
-    runingMainForever();
-
-}).fail(function(err){
-    logger.error(err.message);
-}).done();
+createAndConnectDB();
