@@ -5,6 +5,7 @@
   "repository": "https://github.com/gaoyangxiaozhu/docker-visual",
   "license": "MIT",
   "author": "gyy",
+  "main": "./server/app.js",
   "dependencies": {
     "bluebird": "^2.10.1",
     "body-parser": "^1.14.0",
