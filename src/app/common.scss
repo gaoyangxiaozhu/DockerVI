@@ -1,4 +1,3 @@
-
 body,
 body.ui{
     background-color:$baseBgColor;
@@ -217,7 +216,7 @@ table {
             color: $table-font-color;
             white-space: nowrap;
             word-break: break-all;
-            padding: 20px 10px;
+            padding: 25px 10px;
             vertical-align: middle;
         }
       }
@@ -230,18 +229,31 @@ table {
 .table,
 table{
     > thead{
-        border: 1px solid transparent;
+        border: 1px solid $table-border-color;
+        > tr{
+            > th{
+                border: 1px solid transparent;
+                border-bottom: 1px solid $table-border-color;
+                color : $table-title-color;
+            }
+        }
+
     }
     > tbody {
         background-color: white;
         border: 1px solid $table-border-color;
         > tr{
-            border-bottom: 1px solid #f1f3f6;
+            border-bottom: 1px solid $table-border-color;
+            border-top: 1px solid $table-border-color;
+
             &:hover{
                 background-color: $table-bg-hover;
             }
             &.selected{
                 background-color: $table-selected-bg;
+            }
+            > td{
+                border: 1px;
             }
         }
     }
