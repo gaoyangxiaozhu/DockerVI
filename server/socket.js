@@ -161,8 +161,8 @@ ContainerLog.prototype.getLogContentByLine = function(){
             });
 };
 
-module.exports = function(port){
-    io = require('socket.io')(port);
+module.exports = function(port, ip){
+    io = require('socket.io')(port, ip);
     /******* start 建立socket连接　用于容器日志的实时刷新显示　start ****/
     var dockerLog = io.of('/logs')
         .on('connection', function(socket){
