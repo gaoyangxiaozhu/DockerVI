@@ -386,7 +386,7 @@
         ]
         });
 
-        scope.$watchCollection('[realResources]', function(){
+        scope.$watchCollection('[realResources, realResources.cpu, realResources.mem, realResources.rx, realResources.tx, realResources.tm]', function(){
             if(scope.realResources){
                 cpuRealChar.setOption({
                    xAxis:{
@@ -447,6 +447,8 @@
                 scope.$apply();
             });
             socket.on('getContainerStats', function(results, init){
+                console.log('getContainerStats');
+                console.log(results);
                 if(init){
                     scope.realResources = results;
                     scope.$apply();
