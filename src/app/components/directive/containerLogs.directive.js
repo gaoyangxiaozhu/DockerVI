@@ -210,7 +210,6 @@
                                       }
                                   }else{//鼠标位于中间某个位置
                                       mouseState = 'middle';
-                                      console.log(mouseState);
                                   }
                           };
                     })();
@@ -230,9 +229,7 @@
             });
             //用于最新到达的日志内容的获取
             socket.on('getNewLogText', function(data){
-
-                console.log('getNewLogText');
-                console.log(data);
+                
                 scope.loadingPrevious = false;
                 scope.loadingNew = false;
                 if(scope.logs){

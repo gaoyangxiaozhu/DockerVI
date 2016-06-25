@@ -167,13 +167,12 @@ module.exports = function(port){
     var dockerLog = io.of('/logs')
         .on('connection', function(socket){
             // 连接成功以后通知前端连接成功
-            console.log('connection !');
+            console.log('log socket connection !');
             socket.emit('notice', 'OK');
 
             //前端获取连接成功的消息以后触发init事件 传递容器Id 以及容器状态 后端根据Id 和容器状态进行数据初始化工作以及开始监听
             socket.on('init', function(containerId, containerStatus){
                 //生成新的container instance
-                console.log('init');
                 container = new ContainerLog(socket, containerId);
 
                 container.getLogContentByLine()
@@ -377,7 +376,7 @@ module.exports = function(port){
             .on('connection', function(socket){
                 var timeHander;
                 // 连接成功以后通知前端连接成功
-                console.log('connet resource');
+                console.log('resource socket connect');
                 socket.emit('notice', 'OK');
                 //前端获取连接成功的消息以后触发init事件 传递容器Id 以及容器状态 后端根据Id 和容器状态进行数据初始化工作以及开始监听
                 socket.on('init', function(node, containerId){
