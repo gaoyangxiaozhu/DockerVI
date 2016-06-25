@@ -23,8 +23,8 @@ services:
         build:
             context: ../monitor/
         command: npm start
-        volumes:
-            - ../monitor:/monitor
+        # volumes:
+        #     - ../monitor:/monitor # for developer
         links:
             - db:db
         depends_on:
