@@ -9,6 +9,5 @@ bower_components/
 src/app/**/*.html
 src/*.html
 .tmp/
-dist/
 /src/assets/
 .sass-cache/
