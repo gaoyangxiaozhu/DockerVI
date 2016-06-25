@@ -110,7 +110,6 @@ ContainerLog.prototype.sustainedConnectForNewLogText = function(timestamps){
     return dockerLogRequest.get(url)
            .data(function(err, response){
                 //TODO
-                console.log('dockerLogRequest data');
                 if(err){
                     //code 为通知码　　０表示获取内容为空 １表示出错 2表示连接接连
                     that.socket.emit('message', { code: 1, msg: err.message, rror_msg : err.message, status: err.status || response.status });
@@ -133,7 +132,6 @@ ContainerLog.prototype.sustainedConnectForNewLogText = function(timestamps){
                     that.socket.emit('getReadyForNewLogText');
 
                 }else{//如果获取内容为空
-                    console.log('content is empty');
                     that.socket.emit('message', {code: 0, msg: 'content is emptry.'});
                 }
             });
