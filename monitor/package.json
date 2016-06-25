@@ -1,0 +1,39 @@
+{
+  "name": "docker_monitor",
+  "version": "1.0.0",
+  "description": "using for docker stats monitor",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaoyangxiaozhu/docker_monitor.git"
+  },
+  "keywords": [
+    "monitor",
+    "docker",
+    "mysql"
+  ],
+  "author": "gaoyangyang",
+  "maintainers": [
+    {
+      "email": "gyycoder@gmail.com",
+      "name": "gyyzyp"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gaoyangxiaozhu/docker_monitor/issues"
+  },
+  "homepage": "https://github.com/gaoyangxiaozhu/docker_monitor#readme",
+  "dependencies": {
+    "async": "^2.0.0-rc.4",
+    "bunyan": "^1.8.1",
+    "mysql": "^2.10.2",
+    "q": "^1.4.1",
+    "superagent": "^1.8.3",
+    "tracer": "^0.8.3"
+  }
+}
