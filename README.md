@@ -22,7 +22,7 @@
 * **Volume:**
     * show Volume list in swarm cluste.
     * Create, Delete Volume.
-    * Search volume by using volume name or host name;
+    * Search volume by using volume name or  node name in docker swarm cluster;
     * Look up the low-level detail information about volume.
 
 ### Some pictures for Demo
