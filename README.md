@@ -25,19 +25,23 @@
     * Search volume by using volume name or host name;
     * Look up the low-level detail information about volume.
 
-### Some Demo
-<div align="center">
-<img src="http://o9dop9y2w.bkt.clouddn.com/cluster.png" width = "90%" height = "250" alt="cluster" align=center/>
-</div>
-<div align="center">
-<img src="http://o9dop9y2w.bkt.clouddn.com/realTimeResourceState.png" width = "90%" height = "250" alt="Containerstate" align=center/>
-</div>
-<div align="center">
-<img src="http://o9dop9y2w.bkt.clouddn.com/containerCreate.png" width = "90%" height = "250" alt="createContainer" align=center/>
-</div>
+### Some pictures for Demo
+1. **Demo for show the overview of the cluster**
+![cluster][3]
+<br/>
+2. **Demoo for show the real-time resource stats in Container**
+![real-time resource state][4]
+<br/>
+3. **Demo for show the create container using image**
+![此处输入图片的描述][5]
+<br/>
+4. **Demo for show deleting container**
+![此处输入图片的描述][6]
+<br/>
+
 
 ### Getting Started
-DockerVI is self-contained and can be easily deployed via [docker-compose][4](Quick-Start steps below).
+DockerVI is self-contained and can be easily deployed via [docker-compose][7](Quick-Start steps below).
 
 **System requirements:**  
 DockerVI need works with docker 1.10+ and docker-compose 1.6.0+.
@@ -80,9 +84,13 @@ If everything worked properly, you should be able to open a browser to manage yo
 
 
 ### License
-The UI For Docker code is licensed under the MIT license.
+The DockerVI code is licensed under the MIT license.
 
 
   [1]: http://o9dop9y2w.bkt.clouddn.com/docker.png
   [2]: https://docs.docker.com/engine/swarm/
-  [4]: https://docs.docker.com/compose/overview/
+  [3]: http://o9dop9y2w.bkt.clouddn.com/cluster.png
+  [4]: http://o9dop9y2w.bkt.clouddn.com/realTimeResourceState.png
+  [5]: http://o9dop9y2w.bkt.clouddn.com/containerCreate.png
+  [6]: http://o9dop9y2w.bkt.clouddn.com/deleteContainer.png
+  [7]: https://docs.docker.com/compose/overview/
