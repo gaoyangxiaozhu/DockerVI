@@ -3,8 +3,8 @@
 标签（空格分隔）： Docker
 
 ---
-
-> Project DockerVI is inspired by the idea of realize the Visible Management for **[Docker Swarm][1]** by using Docker Swarm Remote API . The goal is to provide a beauty and power pure client side implementation,  make  it is effortless to connect and manage docker swarm.
+![docker][1]
+> Project DockerVI is inspired by the idea of realize the Visible Management for **[Docker Swarm][2]** by using Docker Swarm Remote API . The goal is to provide a beauty and power pure client side implementation,  make  it is effortless to connect and manage docker swarm.
 
 
 ### Current implementation features
@@ -25,13 +25,22 @@
     * Search volume by using volume name or host name;
     * Look up the low-level detail information about volume.
 
-
+### Some Demo
+<div align="center">
+<img src="http://o9dop9y2w.bkt.clouddn.com/cluster.png" width = "90%" height = "250" alt="cluster" align=center/>
+</div>
+<div align="center">
+<img src="http://o9dop9y2w.bkt.clouddn.com/realTimeResourceState.png" width = "90%" height = "250" alt="Containerstate" align=center/>
+</div>
+<div align="center">
+<img src="http://o9dop9y2w.bkt.clouddn.com/containerCreate.png" width = "90%" height = "250" alt="createContainer" align=center/>
+</div>
 
 ### Getting Started
-DockerVI is self-contained and can be easily deployed via [docker-compose][2](Quick-Start steps below).
+DockerVI is self-contained and can be easily deployed via [docker-compose][4](Quick-Start steps below).
 
 **System requirements:**  
-DockerVI need works with docker 1.10+ and docker-compose 1.6.0+ and 8100 and 9090 ports available.
+DockerVI need works with docker 1.10+ and docker-compose 1.6.0+.
 
 1. Get the source code:
 
@@ -52,6 +61,7 @@ If everything worked properly, you should be able to open a browser to manage yo
     `http:<deployed host ip>:8100`
 
 
+
 ### Stack
 * [Angular](https://github.com/angular/angular.js)
 * [nodeJs](https://nodejs.org/en/)
@@ -70,12 +80,9 @@ If everything worked properly, you should be able to open a browser to manage yo
 
 
 ### License
-The  DockerVI code is licensed under the MIT license.
+The UI For Docker code is licensed under the MIT license.
 
 
-
-
-
-
-  [1]: https://docs.docker.com/engine/swarm/
-  [2]: https://docs.docker.com/compose/overview/
+  [1]: http://o9dop9y2w.bkt.clouddn.com/docker.png
+  [2]: https://docs.docker.com/engine/swarm/
+  [4]: https://docs.docker.com/compose/overview/
