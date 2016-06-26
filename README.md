@@ -1,31 +1,83 @@
-#DOCKER 可视化
+# DockerVI
 
 标签（空格分隔）： Docker
 
-
 ---
-实现可视化操作docker远程API
-可用于dockeer swarm集群的远程控制管理
-<br>
-**注**　目前基于单机的docker远程控制，在前端显示方面会出现一定问题，　以后修复....
-##采用angular+django实现
+
+> Project DockerVI is inspired by the idea of realize the Visible Management for **[Docker Swarm][1]** by using Docker Swarm Remote API . The goal is to provide a beauty and power pure client side implementation,  make  it is effortless to connect and manage docker swarm.
 
 
-##仓库目录说明
-1. **source**文件存放的模板文件和样式文件的源码，其中angular子目录中的```*.jade```为局部的模板文件,其编译生成的```html```文件用作angular的路由控制,实现不同路由下局部刷新，
-2. **docker-visual**目录是整个**app**的项目根目录,其各个子目录或者和其他```Django```官网介绍一致,不再过多介绍.
+### Current implementation features
+* **Display the overall survey of cluster**.
+* **Container:**
+    * show Container list in swarm cluste.
+    * Create, Running, Stop, Delete Container.
+    * Look up the low-level information on the container.
+    * View the real-time resource usage in Container.
+    * View the stdout and stderr logs from the Container.
+* **Image:**
+    * show Image list in swarm cluste.
+    * Search, Pull, Delete Image.
+    * Create Container using Image.
+* **Volume:**
+    * show Volume list in swarm cluste.
+    * Create, Delete Volume.
+    * Search volume by using volume name or host name;
+    * Look up the low-level detail information about volume.
 
-##功能说明
-目前**docker api**可视化只实现了<br>
-1. container列表的显示<br>
-2. 单个container的删除、运行、停止<br>
-3. 单个container内部的 IP、端口、数据卷、日志以及自定义环境变量的查看<br>
-４. 每一个running container实例，　实时收集其内部资源使用数据(cpu mem network)并在前端图表渲染显示
-５. image列表的显示<br>
-６. 单个image的删除<br>
-７. 通过image创建container实例<br>
+
+
+### Getting Started
+DockerVI is self-contained and can be easily deployed via [docker-compose][2](Quick-Start steps below).
+
+**System requirements:**  
+DockerVI need works with docker 1.10+ and docker-compose 1.6.0+.
+
+1. Get the source code:
+
+    ```sh
+    $ git clone https://github.com/gaoyangxiaozhu/DockerVI.git
+    ```
+2. Edit the file **Deploy/config.js**, make necessary configuration changes such as hostname for deploy project and swarm address.
+
+3. Install DockerVI with the following commands. Note that the docker-compose process can take a while.
+    ```sh
+    $ cd Deploy
+    $ ./prepare.sh
+
+    $ docker-compose up
+    ```
+
+If everything worked properly, you should be able to open a browser to manage your docker swarm using
+    `http:<deployed host ip>:8100`
+
+
+For information on how to use Harbor, please see [User Guide](docs/user_guide.md) .
+
+### Stack
+* [Angular](https://github.com/angular/angular.js)
+* [nodeJs](https://nodejs.org/en/)
+* [Express](https://github.com/expressjs/express/)
+* [socket.io](https://github.com/socketio/socket.io/)
+*  [Bootstrap](http://getbootstrap.com/)
+* [Jade](http://jade-lang.com/)
+* [Compass](http://compass-style.org/)
+* [Docker compose](https://docs.docker.com/compose/overview/)
+
+
+### Todo:
+* Full remote swarm api support
+* using websocket technology for into the container in browser to carry out the command operation  
+* Unit tests
+
+
+### License
+The UI For Docker code is licensed under the MIT license.
 
 
 
-##使用说明
-```clone```仓库文件到本地,在终端运行**docker-visual**目录下的run.sh文件, 然后在浏览器输入0.0.0.0:18000, 即可与远程进行docker集群的可视化管理
+
+
+
+  [1]: https://docs.docker.com/engine/swarm/
+  [2]: https://docs.docker.com/compose/overview/
