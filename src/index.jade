@@ -49,8 +49,9 @@ html.loading(ng-app="dockerApp")
                 div(ng-style="{'background-color': (pageClass && pageClass==='dashboard')?'#fff':'#ccc'}" style="background-color: rgb(204, 204, 204);")
                 div(ng-style="{'background-color': (pageClass && pageClass==='dashboard')?'#fff':'#ccc'}" style="background-color: rgb(204, 204, 204);")        
                     
+        // build:js(src) scripts/socket.js
         script(src="socket.io.js")
-        
+        // endbuild
         // build:js({.tmp/serve,.tmp/partials,src}) scripts/app.js
         // inject:js
         // js files will be automatically insert here
