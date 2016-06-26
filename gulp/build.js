@@ -110,8 +110,7 @@ gulp.task('other',function () {
 	return gulp.src([
 			path.join(config.paths.src, '/**/*'),
 			path.join('!' + config.paths.src, '/assets/images/**/*'),
-            path.join('!' + config.paths.src, '/*.{html,scss,jade}'),
-			path.join('!' + config.paths.src, '/app/**/*.{html,js,css,scss,jade}')
+			path.join('!' + config.paths.src, '/**/*.{html,js,css,scss,jade}')
 		])
 		.pipe($.filter(function (file) {
 			return file.stat.isFile();
