@@ -31,7 +31,7 @@
 DockerVI is self-contained and can be easily deployed via [docker-compose][2](Quick-Start steps below).
 
 **System requirements:**  
-DockerVI need works with docker 1.10+ and docker-compose 1.6.0+.
+DockerVI need works with docker 1.10+ and docker-compose 1.6.0+ and 8100 and 9090 ports available.
 
 1. Get the source code:
 
