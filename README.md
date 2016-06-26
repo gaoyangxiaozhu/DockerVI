@@ -70,7 +70,7 @@ If everything worked properly, you should be able to open a browser to manage yo
 
 
 ### License
-The UI For Docker code is licensed under the MIT license.
+The  DockerVI code is licensed under the MIT license.
 
 
 
