@@ -52,8 +52,6 @@ If everything worked properly, you should be able to open a browser to manage yo
     `http:<deployed host ip>:8100`
 
 
-For information on how to use Harbor, please see [User Guide](docs/user_guide.md) .
-
 ### Stack
 * [Angular](https://github.com/angular/angular.js)
 * [nodeJs](https://nodejs.org/en/)
