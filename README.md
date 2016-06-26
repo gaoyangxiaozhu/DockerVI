@@ -83,7 +83,7 @@ If everything worked properly, you should be able to open a browser to manage yo
 
 ### Todo:
 * Full remote swarm api support
-* using websocket technology for into the container in browser to carry out the command operation  
+* using websocket technology for entering the container to carry out the command operation  in browser-end
 * Unit tests
 
 
