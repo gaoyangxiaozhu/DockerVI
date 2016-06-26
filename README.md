@@ -26,7 +26,7 @@
     * Look up the low-level detail information about volume.
 
 ### Some pictures for Demo
-1. **Demo for show the overview of the cluster**
+1. **Demo for show searching image  using name **
 ![cluster][3]
 <br/>
 2. **Demo for show the real-time resource usages in Container**
@@ -93,7 +93,7 @@ The DockerVI code is licensed under the MIT license.
 
   [1]: http://o9dop9y2w.bkt.clouddn.com/docker.png
   [2]: https://docs.docker.com/engine/swarm/
-  [3]: http://o9dop9y2w.bkt.clouddn.com/cluster.png
+  [3]: http://o9dop9y2w.bkt.clouddn.com/searchImage.png
   [4]: http://o9dop9y2w.bkt.clouddn.com/realTimeResourceUsage.png
   [5]: http://o9dop9y2w.bkt.clouddn.com/containerCreate.png
   [6]: http://o9dop9y2w.bkt.clouddn.com/deleteContainer.png
