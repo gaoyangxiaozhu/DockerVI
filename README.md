@@ -26,7 +26,7 @@
     * Look up the low-level detail information about volume.
 
 ### Some pictures for Demo
-1. **Demo for show searching image  using name **
+1. **Demo for show searching image  using name**
 ![cluster][3]
 <br/>
 2. **Demo for show the real-time resource usages in Container**
