@@ -94,7 +94,7 @@ The DockerVI code is licensed under the MIT license.
   [1]: http://o9dop9y2w.bkt.clouddn.com/docker.png
   [2]: https://docs.docker.com/engine/swarm/
   [3]: http://o9dop9y2w.bkt.clouddn.com/cluster.png
-  [4]: http://o9dop9y2w.bkt.clouddn.com/realTimeResourceState.png
+  [4]: http://o9dop9y2w.bkt.clouddn.com/realTimeResourceUsage.png
   [5]: http://o9dop9y2w.bkt.clouddn.com/containerCreate.png
   [6]: http://o9dop9y2w.bkt.clouddn.com/deleteContainer.png
   [7]: https://docs.docker.com/compose/overview/
