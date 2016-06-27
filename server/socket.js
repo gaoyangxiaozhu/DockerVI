@@ -363,7 +363,7 @@ module.exports = function(port){
                         }
                 }
             }).fail(function(err){
-                console.log('Database operation error ' + err.message + err.code);
+                console.log('Database operation error ' + err.message);
                 socket.emit('message', {code: 1 ,error_msg: err.message, status: err.status || 500});
             }).done();
         };
