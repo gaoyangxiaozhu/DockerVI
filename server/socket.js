@@ -300,7 +300,7 @@ module.exports = function(port){
     /******* end 建立socket连接　用于容器日志的实时刷新显示　end ****/
 
     /******* start 建立socket连接　用于容器内资源使用情况的实时刷新显示　start ****/
-    function getSendContainerStatsFunc(DB, promiseDB){
+    function getSendContainerStatsFunc(promiseDB){
         //通过在外部进行promiseDB.connect接连建立DB　instance 避免内部连接connect 导致的连接过多的错误
         return function _sendContainerStats(node, id, socket, init){
                 var currentTime = formatTime(new Date());
@@ -308,10 +308,8 @@ module.exports = function(port){
 
                 //TODO　用于测试　记得删除
                 // currentLogTbName = 'node5_mongo_test_2016_05_07';
-
-                DB.then(function(){
-                    return promiseDB.use('information_schema');
-                }).then(function(){
+                promiseDB.use('information_schema')
+                .then(function(){
                     var sql = 'SELECT count(*) FROM TABLES WHERE table_name="' + currentLogTbName + '";'
                     return promiseDB.query(sql);
                 }).then(function(results){
@@ -365,30 +363,51 @@ module.exports = function(port){
                         }
                 }
             }).fail(function(err){
-                console.log('Database operation error');
-                socket.emit('notice', err.message);
+                console.log('Database operation error' + err.message);
+                socket.emit('message', {code: 1 ,error_msg: err.message, status: err.status || 500});
                 promiseDB.end();
             }).done();
         };
     }
-
+    var promiseDB;
+    var sendContainerStats;
     var dockerResource = io.of('/resources')
             .on('connection', function(socket){
                 var timeHander;
                 // 连接成功以后通知前端连接成功
                 console.log('resource socket connect');
-                socket.emit('notice', 'OK');
+                //code 为通知码　　０表示获取内容为空 １表示出错 2表示连接建立 3表示当前请求动作成功完成
+                socket.emit('message', {code : 2, msg : 'ok'});
                 //前端获取连接成功的消息以后触发init事件 传递容器Id 以及容器状态 后端根据Id 和容器状态进行数据初始化工作以及开始监听
                 socket.on('init', function(node, containerId){
-                    var promiseDB = new  PromiseDB();
-                    var sendContainerStats = getSendContainerStatsFunc(promiseDB.connect(), promiseDB);
-
-                    sendContainerStats(node, containerId, socket, true);
+                    promiseDB = new  PromiseDB();
+                    promiseDB.connect(function(err){
+                        if(err){
+                            socket.emit('message', {code : 1, error_msg : err.message, status: err.status || 500 });
+                        }else{
+                            sendContainerStats = getSendContainerStatsFunc(promiseDB);//此时的promiseDB已经初始化了数据流连接对象connection
+                            sendContainerStats(node, containerId, socket, true);
+                        }
+                    });
                 });
                 socket.on('sendResourceData', function(node, containerId){
-                    var promiseDB = new  PromiseDB();
-                    var sendContainerStats = getSendContainerStatsFunc(promiseDB.connect(), promiseDB);
-
+                    if(!promiseDB){
+                        promiseDB = new promiseDB();
+                        promiseDB.connect(function(err){
+                            if(err){
+                                socket.emit('message', {code : 1, error_msg : err.message, status: err.status || 500 });
+                            }else{//connect mysql success
+                                sendContainerStats = getSendContainerStatsFunc(promiseDB);
+                                sendContainerStats(node, containerId, socket, true);
+                            }
+                        });
+                    }
+                    //处理数据库连接中断错误
+                    promiseDB.onError = function(){
+                        if(timeHander){
+                            clearTimeout(timeHander);
+                        }
+                    };
                     async.forever(function (next) {
                         sendContainerStats(node, containerId, socket);
                         timeHander = setTimeout(next, 60000*3); //monitor 3分钟插入一次数据
