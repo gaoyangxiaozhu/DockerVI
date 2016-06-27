@@ -46,7 +46,7 @@ function deleteLogFile(path){
 
 
 
-//日志功能 记录每天的运行日志 只保留最近7天的日志文件
+//日志功能 记录每天的运行日志 只保留最近2天的日志文件
 var  logger = require('tracer').colorConsole({
     transport : function(data) {
         console.log(data.output);
@@ -295,10 +295,11 @@ function startMonitor(co, currentTime, oldTime){
     var newTableName = [co.name, currentTime].join("_").replace(/-/g, '_');
     var oldTableName = [co.name, oldTime].join("_").replace(/-/g, '_');
 
-    //删除２４小时之前的表
+    //删除48小时之前的表
     connection.query("DROP TABLE IF EXISTS " + oldTableName, function(err, results){
         if(err){
-            logger.error(message);
+            logger.error(err.message);
+            logger.error('drop table before 48 hours fail..');
         }
 
     });
@@ -342,12 +343,37 @@ function main(){
       data.forEach(function(item, index){
 
           var id = item.Id;
-          var name = item.Names[0].replace(/^\//,"").split('/').join('_');
+          var name = item.Names[0].replace(/^\//,"").split('/').join('_').replace(/-/g, '_');
           containerArray.push({id:id, name: name});
       });
       return containerArray;
   })
   .then(function(containerArray){
+      //获取table列表　如果相关联的容器已经不存在，就删除当前table
+      connection.query("SHOW TABLES", function(err, results){
+          if(err){
+              logger.error(message);
+          }else{
+              results.forEach(function(item, index){
+                  var relatedContainerName = item.Tables_in_docker.replace(/_\d{4}_\d{2}_\d{2}$/,'');
+                  var haveFlag = false;
+                  containerArray.forEach(function(item, index){
+                     if(item.name.trim() === relatedContainerName.trim()){
+                         haveFlag = true;
+                     }
+                  });
+                  if(!haveFlag){//如果当前table关联的容器已经被删除
+                     //从数据库删除当前table
+                     logger.info(' related container have removed from swarm, drop  the talbe ' + item.Tables_in_docker);
+                     connection.query("DROP TABLE IF EXISTS " + item.Tables_in_docker, function(err, results){
+                         if(err){
+                             logger.error(err.message);
+                         }
+                     });
+                  }
+              });
+          }
+      });
 
         var date = new Date();
         var currentTime = parseDate(date);
@@ -355,7 +381,7 @@ function main(){
         var oldTime = parseDate(date);
 
 
-        //遍历容器列表
+        //遍历容器列表 开启监控程序
         for(var i in containerArray){
             var currentCo = containerArray[i];
             //开始监控
@@ -365,6 +391,7 @@ function main(){
 
   })
   .fail(function(err){
+      logger.error('get container list error....'); //获取容器列表出错
       logger.error(err.message);
   })
   .done();
@@ -385,8 +412,12 @@ function runingMainForever(){
       if(timeHander){
           clearTimeout(timeHander);
       }
-      logger.info('quit program');
+      logger.info('quit program.');
       connection.end();//关闭数据库
+      logger.info('reatart monitor program after 6 seconds...');
+
+      connection = mysql.createConnection(mysqlConfig);
+      setTimeout(createAndConnectDB, 6000); //如果程序退出，重新尝试进入
       return ;
   });
 }
