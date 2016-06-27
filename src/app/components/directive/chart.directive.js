@@ -437,17 +437,27 @@
         });
         if(!socket){
             socket = io.connect('http://localhost:9090/resources');
-            socket.on('notice', function(msg){
-                if(msg == 'OK'){
-                    socket.emit('init', scope.container.node, scope.container.name);
-                }else{
-                    //TODO 出错怎么友好处理
-                    console.log(msg);
+            socket.on('message', function(data){
+                if(data){
+                    //code 为通知码　　０表示获取内容为空 １表示出错 2表示连接建立 3表示当前请求动作成功完成
+                    switch (data.code) {
+                        case 0 :
+                            break;
+                        case 1 ://error
+                            break;
+                        case 2:
+                            socket.emit('init', scope.container.node, scope.container.name);
+                            break;
+                        case 3:
+                            cb(null, data);
+                            break;
+                        default:
+
+                    }
+                    scope.$apply();
                 }
-                scope.$apply();
             });
             socket.on('getContainerStats', function(results, init){
-                console.log('getContainerStats');
                 console.log(results);
                 if(init){
                     scope.realResources = results;
