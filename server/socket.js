@@ -363,9 +363,8 @@ module.exports = function(port){
                         }
                 }
             }).fail(function(err){
-                console.log('Database operation error' + err.message);
+                console.log('Database operation error ' + err.message + err.code);
                 socket.emit('message', {code: 1 ,error_msg: err.message, status: err.status || 500});
-                promiseDB.end();
             }).done();
         };
     }
