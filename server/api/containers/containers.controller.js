@@ -416,52 +416,58 @@ exports.getContainerStats = function(req , res){
 
     var promiseDB = new  PromiseDB();
 
-    promiseDB.connect().then(function(){
-        return promiseDB.use('information_schema');
-    }).then(function(){
-        var sql = 'SELECT count(*) FROM TABLES WHERE table_name="' + currentLogTbName + '";'
-        return promiseDB.query(sql);
-    }).then(function(results){
-        //用于判断数据库中是否存在当然容器当天的资源数据表
-        var count = results[0][0]['count(*)'];
-        return count;
-    }).then(function(count){
-           //当前容器当天没有对应的资源数据库表
-            if(parseInt(count) === 0){
-                res.send({isEmpty : true });
-                promiseDB.end();
-            }else{
-                return promiseDB.use(config.mysql.database);
-            }
-
-    }).then(function(result){
-        if(Object.prototype.toString.call(result) == '[object Array]' && 'serverStatus' in result[0]){
-            var sql = 'SELECT * FROM ' + currentLogTbName;
-            return promiseDB.query(sql);
-        }
-    }).then(function(results){
-        if(results && Object.prototype.toString.call(results) == '[object Array]') {
-            var data = results[0];
-            var cpuList = [], memList = [], rxList = [], txList = [], tmList = [];
-            data.forEach(function(item, index){
-                cpuList.push(item.cpu_percent);
-                memList.push(item.mem_usage.toFixed(3));
-                rxList.push(item.rx_bytes);
-                txList.push(item.tx_bytes);
-                tmList.push(formatTime(new Date(item.read_time), true));
-            });
-            var resources = {
-                cpu : cpuList,
-                mem : memList,
-                rx  : rxList,
-                tx  : txList,
-                tm  : tmList
-            };
-            res.send(resources);
+    promiseDB.connect(function(err){
+        if(err){
+            res.send({error_msg : err.message, status: err.status || 500});
             promiseDB.end();
+        }else{
+            promiseDB.use('information_schema')
+            .then(function(){
+                var sql = 'SELECT count(*) FROM TABLES WHERE table_name="' + currentLogTbName + '";'
+                return promiseDB.query(sql);
+            }).then(function(results){
+                //用于判断数据库中是否存在当然容器当天的资源数据表
+                var count = results[0][0]['count(*)'];
+                return count;
+            }).then(function(count){
+                   //当前容器当天没有对应的资源数据库表
+                    if(parseInt(count) === 0){
+                        res.send({isEmpty : true });
+                        promiseDB.end();
+                    }else{
+                        return promiseDB.use(config.mysql.database);
+                    }
+
+            }).then(function(result){
+                if(Object.prototype.toString.call(result) == '[object Array]' && 'serverStatus' in result[0]){
+                    var sql = 'SELECT * FROM ' + currentLogTbName;
+                    return promiseDB.query(sql);
+                }
+            }).then(function(results){
+                if(results && Object.prototype.toString.call(results) == '[object Array]') {
+                    var data = results[0];
+                    var cpuList = [], memList = [], rxList = [], txList = [], tmList = [];
+                    data.forEach(function(item, index){
+                        cpuList.push(item.cpu_percent);
+                        memList.push(item.mem_usage.toFixed(3));
+                        rxList.push(item.rx_bytes);
+                        txList.push(item.tx_bytes);
+                        tmList.push(formatTime(new Date(item.read_time), true));
+                    });
+                    var resources = {
+                        cpu : cpuList,
+                        mem : memList,
+                        rx  : rxList,
+                        tx  : txList,
+                        tm  : tmList
+                    };
+                    res.send(resources);
+                    promiseDB.end();
+                }
+            }).fail(function(err){
+                res.send({error_msg : err.message, status: err.status || 500});
+                promiseDB.end();
+            }).done();
         }
-    }).fail(function(err){
-        res.send({error_msg : err.message, status: err.status});
-        promiseDB.end();
-    }).done();
+    });
 };
