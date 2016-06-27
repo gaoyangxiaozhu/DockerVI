@@ -43,12 +43,13 @@
 ### Getting Started
 DockerVI is self-contained and can be easily deployed via [docker-compose][7](Quick-Start steps below).
 It mainly consists of three Container Services:
+
 1. **ui:** The core part of this project , used for realizing the visual operation of the docker swarm.
 2. **monitor:** Real-time access  the usage of resources in the Container in docker swarm cluster.
 3. **mysql:** store the resource-usage data for every Container in docker swarm cluster.
 
 **System requirements:**  
-DockerVI need works with docker 1.10+ and docker-compose 1.6.0+.
+DockerVI need works with docker 1.10+ and docker-compose 1.6.0+ and 8100,9090 port can be available.
 
 1. Get the source code:
 
