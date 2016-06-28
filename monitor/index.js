@@ -122,15 +122,18 @@ function inspectContainerMsg(id){
               return res.body;
             })
             .fail(function(err){
-                logger.error(err.message);
+                logger.error(err.message + 'read container ' + id + 'inspect message fail...');
               });
 }
 function getContainerStatus(id){
 
     return  inspectContainerMsg(id)
             .then(function(data){
-                var status = data.State.Status;
-                return status;
+                //可能会由于读取Container内容出错导致data = null
+                if(data && data.State){
+                    var status = data.State.Status;
+                    return status;
+                }
             })
             .fail(function(err){
                 logger.error(err.message);
