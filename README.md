@@ -58,7 +58,7 @@ DockerVI need works with docker 1.10+ and docker-compose 1.6.0+ and 8100,9090 po
     ```
 2. Edit the file **Deploy/config.js**, make necessary configuration changes such as hostname for deploy project and swarm address.
 
-3. Install DockerVI with the following commands. Note that the docker-compose process can take a while.
+3. Install DockerVI with the following commands(Need networking for installing the dependencies). Note that the docker-compose process can take a while.
     ```sh
     $ cd Deploy
     $ ./prepare.sh
