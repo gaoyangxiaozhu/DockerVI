@@ -1,4 +1,5 @@
 @import "compass/css3";
+@import "compass/css3/flexbox";
 @import "compass/utilities/sprites";
 // $icons: sprite-map("sort/*.png",$new-position: 100%, $new-spacing: 55px, $new-repeat: no-repeat);
 // .icon-sort-desc { background: sprite($icons, desc); }
@@ -73,8 +74,8 @@ $pagination-active-border : #337ab7;
 
 //垂直居中容器
 .flex-vertical-box{
-  @include display-flex;
-  @include flex-wrap(wrap);
-  @include justify-content(center);
-  @include align-items(center);
+    @include display-flex;
+    @include flex-wrap(wrap);
+    @include justify-content(center);
+    @include align-items(center);
 }
