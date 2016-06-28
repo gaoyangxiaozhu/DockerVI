@@ -14,6 +14,7 @@ PromiseDB.prototype = Object.create(null);
 
 
 PromiseDB.prototype.connect = function(cb){
+    console.log(cb);
     if(!cb || Object.prototype.toString.call(cb) != '[object Function]'){
         throw Error("cb show be function.");
     }
@@ -34,9 +35,10 @@ PromiseDB.prototype.connect = function(cb){
                 that.tryCount = 0;
             }else{
                 //重新尝试连接数据库
-                setTimeout(that.connect, 2000);
+                setTimeout(function(){
+                    that.connect(cb);
+                }, 2000);
             }
-
         }else{
             //connect success
             cb();
@@ -57,7 +59,7 @@ PromiseDB.prototype.connect = function(cb){
                     });
                 }
               } else {
-                throw err;
+                console.log('read mysql error: ' + err.message); //以后增加到log日志文件中
               }
             });
         }
