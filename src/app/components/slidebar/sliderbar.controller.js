@@ -1,6 +1,13 @@
 (function(){
     angular.module("dockerApp")
-    .controller('navBarCtrl', ['$scope','$rootScope', '$state', '$stateParams', function($scope,  $rootScope, $state, $stateParams){
+    .controller('navBarCtrl', ['$scope','$rootScope', '$state', '$stateParams', '$location', function($scope,  $rootScope, $state, $stateParams, $location){
+
+        $scope.currentUrl = {};
+        $scope.currentUrl.docker = $location.url() +'#icon-docker';
+        $scope.currentUrl.server = $location.url() +'#icon-server';
+        $scope.currentUrl.shop = $location.url() + '#icon-shop';
+        $scope.currentUrl.applist = $location.url() + '#symbol-icon_applist';
+        $scope.currentUrl.volume = $location.url() + '#icon-volume';
 
         $scope.navs= [];
         for(var i=0; i<4; i++){
