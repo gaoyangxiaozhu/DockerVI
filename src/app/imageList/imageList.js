@@ -5,7 +5,7 @@
 	  .config(function ($stateProvider) {
 	    $stateProvider
 	      .state('imageList', {
-	        url: '/images/list/',
+	        url: '/images/list',
 	        templateUrl: 'app/imageList/imageList.html',
 	        controller: 'imageListCtrl'
 	      });

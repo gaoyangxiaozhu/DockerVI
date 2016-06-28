@@ -5,7 +5,7 @@
 	  .config(function ($stateProvider) {
 	    $stateProvider
 	      .state('volume', {
-	        url: '/volumes/',
+	        url: '/volumes',
 	        templateUrl: 'app/volume/volume.html',
 	        controller: 'volumeCtrl',
 			params:{

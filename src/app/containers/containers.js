@@ -5,7 +5,7 @@
     .config(function ($stateProvider) {
       $stateProvider
       .state('containerList', {
-        url : '/containers/list/',
+        url : '/containers/list',
         templateUrl : 'app/containerList/containerList.html',
         controller : 'ContainerListCtrl',
         params:{
@@ -14,7 +14,7 @@
         }
       })
       .state('containerDetail', {
-        url : '/containers/:id/Detail/',
+        url : '/containers/:id/Detail',
         templateUrl : 'app/containerDetail/containerDetail.html',
         controller : 'containerDetailCtrl',
         params:{

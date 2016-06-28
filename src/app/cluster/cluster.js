@@ -5,7 +5,7 @@
 	  .config(function ($stateProvider) {
 	    $stateProvider
 	      .state('cluster', {
-	        url: '/cluster/',
+	        url: '/cluster',
 	        templateUrl: 'app/cluster/cluster.html',
 	        controller: 'clusterCtrl'
 	      });
