@@ -69,7 +69,7 @@ DockerVI need works with docker 1.10+ and docker-compose 1.6.0+ and 8100,9090 po
 If everything worked properly, you should be able to open a browser to manage your docker swarm using
     `http:<deployed host ip>:8100`
 
-
+**Notice: ** Program does not support the low version of the IE browser, If you use IE to access, please upgrade to IE10+.
 
 ### Stack
 * [Angular](https://github.com/angular/angular.js)
