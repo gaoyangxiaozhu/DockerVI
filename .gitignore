@@ -10,5 +10,4 @@ src/app/**/*.html
 src/*.html
 .tmp/
 monitor/log/
-/src/assets/
 .sass-cache/
