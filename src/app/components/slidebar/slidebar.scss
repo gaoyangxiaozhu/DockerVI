@@ -3,6 +3,10 @@ svg path{
     fill:inherit;
 }
 .ui.navbar{
+    @include display-flex;
+    @include justify-content(space-between);
+    @include flex-direction(column);
+
     @include border-radius(0px);
     overflow: auto;
     height: 100%;
@@ -14,6 +18,10 @@ svg path{
     left: 0;
     border: 0;
     background-color: $navBgColor;
+    &:before,
+    &:after{
+        display: none!important;
+    }
     .nav{
         $azureHoverColor: #1FE66F;
         li{
@@ -21,13 +29,14 @@ svg path{
                 border:1px solid transparent;
                 height: 65px;
                 width: 60px;
-                margin: auto;
+                padding:0;
+                margin: 0 auto;
                 text-align: center;
                 @extend .flex-vertical-box;
                 @include opacity(.6);
                 svg{
-                    height: 45px;
-                    width: 45px;
+                    height: 32px;
+                    width: 32px;
                     use{
                         fill:#fff;
                     }
