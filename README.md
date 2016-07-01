@@ -32,12 +32,16 @@
 2. **Demo for show the real-time resource usages in Container**
 ![real-time resource state][4]
 <br/>
-3. **Demo for show the create container using image**
-![此处输入图片的描述][5]
+4. **Demo for show low-information in container**
+![information][8]
 <br/>
-4. **Demo for show deleting container**
-![此处输入图片的描述][6]
+5. **Demo for show the create container using image**
+![createContainer][5]
 <br/>
+6. **Demo for show deleting container**
+![deleteContainer][6]
+<br/>
+
 
 
 ### Getting Started
@@ -100,3 +104,4 @@ The DockerVI code is licensed under the MIT license.
   [5]: http://o9dop9y2w.bkt.clouddn.com/containerCreate.png
   [6]: http://o9dop9y2w.bkt.clouddn.com/deleteContainer.png
   [7]: https://docs.docker.com/compose/overview/
+  [8]: http://o9dop9y2w.bkt.clouddn.com/detail.png
