@@ -11,3 +11,4 @@ src/*.html
 .tmp/
 monitor/log/
 .sass-cache/
+logs/*
