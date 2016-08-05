@@ -5,6 +5,8 @@
 
 var path = require('path');
 
+var auth = require('./auth/auth.service')
+
 module.exports = function(app){
 
     //重定向 /xxx/ to /xxx
@@ -15,10 +17,14 @@ module.exports = function(app){
           next();
       }
     });
-    app.use('/api/cluster', require('./api/cluster'));
-    app.use('/api/containers', require('./api/containers'));
-    app.use('/api/images',require('./api/images'));
-    app.use('/api/volumes', require('./api/volumes'));
+
+    app.use('/auth', require('./auth'));
+    app.use('/api/users', require('./api/user'));
+
+    app.use('/api/cluster', auth.isAuthenticated(), require('./api/cluster'));
+    app.use('/api/containers', auth.isAuthenticated(), require('./api/containers'));
+    app.use('/api/images', auth.isAuthenticated(), require('./api/images'));
+    app.use('/api/volumes', auth.isAuthenticated(), require('./api/volumes'));
 
     var env = app.get('env');
     if ('development' !== env) {
