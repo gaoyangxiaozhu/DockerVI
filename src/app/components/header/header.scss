@@ -1,0 +1,29 @@
+.container,
+.vi-container{
+    .userbar{
+        .btn-group{
+            .dropdown-toggle{
+                background-color: transparent;
+                border: none;
+                @include box-shadow(0 0 0 #fff);
+                color: #98A0AA;
+                @include border-radius(3px);
+                margin-right: 25px;
+                img{
+                    width: 22px;
+                    height: 22px;
+                    line-height: 1;
+                    margin-right: 5px;
+                    border-radius: 100%;
+                }
+            }
+        }
+        .dropdown{
+            .dropdown-menu{
+                @include scale(1);
+            }
+        }
+        .open{
+        }
+    }
+}

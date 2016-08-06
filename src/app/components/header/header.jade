@@ -1,0 +1,16 @@
+
+nav.navbar(ng-controller="headerCtrl")
+    div(ng-class="{ 'vi-container' : pageClass !== 'dashboard ', 'container': pageClass === 'dashboard' }")
+        .navbar-text.navbar-right.userbar
+            div.btn-group(ng-class="{'open' : dropdown.hover}" ng-mouseover="dropdown.hover=true;" ng-mouseleave="dropdown.hover=false;" dropdown)
+                button.dropdown-toggle(type="button" dropdown-toggle aria-haspopup="true" aria-expanded="false")
+                    img.userbar-img(ng-src="{{ default_avatar }}")
+                    | {{ user.nickname }}
+                    i.fa.fa-angle-down
+                ul.dropdown-menu(role="menu")
+                    li(ng-if="user.role === 'admin'")
+                        a(href ng-click="manageUser()" tabindex="0") 管理用户
+                    li
+                        a(href="#" ng-click="logout()" tabindex="0") 登出 
+        
+    
