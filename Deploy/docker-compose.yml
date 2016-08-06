@@ -12,6 +12,7 @@ services:
         depends_on:
             - db
             - monitor
+            - mongo
         command: nodemon
     db:
         image: mysql
@@ -29,3 +30,9 @@ services:
             - db:db
         depends_on:
             - db
+    mongo:
+        image: mongo
+        ports:
+            - "27000:27017"
+        volumes:
+            - /data/mongo:/data/db

@@ -15,6 +15,7 @@ var mysql = require('mysql');
 var mongoose = require('mongoose');
 
 //连接mongoose数据库
+config.mongo.options.server.socketOptions = config.mongo.options.replset.socketOptions = { keepAlive: 1 }; //保持长连接
 mongoose.connect(config.mongo.uri, config.mongo.options);
 
 var modelsPath = path.join(__dirname, 'model');

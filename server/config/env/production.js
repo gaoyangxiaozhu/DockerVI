@@ -12,10 +12,10 @@ module.exports = {
         database:'docker'
     },
     mongo: {
-        uri: 'mongodb://localhost/docker-pro',
+        uri: 'mongodb://127.0.0.1:27000/mongo',
         options: {
-            user:'root',          //生产环境用户名
-            pass:'root'           //生产环境密码
+            user:"",          //生产环境用户名
+            pass:""          //生产环境密码
     }
   }
 };
