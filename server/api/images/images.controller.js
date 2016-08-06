@@ -47,7 +47,6 @@ var formatRepoTag = function(repoTag){
 		}
 	}
 	image.isPrivate = isPrivate ? true : false;
-
 	return image;
 
 };
@@ -63,7 +62,6 @@ var formatData =function(data){
 
 	var images= [];
 	var image ={};
-
 	if(!(Object.prototype.toString.call(data) === '[object Object]' || Object.prototype.toString.call(data) === '[object Array]')){
 		return {};
 	}
@@ -79,8 +77,8 @@ var formatData =function(data){
   	for(var index in data){
 	  	var item = data[index];
 		image = formatRepoTag(item.RepoTags[0]);
-		image.id = item.Id.split(':')[1].slice(0, 10);
-		image.fullId = item.Id.split(':')[1];
+		image.id = item.Id.indexOf(':')>=0 ? item.Id.split(':')[1].slice(0, 10) : item.Id.slice(0, 10); //兼容低版本docker engine
+		image.fullId = item.Id.indexOf(':')>=0 ? item.Id.split(':')[1] : item.Id; //兼容低版本docker engine
 		image.time = item.Created * 1000;
 		image.size = formatSize(item.VirtualSize);
 		if(image.isPrivate) continue;

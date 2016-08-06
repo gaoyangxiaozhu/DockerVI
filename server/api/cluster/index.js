@@ -46,7 +46,6 @@ function getUsedMemByByte(mem){
 *@return {Object} ret
 */
 function formatData(data){
-
   var containerNums = parseInt(data.Containers); //容器总个数
   var containerRunningNums = parseInt(data.ContainersRunning); //运行容器个数
   var containerPauseNums = parseInt(data.ContainersPaused); //暂停容器个数
@@ -54,7 +53,7 @@ function formatData(data){
   var imageNums = parseInt(data.Images); //镜像总个数
   var opSystem = data.OperatingSystem; //操作系统
 
-  var systemData = data.SystemStatus;
+  var systemData = data.SystemStatus || data.DriverStatus; //兼容低版本docker engine
   var nodeArray = [];
   var nodes = parseInt(systemData[3][1]) + 1; //集群节点个数
   var healtynodes = nodes; //健康节点的个数
