@@ -60,7 +60,6 @@
 
                         }else{
                             toaster.pop('error', "", "获取镜像列表出错!");
-                            $state.reload();
                         }
 
                     }).catch(function(){
@@ -69,7 +68,6 @@
                     });
                 }else{
                     toaster.pop('error', "", "获取镜像总数出错!");
-                    $state.reload();
                 }
             });
         }
