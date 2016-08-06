@@ -35,7 +35,9 @@ html.loading(ng-app="dockerApp")
         include ./assets/images/svg-sprite.svg
         .row
             .col-xs-12
-                div(ng-if="pageClass != 'dashboard'" ng-cloak)
+                div(ng-if="!home && pageClass != 'signin' " ng-cloak)
+                    include ./app/components/header/header.jade
+                div(ng-if="pageClass != 'dashboard' && pageClass != 'signin'" ng-cloak)                
                     include  ./app/components/slidebar/slidebar.jade
                 div(ui-view)
         div.home(ui-view="home")
