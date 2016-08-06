@@ -12,4 +12,5 @@ src/*.html
 monitor/log/
 .sass-cache/
 logs/*
+server/logs/*
 mongo/
