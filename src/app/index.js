@@ -101,7 +101,6 @@
 
            // When route successfully changed.
            $rootScope.$on('$stateChangeSuccess', function(ev, toState, toParams, fromState, fromParams) {
-               console.log('successfully');
                $rootScope.load.loaded = true;
                $rootScope.progressbar.complete();
                $rootScope.previousState = fromState;
