@@ -1,0 +1,13 @@
+div(ng-include="app/components/slidebar/slidebar.html")
+    .setting-box
+        .settings-container
+            h2.title 设置
+            hr
+            .profile
+                //- 昵称
+                .control-group
+                    .settings-form(name="settingForm" ng-submit="mdUser(settingForm)" novalidate)
+                        .form-group
+                            label.control-label 昵称
+                            input.form-control(type="text" required nickname placeholder="2-15字符，中英文、数字和下划线")
+                        button.btn.btn-block.btn-lg.btn-primary(type="submit")

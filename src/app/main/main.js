@@ -16,7 +16,8 @@
 		  .state('dashboard', {
 			  url : '/dashboard',
 			  templateUrl : 'app/main/dashboard.html',
-			  controller : 'DashboardCtrl'
+			  controller : 'DashboardCtrl',
+			  onlyUser : true
 		  });
 	});
 })();

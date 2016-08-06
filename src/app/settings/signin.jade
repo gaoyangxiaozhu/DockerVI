@@ -1,0 +1,18 @@
+.bg
+.signin-box
+    .sigin-container
+        h4.title 登录 DockerVI
+        form.sigin-form.form-horizontal(name="signinForm" ng-submit="login(signinForm)" ng-keypress="loginPress($event, signinForm)" novalidate)
+            .wrapper
+                input.form-control(type="text" name="uEmail" required email ng-minlength="3" ng-maxlength="30" ng-model="user.email" placeholder="邮箱")
+                i.fa.fa-envelope-o
+                div(ng-show=" signinForm.uEmail.$touched" style="width:100%;")
+                    span.text-danger( ng-show="signinForm.uEmail.$error.email") 请输入正确的邮箱地址
+                input.form-control(type="password" required ng-model="user.password"  placeholder="密码")
+                i.fa.fa-unlock-alt
+                .form-group
+                    input.form-control(required maxlength="6" type="text" name="captcha" ng-model="user.captcha" placeholder="验证码")
+                    a(href="javascript:;" ng-click="changeCaptcha()")
+                        img(ng-src="{{ captchaUrl }}")
+            .form-group
+                input#siginBtn.btn.btn-primary.btn-lg.btn-block(type="submit" ng-disabled="signinForm.$invalid" value="登陆")       

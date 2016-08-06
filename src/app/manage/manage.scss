@@ -1,0 +1,50 @@
+.manage-box{
+  @include public-box(100%);
+}
+.manage-container{
+  padding: 0 15px;
+
+  a.edit_user{
+      i{
+          margin-right: 10px;
+      }
+  }
+  a.delete_user{
+      color: rgb(242, 109, 109);
+  }
+  table.table{
+    th,td{
+      text-align: center;
+      vertical-align: middle;
+    }
+    th{
+      line-height: 2em;
+      border-bottom: none;
+    }
+    th:first-child,td:first-child{
+      text-align: left;
+    }
+  }
+  .portlet-empty {
+    min-height: 125px;
+  }
+  .portlet-body {
+    clear: both;
+    padding: 0;
+  }
+  .table-toolbar {
+    margin-bottom: 15px;
+  }
+  .dataTables_info {
+    margin: 30px 0;
+  }
+  .sorting{
+    cursor: pointer;
+    *cursor: hand;
+    span{
+      display: inline-block;
+      width:16px;
+      height:16px;
+    }
+  }
+}

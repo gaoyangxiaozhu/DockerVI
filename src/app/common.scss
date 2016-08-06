@@ -39,7 +39,15 @@ a{
         text-decoration: none;
     }
 }
-
+i.fa{
+    margin-left: 5px;
+}
+.vi-container{
+    width: 100%;
+    padding-left: 140px;
+    padding-right: 40px;
+    @include box-sizing(border-box);
+}
 //btn
 .btn,
 .btn:active,
@@ -58,7 +66,6 @@ textarea:active,
 textarea:focus{
     outline: 0 !important;
 }
-
 input,
 .input-group-addon, .form-control{
    color: $formColor;
@@ -69,6 +76,9 @@ input,
 }
 .input-group-addon{
    border-right: 0;
+}
+input[type="radio"], input[type="checkbox"]{
+    margin: -5px 0 0;
 }
 .btn{
     padding: 6px 18px;
@@ -186,6 +196,13 @@ input,
 .clear{
     clear: both;
 }
+
+
+// model model-content
+.modal-content{
+    @include border-radius(0);
+}
+
 //table & pagination
 .table,
 table {
@@ -315,6 +332,9 @@ paging{
       }
       &:first-child,
       &:last-child{
+          > a{
+              @include border-radius(0px);
+          }
           > span{
               @include border-radius(0px);
           }
@@ -448,6 +468,9 @@ paging{
 }
 
 //nav navbar
+.navbar{
+    @include border-radius(0);
+}
 .nav-tabs{
     > li{
         border-bottom: 2px solid transparent;
@@ -738,6 +761,35 @@ $imgContainerHeight: 120px;
 .msg.ng-leave,
 .msg.ng-enter.ng-enter-active {
   opacity:1;
+}
+
+//setting-box sigin-box
+.setting-box,
+.signin-box{
+    width: 100%;
+    margin: 0 auto;
+    h4.title{
+        text-align: center;
+    }
+    .sigin-form{
+        max-width: 300px;
+        padding-bottom: 40px;
+        margin: 0 auto 25px;
+        .input-group-addon{
+            i{
+                width:14px;
+            }
+        }
+        input{
+            height: 44px;
+            padding: 4px 12px;
+            font-size: 16px;
+        }
+    }
+    @media(min-width: 768px){
+        width: 700px;
+        padding: 20px 0 10px 25px;
+    }
 }
 
 //loader 用于显示loader效果

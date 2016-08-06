@@ -1,0 +1,47 @@
+.modal-header
+    .modal-title Edit User
+.modal-body
+    .portlet-body.form
+        //- BEGIN FORM
+        form.form-horizontal(name="editUserForm" novalidate)
+            .form-body
+                .form-group
+                    label.control-label.col-md-4 Nick Name
+                    .col-md-6
+                        input.form-control(type="text" required autocomplete="off" ng-model="currentUser.nickname")
+                .form-group
+                    label.control-label.col-md-4 Email
+                    .col-md-6
+                        input.form-control(type="email" email required autocomplete="off" ng-model="currentUser.email")
+                .form-group
+                    label.control-label.col-md-4 是否修改密码(可选)
+                    .col-md-6
+                        .checkbox
+                            input(type="checkbox" autocomplete="off" ng-model="currentUser.changePwd" style="margin-left:0px;")
+                div.change_pwd(ng-show="currentUser.changePwd" ng-cloak)
+                    .form-group
+                        label.control-label.col-md-4 新密码
+                        .col-md-6
+                            input.form-control(type="password" autocomplete="off" ng-model="currentUser.password")
+                    .form-group
+                        label.control-label.col-md-4 再次输入新密码
+                        .col-md-6
+                            input.form-control(type="password" autocomplete="off" ng-model="currentUser.password2")
+                    div.col-md-offset-4(ng-show="currentUser.password || currentUser.password2" style="width:100%;")
+                        span.text-danger( ng-show="currentUser.password !== currentUser.password2 && currentUser.password && currentUser.password2") 两次密码不匹配
+                .form-group
+                    .control-label.col-md-4 Status
+                    .col-md-8
+                        label.radio-inline
+                            input(type="radio" ng-model="currentUser.status" value="1") 
+                            | Authenticated
+                        label.radio-inline
+                            input(type="radio" ng-model="currentUser.status" value="0") 
+                            | Unverified
+                        label.radio-inline
+                            input(type="radio" ng-model="currentUser.status" value="2") 
+                            | Blocked
+        //- END fORM
+.modal-footer
+    button.btn.btn-primary(ng-disabled="editUserForm.$invalid || (currentUser.changePwd && (!currentUser.password || !currentUser.password2)) || (currentUser.changePwd && currentUser.password !== currentUser.password2)"  ng-click="ok(editUserForm)") OK
+    button.btn.btn-warning(ng-click="cancel()") Cancel

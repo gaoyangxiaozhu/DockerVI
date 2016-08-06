@@ -1,0 +1,87 @@
+.sigin-container{
+    font-size: 14px;
+    position: relative;
+    top:60px;
+    width: 400px;
+    margin: 0 auto;
+    padding: 27px 20px 30px;
+    @include border-radius(0);
+    background-color: #fff;
+    @include box-shadow(0 15px 30px 0 rgba(0,0,1,.1));
+}
+.bg{
+    position: fixed;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url(../assets/images/blue-mountain.jpg) no-repeat;
+    background-size: cover;
+    &:before{
+        position: fixed;
+        z-index: -1;
+        bottom: 0;
+        left: 0;
+        display: block;
+        width: 100%;
+        height: 50%;
+        content: '';
+        opacity: .4;
+    }
+}
+.sigin-form{
+    $primary: #2196F3;
+
+    .wrapper{
+        @extend .flex-vertical-box;
+        flex-direction: column;
+        width: 100%;
+        padding: 20px;
+        position: relative;
+        input{
+            display: block;
+            padding: 15px 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            border: 1px solid #ddd;
+            @include transition(border-width 0.2s ease);
+            @include border-radius(2px);
+            color: #ccc;
+            & + i.fa{
+                color: #fff;
+                font-size: 1em;
+                position: absolute;
+                margin-top: -40px;
+                opacity: 0;
+                left: 0;
+                transition: all 0.1s ease-in;
+            }
+            &:focus {
+                & + i.fa {
+                    opacity: 1;
+                    left: 30px;
+                    @include transition(all 0.25s ease-out);
+               }
+               outline: none;
+               color: #444;
+               border-color: $primary;
+               border-left-width: 35px;
+            }
+        }
+
+    }
+    .captcha-code{
+        padding-left: 0;
+    }
+    .captcha-img{
+        padding-right: 0;
+        img{
+            width: 100%;
+            height: 44px;
+        }
+    }
+}
+#siginBtn{
+    @include border-radius(0);
+}

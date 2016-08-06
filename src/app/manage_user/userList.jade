@@ -1,0 +1,48 @@
+.manage-box
+    .manage-container.user-manage
+        h1.text-center 用户管理-用户列表
+        .panel
+            section.panel-body
+                .table-toolbar
+                    .btn-group
+                        button.btn.btn-primary(ng-click="add()")
+                            | 增加用户
+                            i.fa.fa-plus
+                    .btn-group.pull-right
+                        .dataTables_filter
+                            input.form-control.input-medium(type="text" placeholder="搜索" ng-model="q")
+                .portlet-body.table-responsive
+                    table.table.table-striped.table-hover.table-condensed
+                        thead
+                            tr 
+                                th 昵称
+                                th Email
+                                th 角色
+                                th 状态
+                                th 注册时间
+                                th 更新时间
+                                th.text-center 管理
+                        tbody
+                            tr.odd.gradeX(ng-repeat="user in userList | filter:q")
+                                td
+                                    span {{ user.nickname }}
+                                td
+                                    span {{ user.email }}
+                                td
+                                    span {{ user.role }}
+                                td 
+                                    span {{ user.status || useStatus }}
+                                td
+                                    span {{ user.created | date: 'short' }}
+                                td
+                                    span {{ user.updated | date : 'short' }}
+                                td.text-center
+                                    a.edit_user(href="" ng-click="edit(user)") 
+                                        i.fa.fa-pencil-square-o.fa-lg(aria-hidden="true")
+                                    a.delete_user(href="" ng-click="del(user)")
+                                        i.fa.fa-trash.fa-lg(aria-hidden="true")
+                .row
+                    .col-sm-5.col-xs-12
+                        .dataTables_info Page: {{ options.currentPage }} / {{ numPages}} of {{ bigTotalItems }}
+                    .col-sm-7.col-xs-12
+                        pagination(ng-change="pageChanged()" total-items="bigTotalItems" ng-model="options.currentPage" max-size="maxSize" items-per-page="options.itemsPerPage" class="pagination-md pull-right" boundary-links="true" rotate="false" num-pages="numPages")

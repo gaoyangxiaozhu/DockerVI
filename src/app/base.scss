@@ -61,16 +61,26 @@ $defaultFontSize : 16px;    //默认字体大小
 $table-title-color: #9ba3af;
 $table-bg:  white;
 $table-selected-bg: #fffced;
-$table-bg-accent : #444;
+$table-bg-accent : #fff;
 $table-bg-hover :  rgba(245,247,250, .8);
 $table-bg-active : $table-bg-hover;
 $table-border-color :  #e4e7ed;
 $table-font-color : #595f69;
-$pagination-bg : #555;
+$pagination-bg : #fff;
 $pagination-border : #2f2f2f;
 $pagination-active-bg : #337ab7;
 $pagination-active-border : #337ab7;
 
+//共用内容容器
+@mixin public-box($mediaWidth:700px){
+  width:100%;
+  margin: 0 auto;
+  padding: 20px 10px 10px $navbarSize + 12px;
+  @media (min-width: $screen-sm-min){
+      width:$mediaWidth;
+      padding: 0 0 10px  $navbarSize + 12px;
+  }
+}
 
 //垂直居中容器
 .flex-vertical-box{

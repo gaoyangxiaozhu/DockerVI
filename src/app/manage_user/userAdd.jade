@@ -1,0 +1,42 @@
+.modal-header
+    .modal-title 增加用户
+.modal-body
+    .portlet-body.form
+        form.addUserForm.form-horizontal(name="addUserForm" novalidate)
+            .form-body
+                .form-group
+                    label.control-label.col-md-4 nickname 
+                    .col-sm-6
+                        input.form-control(type="text" placeholder="昵称" autocomplete="off" ng-model="user.nickname" required)
+                .form-group
+                    label.control-label.col-md-4 Email
+                    .col-sm-6
+                        input.form-control(type="email" placeholder="邮箱" autocomplete="off" ng-model="user.email" required)
+                .form-group
+                    label.control-label.col-md-4 Password
+                    .col-sm-6
+                        input.form-control(type="password" placeholder="密码" autocomplete="off" ng-model="user.password" required)
+                .form-group
+                    label.control-label.col-md-4 状态
+                    .col-sm-8
+                        label.radio-inline
+                            input(type="radio" ng-model="user.status" value="1") 
+                            | Authenticated
+                        label.radio-inline
+                            input(type="radio" ng-model="user.status" value="0") 
+                            | Unverified
+                        label.radio-inline
+                            input(type="radio" ng-model="user.status" value="2") 
+                            | Blocked
+                .form-group
+                    label.control-label.col-md-4 角色
+                    .col-sm-8
+                        label.radio-inline
+                            input(type="radio" ng-model="user.role" value="user") 
+                            | user(普通用户)
+                        label.radio-inline
+                            input(type="radio" ng-model="user.role" value="admin") 
+                            | admin(管理员)
+.modal-footer
+    .btn.btn-primary(ng-disabled="addUserForm.$invalid" ng-click="ok(addUserForm)") OK
+    .btn.btn-warning(ng-click="cancel()") Cancel
