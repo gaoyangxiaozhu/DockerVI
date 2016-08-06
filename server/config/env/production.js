@@ -16,6 +16,7 @@ module.exports = {
         options: {
             user:"",          //生产环境用户名
             pass:""          //生产环境密码
-    }
-  }
+        }
+    },
+    seedDB: true
 };

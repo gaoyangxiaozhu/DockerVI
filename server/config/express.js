@@ -18,7 +18,7 @@ var config = require('./env');
 var passport = require('passport');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
-// var mongoose = require('mongoose');
+var mongoose = require('mongoose');
 
 module.exports = function(app) {
   var env = app.get('env');
@@ -33,6 +33,7 @@ module.exports = function(app) {
     secret: config.secrets.session,
     resave: false,
     saveUninitialized: true,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
     cookie: { maxAge: 60000 }
   }));
   app.use(passport.initialize());
