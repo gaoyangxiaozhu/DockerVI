@@ -9,6 +9,9 @@ module.exports = {
         user: 'root',
         password: '123123',
         database:'docker'
-    }
-
+    },
+    mongo: {
+        uri: 'mongodb://localhost:27000/gyyzyp-dev'
+    },
+    seedDB: true
 };
