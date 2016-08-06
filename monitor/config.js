@@ -6,4 +6,4 @@ exports.mysql = {
 };
 exports.dbname = 'docker';
 exports.logDir = './log';
-exports.swarm_add = "http://10.103.242.128:2377/"
+exports.swarm_add = "http://10.103.242.167:2377/" //swarm address

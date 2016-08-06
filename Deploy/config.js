@@ -1,9 +1,9 @@
 config = {
     swarm:{
-        address: '10.103.242.128:2377'　//docker swarm master 地址
+        address: 'http://10.103.242.167:2377'　//docker swarm master 地址
     },
     host:{
-        ip:'10.103.242.128' //host ip for deploy project 
+        ip:'10.103.242.167' //host ip for deploy project
     }
 };
 module.exports = config;
