@@ -1,8 +1,8 @@
 {
   "name": "docker-visual",
-  "version": "0.0.2",
+  "version": "1.0.1",
   "description": "docker web",
-  "repository": "https://github.com/gaoyangxiaozhu/docker-visual",
+  "repository": "https://github.com/gaoyangxiaozhu/DockerVI",
   "license": "MIT",
   "author": "gyy",
   "main": "./server/app.js",
