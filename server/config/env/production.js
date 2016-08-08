@@ -12,11 +12,7 @@ module.exports = {
         database:'docker'
     },
     mongo: {
-        uri: 'mongodb://127.0.0.1:27000/mongo',
-        options: {
-            user:"",          //生产环境用户名
-            pass:""          //生产环境密码
-        }
+        uri: 'mongodb://10.103.242.167:27000/docker-pro'
     },
     seedDB: true
 };
