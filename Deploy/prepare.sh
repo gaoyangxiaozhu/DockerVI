@@ -1,8 +1,11 @@
 #!/bin/bash
 set -ex
 SCRIPTSDIR="../dist/scripts"
+PRODUCNTIONJS="../server/config/env/production.js"
 PAT="^app.*\.js$"
 IP=`ip route get 8.8.8.8 | awk '{ print $7;  }'` # get host ip
+
+`sed -ie s/localhost/$IP/g $PRODUCNTIONJS` > /dev/null #replace localhost in production.js to current host ip
 
 for FILE in `ls $SCRIPTSDIR` # loop file
 do
