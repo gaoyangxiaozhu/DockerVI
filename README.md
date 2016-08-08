@@ -8,6 +8,7 @@
 
 
 ### Current implementation features
+* **Role Based Access Control(RBAC)
 * **Display the overall survey of cluster**.
 * **Container:**
     * show Container list in swarm cluste.
@@ -41,17 +42,21 @@
 6. **Demo for show deleting container**
 ![deleteContainer][6]
 <br/>
+7. **Demo for show Role Based Access Control**
+![user-manage][9]
+<br/>
+![login][10]
 
 
 
 ### Getting Started
 DockerVI is self-contained and can be easily deployed via [docker-compose][7](Quick-Start steps below).
-It mainly consists of three Container Services:
+It mainly consists of four Container Services:
 
 1. **ui:** The core part of this project , used for realizing the visual operation of the docker swarm.
 2. **monitor:** Real-time access  the usage of resources in the Container in docker swarm cluster.
 3. **mysql:** store the resource-usage data for every Container in docker swarm cluster.
-
+4. **mongo** store users related information for authentication and authorization.
 **System requirements:**  
 DockerVI need works with docker 1.10+ and docker-compose 1.6.0+ and 8100,9090 port can be available.
 
@@ -65,7 +70,7 @@ DockerVI need works with docker 1.10+ and docker-compose 1.6.0+ and 8100,9090 po
 3. Install DockerVI with the following commands(Need networking for installing the dependencies). Note that the docker-compose process can take a while.
     ```sh
     $ cd Deploy
-    $ ./prepare.sh
+    $ ./prepare.sh #important
 
     $ docker-compose up
     ```
@@ -105,3 +110,5 @@ The DockerVI code is licensed under the MIT license.
   [6]: http://o9dop9y2w.bkt.clouddn.com/deleteContainer.png
   [7]: https://docs.docker.com/compose/overview/
   [8]: http://o9dop9y2w.bkt.clouddn.com/detail.png
+  [9]: http://o9dop9y2w.bkt.clouddn.com/users.png
+  [10]:http://o9dop9y2w.bkt.clouddn.com/login.png
