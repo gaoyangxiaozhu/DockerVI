@@ -12,7 +12,7 @@ module.exports = {
         database:'docker'
     },
     mongo: {
-        uri: 'mongodb://10.103.242.167:27000/docker-pro'
+        uri: 'mongodb://localhost:27017/docker-pro'
     },
     seedDB: true
 };
