@@ -28,25 +28,24 @@
     * Look up the low-level detail information about volume.
 
 ### Some pictures for Demo
-1. **Demo for show searching image  using name**
-    ![cluster](http://o9dop9y2w.bkt.clouddn.com/searchImage.png)
-<br/>
-2. **Demo for show the real-time resource usages in Container**
-    ![real-time resource state](http://o9dop9y2w.bkt.clouddn.com/realTimeResourceUsage.png)
-<br/>
-4. **Demo for show low-information in container**
-    ![information](http://o9dop9y2w.bkt.clouddn.com/detail.png)
-<br/>
-5. **Demo for show the create container using image**
-    ![createContainer](http://o9dop9y2w.bkt.clouddn.com/containerCreate.png)
-<br/>
-6. **Demo for show deleting container**
-    ![deleteContainer](http://o9dop9y2w.bkt.clouddn.com/deleteContainer.png)
-<br/>
-7. **Demo for show Role Based Access Control**
-    ![user-manage](http://o9dop9y2w.bkt.clouddn.com/users.png)
-<br/>
-    ![login](http://o9dop9y2w.bkt.clouddn.com/login.png)
++ **Demo for show searching image  using name**
+    - ![cluster](http://o9dop9y2w.bkt.clouddn.com/searchImage.png)
+
++  **Demo for show the real-time resource usages in Container**
+    - ![real-time resource state](http://o9dop9y2w.bkt.clouddn.com/realTimeResourceUsage.png)
+
++ **Demo for show low-information in container**
+    - ![information](http://o9dop9y2w.bkt.clouddn.com/detail.png)
+
++ **Demo for show the create container using image**
+    - ![createContainer](http://o9dop9y2w.bkt.clouddn.com/containerCreate.png)
+
++ **Demo for show deleting container**
+    - ![deleteContainer](http://o9dop9y2w.bkt.clouddn.com/deleteContainer.png)
++  **Demo for show Role Based Access Control**
+    - ![user-manage](http://o9dop9y2w.bkt.clouddn.com/users.png)
++
+   - ![login](http://o9dop9y2w.bkt.clouddn.com/login.png)
 
 
 
