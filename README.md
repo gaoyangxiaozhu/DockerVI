@@ -1,4 +1,5 @@
 # DockerVI
+# *Important: This Project only supports docker v1.10 - v1.11 version and now is deprecated*
 
 标签（空格分隔）： Docker
 
