@@ -28,24 +28,24 @@
 
 ### Some pictures for Demo
 1. **Demo for show searching image  using name**
-![cluster][3]
+![cluster](http://o9dop9y2w.bkt.clouddn.com/searchImage.png)
 <br/>
 2. **Demo for show the real-time resource usages in Container**
-![real-time resource state][4]
+![real-time resource state](http://o9dop9y2w.bkt.clouddn.com/realTimeResourceUsage.png)
 <br/>
 4. **Demo for show low-information in container**
-![information][8]
+![information](http://o9dop9y2w.bkt.clouddn.com/detail.png)
 <br/>
 5. **Demo for show the create container using image**
-![createContainer][5]
+![createContainer](http://o9dop9y2w.bkt.clouddn.com/containerCreate.png)
 <br/>
 6. **Demo for show deleting container**
-![deleteContainer][6]
+![deleteContainer](http://o9dop9y2w.bkt.clouddn.com/deleteContainer.png)
 <br/>
 7. **Demo for show Role Based Access Control**
-![user-manage][9]
+![user-manage](http://o9dop9y2w.bkt.clouddn.com/users.png)
 <br/>
-![login][10]
+![login](http://o9dop9y2w.bkt.clouddn.com/login.png)
 
 
 
